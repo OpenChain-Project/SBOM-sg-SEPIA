@@ -1,0 +1,259 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://github.com/OpenChain-Project/SBOM-sg-SEPIA/blob/main/bosch_sepia_1.00.spdx.schema.json",	
+	"title": "Bosch SEPIA SPDX JSON Schema Version 1.00",
+	"description": "JSON Schema for validation of mandatory SPDX SBoM metadata. Copyright © 2024 Bosch Sicherheitssysteme GmbH. All rights reserved. Licensed under the CC-BY License, Version 4.0",
+	"type": "object",
+	"properties": {
+		"spdxVersion": {
+			"title": "specVersion",
+			"description": "MANDATORY. Version (spdxVersion) of the used SBOM specification.",
+			"type": "string",
+			"enum": [ "SPDX-2.2", "SPDX-2.3" ]
+		},
+		"creationInfo": {
+			"type": "object",
+			"title": "creationInfo",
+			"description": "MANDATORY. creationInfo object must exist",
+			"properties":{
+				"created": {
+					"title": "timestamp",
+					"description": "MANDATORY. Creation date (created) of SBoM document must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"creators": {
+					"title": "creators",
+					"description": "MANDATORY. Array of creators (creators) must contain at least two items Organization and Person",
+					"type": "array",
+					"items": {"$ref": "#/definitions/creator"},
+					"minItems" : 2
+				}
+			},
+			"required": ["created", "creators"]
+		},
+		"documentNamespace": {
+			"title": "serialNumber", 
+			"description": "MANDATORY. Serial number (documentNamespace) of SBoM document must be non-empty",
+			"type": "string",
+			"format": "uri",
+			"minLength": 1
+		},
+		"dataLicense": {
+			"title": "dataLicense", 
+			"description": "MANDATORY. License of SBoM data (dataLicense) must be non-empty",
+			"type": "string",
+			"minLength": 1
+		},
+		"name": {
+			"title": "component.name", 
+			"description": "MANDATORY. Name of SBoM document (name) must be non-empty",
+			"type": "string",
+			"minLength": 1
+		},
+		"packages": {
+			"title": "packages",
+			"description": "MANDATORY. Array of packages (packages) must contain at least one item (Bosch Product)",
+			"type": "array",
+			"items": {"$ref": "#/definitions/package"},
+			"minItems" : 1
+		},
+		"relationships": {
+			"title": "relationships",
+			"description": "MANDATORY. Array of relationships (relationships) must contain at least one item (DESCRIBES relation of Bosch Product).",
+			"type": "array",
+			"items": {"$ref": "#/definitions/relationship"},
+			"minItems" : 1
+		},
+		"hasExtractedLicensingInfos": {
+			"title": "hasExtractedLicensingInfos",
+			"description": "MANDATORY. License texts (hasExtractedLicensingInfos) for licenses that are not a not verbatim copy of an SPDX license text.",
+			"type": "array",
+			"items": {"$ref": "#/definitions/licensingInfos"}
+		}
+	},
+	
+	"required": [ "spdxVersion", "creationInfo", "documentNamespace", "dataLicense", "name", "packages", "relationships" ],
+	
+	"definitions": {
+		"creator": {
+			"title": "metadata.authors.author.name",
+			"description": "MANDATORY. Creator string (creator) must be non-empty",
+			"type": "string",
+			"minLength": 1
+		},
+		"package": {
+			"type": "object",
+			"title": "package",
+			"description": "package",
+			"properties": {
+				"primaryPackagePurpose": {
+					"title": "component.type", 
+					"description": "MANDATORY. Component type (primaryPackagePurpose) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"versionInfo": {
+					"title": "component.version",
+					"description": "MANDATORY. Version of package (versionInfo) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"externalRefs": {
+					"title": "purl",
+					"description": "MANDATORY. External component references (externalRefs) must at least contain one PURL",
+					"type": "array",
+					"items": {"$ref": "#/definitions/externalRefs"},
+					"minItems": 1
+				},
+				"supplier": {
+					"title": "supplier.name",
+					"description": "MANDATORY. Supplier name (supplier) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"checksums": {
+					"title": "checksums",
+					"description": "MANDATORY. Checksums array (checksums) with at least one item must be given",
+					"type": "array",
+					"items": {"$ref": "#/definitions/hash"},
+					"minItems": 1
+				},
+				"name": {
+					"title": "name",
+					"description": "MANDATORY. Name of component (name) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"licenseDeclared": {
+					"title": "licenses.license.name",
+					"description": "MANDATORY. Declared license (licenseDeclared) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"copyrightText": {
+					"title": "copyright",
+					"description": "MANDATORY. Copyright text (copyrightText) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"summary": {
+					"title": "description",
+					"description": "OPTIONAL. Description for the component (summary) must be non-empty if existing",
+					"type": "string",
+					"minLength": 1
+				},
+				"downloadLocation": {
+					"title": "package.download.location",
+					"description": "OPTIONAL. Package download location (downloadLocation) must be non-empty uri if existing",
+					"type": "string",
+					"format": "uri",							
+					"minLength": 1
+				}
+			},			
+			"required": [ "primaryPackagePurpose", "versionInfo", "externalRefs", "supplier", "checksums", "name", "licenseDeclared", "copyrightText" ]
+		},
+		"externalRefs": {
+			"type": "object",
+			"title": "externalRefs",
+			"description": "externalRefs",
+			"properties": {
+				"referenceCategory": {
+					"title": "referenceCategory",
+					"description": "MANDATORY. referenceCategory must be non-empty if given",
+					"type": "string",
+					"minLength": 1
+				},
+				"referenceLocator": {
+					"title": "referenceLocator",
+					"description": "MANDATORY. CPE / PURL must be non-empty if given",
+					"type": "string",
+					"pattern": "^(pkg:|cpe:2\\.3:a)",
+					"minLength": 1
+				},
+				"referenceType": {
+					"title": "referenceType",
+					"description": "MANDATORY. referenceType must be non-empty if given",
+					"type": "string",
+					"minLength": 1
+				}
+			},
+			"required": [ "referenceCategory", "referenceLocator", "referenceType" ]			
+		},
+		"hash": {
+			"type": "object",
+			"title": "hash",
+			"description": "hash",
+			"properties": {
+				"algorithm": {
+					"title": "algorithm",
+					"description": "MANDATORY. hash algorithm (algorithm) must be non-empty if given",
+					"type": "string",
+					"minLength": 1
+				},
+				"checksumValue": {
+					"title": "checksumValue",
+					"description": "MANDATORY. hash value (checksumValue) must be non-empty if given",
+					"type": "string",
+					"minLength": 1
+				}
+			},
+			"required": [ "algorithm", "checksumValue" ]			
+		},
+		"relationship": {
+			"type": "object",
+			"title": "relationship",
+			"description": "MANDATORY. If relationship is given, all relationship properties are mandatory",
+			"properties": {
+				"spdxElementId": {
+					"title": "SPDXID",
+					"description": "SPDXID",
+					"type": "string",
+					"pattern": "^SPDXRef-",
+					"minLength": 1
+				},
+				"relatedSpdxElement": {
+					"title": "SPDXID",
+					"description": "SPDXID",
+					"type": "string",
+					"pattern": "^SPDXRef-",
+					"minLength": 1
+				},
+				"relationshipType": {
+					"title": "relationshipType",
+					"description": "relationshipType",
+					"type": "string",
+					"minLength": 1,
+					"enum": [ "DESCRIBES", "CONTAINS", "STATIC_LINK", "DYNAMIC_LINK", "FILE_ADDED", "FILE_DELETED", "FILE_MODIFIED" ]
+				}
+			},
+			"required": [ "spdxElementId", "relatedSpdxElement", "relationshipType" ]			
+		},
+		"licensingInfos": {
+			"type": "object",
+			"title": "licensingInfos",
+			"description": "MANDATORY. If licensing info is given, all licensing info properties are mandatory",
+			"properties": {
+				"licenseId": {
+					"title": "licenses.license.id",
+					"description": "MANDATORY. Either license ID (licenseId) or license name must be non-empty",
+					"type": "string",
+					"pattern": "^LicenseRef-"
+				},
+				"name": {
+					"title": "licenses.license.name",
+					"description": "MANDATORY. Either license name (name) or license ID must be non-empty",
+					"type": "string",
+					"minLength": 1
+				},
+				"extractedText": {
+					"title": "licenses.license.text",
+					"description": "MANDATORY. License text (extractedText) must be non-empty",
+					"type": "string",
+					"minLength": 1
+				}
+			},
+			"required": [ "licenseId", "name", "extractedText" ]
+		}
+	}
+}

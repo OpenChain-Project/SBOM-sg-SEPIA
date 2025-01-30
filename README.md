@@ -17,10 +17,11 @@ It also provides a tooling which helps to validate SBOM schemas and perform oper
 
 SEPIA project is licensed under Creative Commons Attribution 4.0 International except for the source code.
 
-Source code is licensed under MIT license.
+Source code under the folder tools is licensed under MIT license. Please review each license individually. 
 
 SPDX-License-Identifier: CC-BY-4.0 OR MIT
 
+For copyrights please see the [CONTRIBUTORS](CONTRIBUTORS) file.
 
 ## Challenges :
 

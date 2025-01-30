@@ -32,7 +32,7 @@ SPDX license Identifiers : CC-BY-4.0 and MIT
 
     *Legal requirements also often apply, depending on product and market.
 
-=> Cost intensive activity that does not add real value to the end-user.
+    => Cost intensive activity that does not add real value to the end-user.
 
 2. SPDX and CycloneDX have overlaps and unique attributes
 
@@ -44,7 +44,7 @@ SPDX license Identifiers : CC-BY-4.0 and MIT
 
     *Backward and forward compatibility is not always guaranteed.
 
-=> automation with existing tools is not possible without gambling with your compliance.
+    => automation with existing tools is not possible without gambling with your compliance.
 
 
 ## Our Approach : Make it Open Source
@@ -70,29 +70,29 @@ SPDX license Identifiers : CC-BY-4.0 and MIT
 
 ## The Big Picture:
 
-![alt text](SEPIA-workflow.png)
+![alt text](Images/SEPIA-workflow.png)
 
 ## Proposed Solution :
 
-Existing schemas were not sufficient and is the root cause of ambiguities.
+*Existing schemas were not sufficient and is the root cause of ambiguities.
 
-We defined SPDX and CycloneDX schema which reflects our requirements in a machine processible SBOM.
+*We defined SPDX and CycloneDX schema which reflects our requirements in a machine processible SBOM.
 
-The defined schema is used to validate the SBOM.
+*The defined schema is used to validate the SBOM.
 
-SEPIA lists the syntactic errors which can be resolved using the edit feature of the tooling.
+*SEPIA lists the syntactic errors which can be resolved using the edit feature of the tooling.
 
 **Dashboard :** 
 
-![alt text](Dashboard.png)
+![alt text](Images/Dashboard.png)
 
 **Edit :** 
 
-![alt text](image-2.png)
+![alt text](Images/image-2.png)
 
 **Error log :**
 
-![alt text](image-3.png)
+![alt text](Images/image-3.png)
 
 
 ## Status :

@@ -70,48 +70,48 @@ SPDX license Identifiers : CC-BY-4.0 and MIT
 
 ## The Big Picture:
 
-![alt text](image.png)
+![alt text](SEPIA-workflow.png)
 
 ## Proposed Solution :
 
-    *Existing schemas were not sufficient and is the root cause of ambiguities.
+Existing schemas were not sufficient and is the root cause of ambiguities.
 
-    *We defined SPDX and CycloneDX schema which reflects our requirements in a machine processible SBOM.
+We defined SPDX and CycloneDX schema which reflects our requirements in a machine processible SBOM.
 
-    *The defined schema is used to validate the SBOM.
+The defined schema is used to validate the SBOM.
 
-    *SEPIA lists the syntactic errors which can be resolved using the edit feature of the tooling.
+SEPIA lists the syntactic errors which can be resolved using the edit feature of the tooling.
 
-    ** Dashboard : ** 
+**Dashboard :** 
 
-    ![alt text](image-1.png)
+![alt text](Dashboard.png)
 
-    Edit :
+**Edit :** 
 
-    ![alt text](image-2.png)
+![alt text](image-2.png)
 
-    Error log :
+**Error log :**
 
-    ![alt text](image-3.png)
+![alt text](image-3.png)
 
 
 ## Status :
 
-    *Current features – Validate, Edit, Merge and Integration with SCA tool.
+*Current features – Validate, Edit, Merge and Integration with SCA tool.
 
-    *In development – Convert (SPDX<-> CycloneDX) and rdf to json converter and dockerization.
+*In development – Convert (SPDX<-> CycloneDX) and rdf to json converter and dockerization.
 
-    *Future tool focus – Filter, copy and compare.
+*Future tool focus – Filter, copy and compare.
 
-    *Community focus – collect and distribute schema from other companies.
+*Community focus – collect and distribute schema from other companies.
 
 
 ## Benefits :
 
-    *Ensure machine processable SBOM exchange with semantic relevance.
+*Ensure machine processable SBOM exchange with semantic relevance.
 
-    *Providing validator to suppliers that would ensure SBOM quality.
+*Providing validator to suppliers that would ensure SBOM quality.
 
-    *Purchase teams could use validator for first check of deliveries from their suppliers.
+*Purchase teams could use validator for first check of deliveries from their suppliers.
     
 

@@ -19,7 +19,7 @@ SEPIA project is licensed under Creative Commons Attribution 4.0 International e
 
 Source code is licensed under MIT license.
 
-SPDX license Identifiers : CC-BY-4.0 and MIT
+SPDX-License-Identifier: CC-BY-4.0 OR MIT
 
 
 ## Challenges :

@@ -1,0 +1,15 @@
+server:
+  max-http-header-size: '10000000'
+  port: 9051
+  ssl:
+    enabled: 'false'
+spring:
+  application:
+    name: sbom-utils-service
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+  jmx:
+    default-domain: sbom-utils-service
+    

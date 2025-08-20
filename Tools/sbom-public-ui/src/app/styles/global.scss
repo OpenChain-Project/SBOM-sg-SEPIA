@@ -1,0 +1,45 @@
+/* autoprefixer grid: on */
+/*
+  Copyright © 2025 Robert Bosch GmbH. All rights reserved.
+*/
+@import 'imports.scss';
+@import 'variables/font-face.scss';
+@import 'base/typography.scss';
+@import 'base/icons.scss';
+@import 'base/layout.scss';
+@import 'base/basic.scss';
+@import 'base/button.scss';
+@import 'components/loading-spinner.component';
+@import 'components/dropdown.component';
+@import 'components/footer-nav.component';
+@import 'components/full-header.component';
+@import 'components/language-selector.component';
+@import 'components/navigation.component';
+@import 'components/popover.component';
+@import 'components/breadcrumbs.component';
+@import 'components/form-radio.component';
+@import 'components/form-checkbox.component';
+@import 'components/form-chips-input.component';
+@import 'components/form-switch.component';
+@import 'components/modal.component';
+@import 'components/search-result.component';
+@import 'components/tab-panel.component';
+@import 'components/callout.component';
+@import 'components/teaser-panel.component';
+@import 'components/board-item.component';
+@import 'components/accordion.component';
+@import 'components/progress-indicator.component';
+@import '~flatpickr/dist/flatpickr.css';
+@import 'overwrites/flatpickr.scss';
+
+.supergraphic {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-image: url($supergraphic-path--xs);
+}
+
+.supergraphic.bar {
+  height: 14px;
+}
+

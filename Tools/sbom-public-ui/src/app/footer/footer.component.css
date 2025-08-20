@@ -1,0 +1,43 @@
+/*
+  Copyright © 2025 Robert Bosch GmbH. All rights reserved.
+*/
+.sbom-footer-nav footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e6e6e6;
+  margin-top: 1rem;
+  box-sizing: border-box;
+}
+
+.sbom-footer-nav footer.sticky {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+.sbom-footer-nav nav {
+  display: inline-block;
+}
+.sbom-footer-nav nav a {
+  display: inline-block;
+  font-size: 0.875rem;
+  padding: 1rem;
+}
+.sbom-footer-nav .footer-placeholder {
+  display: none;
+}
+.sbom-footer-nav footer.sticky ~ .footer-placeholder {
+  display: block;
+}
+.sbom-footer-nav .copyright {
+  padding: 1rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+  --bs-gutter-x: 1.0rem;
+  --bs-gutter-y: 0;
+  width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * .5);
+  padding-left: calc(var(--bs-gutter-x) * .5);
+  margin-right: auto;
+  margin-left: auto;
+}

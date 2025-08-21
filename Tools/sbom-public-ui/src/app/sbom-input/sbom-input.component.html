@@ -1,0 +1,495 @@
+<!--
+ Parts of this file are created by genAI by using GitHub Copilot.
+ This notice needs to remain attached to any reproduction of or excerpt from this file.
+ /*
+  Copyright © 2025 Robert Bosch GmbH. All rights reserved.
+*/
+-->
+<div *ngIf="serverStatus === 'checking'">
+  Checking server status...
+</div>
+<div *ngIf="serverStatus === 'down'">
+  <h1>Maintenance</h1>
+  <p>The server is currently down for maintenance. Please try again later.</p>
+</div>
+<div class="container" *ngIf="serverStatus === 'running'">
+<h4>Upload SBOM</h4>
+<ng-template #sessionClearSuccessModal let-close="close">
+  <div *ngIf="showAlert" class="alert alert-success" role="alert">
+    <strong>Success:</strong> Session cleared successfully!
+    <!-- <button type="button" class="btn-close" aria-label="Close" (click)="closeAlert()"></button> -->
+  </div>
+</ng-template>
+<ng-template #downloadSuccessModal let-close="close">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success:</strong> Please maintain the downloaded logs for future reference.
+  </div>
+</ng-template>
+<ng-template #confirmSessionClearModal let-close="close">
+  <div class="alert alert-success" role="alert">
+    <div class="row">
+      <div class="col-md-12">
+        <strong>Are you sure, you want to clear all the uploaded data?</strong>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-8">
+        <button style="margin-left: 20px" title="Click to Cancel" type="button" class="sbom-btn sbom-secondary float-right"
+          (click)="closeDialogBox()">
+          Cancel
+          <!-- confirmSessionClearModal -->
+        </button>
+        <button style="margin-left: 20px" title="Click to Confirm" type="button" class="sbom-btn sbom-primary float-right"
+          (click)="clearSession()">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #errorDetailsModal let-close="close" position="top">
+
+    <tabset #tabset>
+        <tab heading="Edit SBOM" style="padding: 20px;">
+            <h4>Edit</h4>
+            <div class="row" [hidden]="!fileSaveSuccess">
+              <div class="alert alert-success" role="alert">
+                Changes are saved successfully
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6" style="width: 49%; margin-right: 10px;">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <b>SBOM File Name: </b> {{ fileToEdit.sbomFileName }}
+                        </div>
+                    </div>
+                    <div class="row json-editor">
+                        <div class="col-md-12" style="padding: 0; height: inherit;">
+                            <json-editor [options]="editorOptions" (change)="changeLog($event)" id="editFormm"
+                                [data]="fileToEdit.sbomJson" #editor></json-editor>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <b>Schema: </b>
+                            <span *ngIf="fileToEdit.schemaType == 'spdx'">SPDX V2.3</span>
+                            <span *ngIf="fileToEdit.schemaType == 'spdx2.2'">SPDX V2.2</span>
+                            <span *ngIf="fileToEdit.schemaType == 'cyclonedx'">CycloneDX V1.4</span>
+                            <span *ngIf="fileToEdit.schemaType != 'spdx' && fileToEdit.schemaType != 'spdx2.2' && fileToEdit.schemaType != 'cyclonedx'">
+                              {{ fileToEdit.schemaType | uppercase }} 1.0
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row json-editor">
+                        <div class="col-md-12" style="height: inherit;">
+                            <json-editor [options]="schemaViewerOptions" [data]="editorOptions.schema"></json-editor>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Errors List" style="padding: 20px;">
+            <h4>Errors</h4>
+
+            <div class="table-container">
+                <table id="errorTable" class="table table-hover table-striped m-table" >
+                    <thead>
+                        <tr>
+                            <!-- <th width="10%">S No</th> -->
+                            <th width="45%">Error Path</th>
+                            <th width="55%">Error Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let error of fileToEdit.errorDetails; let i = index">
+                            <!-- <td width="10%">{{ i + 1 }}</td> -->
+                            <td width="45%" style="white-space: normal;">{{ error.errorKey }}</td>
+                            <td width="55%" style="white-space: normal;">{{ error.message }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="fileToEdit.errorDetails == null || fileToEdit.errorDetails.length == 0" class="alert alert-info text-center" role="alert">
+                  No data available
+                </div>
+            </div>
+        </tab>
+        <tab (selectTab)="getDifferences(fileToEdit)" heading="Change Log" style="padding: 20px;">
+            <h4>Changes</h4>
+            <!-- <div class="row"> -->
+              <div class="table-container">
+                <table id="logTable" class="table table-hover table-striped m-table">
+                  <thead>
+                    <tr>
+                      <!-- <th width="10%">S No</th> -->
+                      <th width="15%">File</th>
+                      <th width="35%">Path</th>
+                      <th width="10%">Operation</th>
+                      <th width="40%">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of fileToEdit.changeLogsList; let i = index">
+                      <!-- <td width="10%" style="padding-left: 30px;">{{ i + 1 }}</td> -->
+                      <td width="15%">{{ mergeMode ? item.fileName : fileToEdit.sbomFileName }}</td>
+                      <td width="35%" style="white-space: normal;">{{ item.path }}</td>
+                      <td width="10%">{{ item.op }}</td>
+                      <td width="40%" style="white-space: normal;">{{ item.value != null ? item.value : "-" }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div *ngIf="fileToEdit.changeLogsList == null || fileToEdit.changeLogsList.length == 0"
+                  class="alert alert-info text-center" role="alert">
+                  No data available
+                </div>
+              </div>
+            <!-- </div> -->
+        </tab>
+    </tabset>
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <button style="margin-left: 20px" title="Cancel" type="button" (click)="closeModal()"
+                class="sbom-btn sbom-secondary float-right">
+                Cancel
+                <!-- errorDetailsModal -->
+            </button>
+            <button style="margin-left: 20px" title="Download the SBOM and logs" type="button" class="sbom-btn sbom-primary float-right"
+              (click)="downloadContent(fileToEdit, true)">
+              Download
+            </button>
+            <button style="margin-left: 20px" title="Save changes and replace original file" type="button"
+                class="sbom-btn sbom-primary float-right" [hidden]="!enableModalSave" (click)="replaceFile()">
+                Save
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #mergeModal let-close="close" position="top">
+    <div class="merge-width">
+        <div class="row">
+            <h4>{{ mergeType | uppercase }} Merge</h4>
+        </div>
+        <div [hidden]="mergeType == 'cyclonedx'">
+            <div class="row">
+                <h4 style="font-size: 20px;">Package Information</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="packagename" class="form-label">Package name</label>
+                  <input type="text" class="form-control custom-input" id="packagename" name="packagename" required
+                    [(ngModel)]="spdxMerged.packages[0].name" />
+                </div>
+                <div class="col-md-3">
+                    <label for="packageversion" class="form-label">Package version</label>
+                    <input type="text" class="form-control custom-input" id="packageversion" name="packageversion" required
+                    [(ngModel)]="spdxMerged.packages[0].versionInfo" />
+                </div>
+                <div class="col-md-3">
+                  <label for="primary_package_purpose" class="form-label">Primary Package Purpose</label>
+                  <select class="form-select custom-select-input" id="primary_package_purpose" name="primary_package_purpose"
+                    [(ngModel)]="spdxMerged.packages[0].primaryPackagePurpose" required>
+                    <option *ngFor="let type of primaryPackagePurposeList | keyvalue" [value]="type.key">
+                      {{ type.value }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="PackageLicenseDeclared" class="form-label">Package License Declared</label>
+                  <input type="text" class="form-control custom-input" id="PackageLicenseDeclared" name="PackageLicenseDeclared" required
+                  [(ngModel)]="spdxMerged.packages[0].licenseDeclared" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                  <label for="creators_organization" class="form-label">Creators Organization</label>
+                  <input type="text" class="form-control custom-input" id="creators_organization" name="creators_organization" required
+                  [(ngModel)]="spdxMerged.creationInfo.creators[1]" />
+                </div>
+                <div class="col-md-6">
+                  <label for="creators_person" class="form-label">Creators Person</label>
+                  <input type="text" class="form-control custom-input" id="creators_person" name="creators_person" required
+                    [(ngModel)]="spdxMerged.creationInfo.creators[2]" />
+                </div>
+            </div>
+
+        </div>
+        <div [hidden]="mergeType == 'spdx'">
+            <div class="row">
+                <h4 style="font-size: 20px;">Metadata</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="meta_comp_name" class="form-label">Component Name</label>
+                  <input type="text" class="form-control custom-input" id="meta_comp_name" name="meta_comp_name" required
+                    [(ngModel)]="cdxMerged.metadata.component.name" />
+                </div>
+                <div class="col-md-3">
+                    <label for="meta_comp_group" class="form-label">Component Group</label>
+                    <input type="text" class="form-control custom-input" id="meta_comp_group" name="meta_comp_group" required
+                      [(ngModel)]="cdxMerged.metadata.component.group" />
+                </div>
+                <div class="col-md-3">
+                  <label for="meta_comp_type" class="form-label">Component Type</label>
+                  <select class="form-select custom-select-input" id="meta_comp_type" name="meta_comp_type"
+                    [(ngModel)]="cdxMerged.metadata.component.type" required>
+                    <option *ngFor="let type of compTypeList | keyvalue" [value]="type.key">
+                      {{ type.value }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                   <label for="meta_comp_version" class="form-label">Component Version</label>
+                   <input type="text" class="form-control custom-input" id="meta_comp_version" name="meta_comp_version" required
+                      [(ngModel)]="cdxMerged.metadata.component.version" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="merge_license_info_type" class="form-label">Component License Information Type</label>
+                  <select class="form-select custom-select-input" id="merge_license_info_type" name="merge_license_info_type"
+                    [(ngModel)]="mergeLicenseInfoType" (change)="clearLicenses()" required>
+                    <option *ngFor="let infoType of licenseInfoTypes" [value]="infoType.value">
+                      {{ infoType.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-3" [hidden]="mergeLicenseInfoType != 'licId'">
+                    <label for="license_id" class="form-label">Component License ID</label>
+                    <select class="form-select custom-select-input" id="license_id" name="license_id"
+                      [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.id" required>
+                      <option *ngFor="let idType of licenseIdTypes | keyvalue" [value]="idType.key">
+                        {{ idType.value }}
+                      </option>
+                    </select>
+                </div>
+                <div class="col-md-6" [hidden]="mergeLicenseInfoType != 'licName'">
+                  <label for="license_name" class="form-label">Component License Name</label>
+                  <input type="text" class="form-control custom-input" id="license_name" name="license_name" required
+                    [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.name" />
+                </div>
+                <div class="col-md-6" [hidden]="mergeLicenseInfoType != 'licText'">
+                  <label for="license_text" class="form-label">Component License Text</label>
+                  <textarea class="form-control custom-input" id="license_text" name="license_text" rows="4"
+                    [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.text.content"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="meta_sup_name" class="form-label">Supplier Name</label>
+                  <input type="text" class="form-control custom-input" id="meta_sup_name" name="meta_sup_name" required
+                    [(ngModel)]="cdxMerged.metadata.supplier.name" />
+                </div>
+                <div class="col-md-6">
+                  <label for="meta_sup_email" class="form-label">Supplier Contact Email</label>
+                  <input type="text" class="form-control custom-input" id="meta_sup_email" name="meta_sup_email" required
+                    [(ngModel)]="cdxMerged.metadata.supplier.contact[0].email" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <button style="margin-left: 20px" title="Cancel" type="button" (click)="closeModal()"
+                    class="sbom-btn sbom-secondary float-right">
+                    Cancel
+                    <!-- mergeModal -->
+                </button>
+                <button style="margin-left: 20px" title="Submit" type="button" class="sbom-btn sbom-primary float-right"
+                    (click)="mergeSelectedBoms(errorDetailsModal)">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<div *ngIf="isDialogBoxOpen" class="dialogBox-overlay">
+  <div class="dialogBox">
+    <button class="close-btn" (click)="closeDialogBox()">×</button>
+    <ng-container *ngTemplateOutlet="alertModal"></ng-container>
+  </div>
+</div>
+
+<div *ngIf="isModalOpen" class="modal-overlay">
+  <div class="modal-box">
+    <button class="close-btn" (click)="closeModal()">×</button>
+    <ng-container *ngTemplateOutlet="currentModal"></ng-container>
+  </div>
+</div>
+
+<form style="margin-top: 0px;" action="#" #inputForm="ngForm">
+    <div class="row">
+          <div class="col-md-3-6">
+            <label for="Input Type">Input Type</label>
+            <select class="form-select" name="inputType" label="Input Type" [(ngModel)]="defaultInputType" title="Input Type">
+              <option *ngFor="let sbom of sbomTypes" [value]="sbom.value">
+                {{sbom.label}}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-3-6" [hidden]="defaultInputType != 'upload'">
+            <label for="Input Type">Schema Type</label>
+            <select class="form-select" name="schemaType" label="Schema Type"  [(ngModel)]="defaultSchemaType" title="Schema Type" (change)="resetForm(inputForm)">
+              <option *ngFor="let schema of schemaTypes" [value]="schema.value" >
+                {{schema.label}}
+              </option>
+            </select>
+          </div>
+        <div class="col-md-3-6" [hidden]="defaultInputType != 'upload'">
+          <label for="sbomFile" class="form-label">Upload SBOM</label>
+          <input type="file" class="form-control" style="border: 1px solid black; border-radius: 4px;" id="sbomFile"
+            accept=".json" (change)="uploadFile(inputForm, false,$event)" [(ngModel)]="fileToUpload.sbomFile" name="sbomFile"
+            #fileInput>
+          <div *ngIf="fileName" style="margin-top: 5px; color: gray;">
+            Selected File: {{ fileName }}
+          </div>
+          <div *ngIf="!fileName" class="text-danger">
+            File required
+          </div>
+          <div *ngIf="(fileToUpload.sbomFile?.size ?? 0) > 2147483648" class="text-danger">
+            A file can't be larger than 2 GB
+          </div>
+        </div>
+        <div class="col-md-1 padding-left-0" style="height: 48px;width: 7%" [hidden]="defaultInputType != 'upload'">
+          <button type="button" class="btn btn-primary" title="Validate" (click)="validateSboms(inputForm)"
+            style="height: 48px;margin-top: 20px;" [disabled]="!enableValidate">
+            <i class="bi bi-check-circle"></i> Validate
+          </button>
+        </div>
+    </div>
+    <div class="row" [hidden]="defaultSchemaType != 'custom' || defaultInputType != 'upload'">
+        <div class="col-md-3-6">
+        </div>
+        <div class="col-md-3-6">
+        </div>
+          <div class="col-md-3-6">
+              <label for="schemaFile" class="form-label">Upload Schema File</label>
+              <input type="file" class="form-control" style="border: 1px solid black; border-radius: 4px;" id="schemaFile"
+                accept=".json" (change)="uploadFile(inputForm, true,$event)" [(ngModel)]="fileToUpload.schemaFile" name="schemaFile"
+                multiple>
+                <div *ngIf="schemafileName" style="margin-top: 5px; color: gray;">
+                  Selected Schema File: {{ schemafileName }}
+                </div>
+                <div *ngIf="!schemafileName" class="text-danger">
+                  File required
+                </div>
+                <div *ngIf="(fileToUpload.schemaFile?.size ?? 0) > 2147483648" class="text-danger">
+                  A file can't be larger than 2 GB
+                </div>
+          </div>
+        <div class="col-md-1 padding-left-0" style="width: 7%">
+        </div>
+    </div>
+</form>
+
+<div class="row">
+      <div *ngIf="fileUploadmessage" class="alert" [ngClass]="{
+          'alert-danger': calloutType === 'error',
+          'alert-warning': calloutType === 'warning',
+          'alert-success': calloutType === 'success',
+          'alert-info': calloutType === 'info'
+        }" role="alert">
+        <p>{{ fileUploadmessage }}</p>
+      </div>
+    <!-- Loading spinner -->
+    <div *ngIf="isLoading" class="loading-container d-flex justify-content-center align-items-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+        <h4>SBOM Status</h4>
+    </div>
+    <div class="col-md-6">
+        <a href="#" class="float-right" (click)="showclearSessionWarning()">Clear Session</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="sbomStatusTable" class="table table-hover table-striped m-table">
+            <thead>
+                <tr>
+                    <th width="10%">Select</th>
+                    <th width="33%">Schema</th>
+                    <th width="33%">File Name</th>
+                    <th width="10%">Status</th>
+                    <th width="14%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of uploadStatusList; let i = index">
+                  <td width="10%" class="padding-0">
+                      <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="sbomFile"
+                      id="sbomType_+{{i}}"
+                      (change)="addItemToList()"
+                    />
+                    </td>
+                    <td width="30%" class="padding-0">
+                        <!-- {{ item.schemaType | uppercase }} {{ item.schemaType == 'spdx' ? 'V2.3' : item.schemaType ==
+                        'cyclonedx' ? 'V1.4' : '1.0'}} -->
+                         <span *ngIf="item.schemaType == 'spdx'">SPDX V2.3</span>
+                         <span *ngIf="item.schemaType == 'spdx2.2'">SPDX V2.2</span>
+                         <span *ngIf="item.schemaType == 'cyclonedx'">CycloneDX V1.4</span>
+                         <span *ngIf="item.schemaType != 'spdx' && item.schemaType != 'spdx2.2' && item.schemaType != 'cyclonedx'">
+                          {{ item.schemaType | uppercase }} 1.0
+                         </span>
+                    </td>
+                    <td width="30%" class="padding-0">{{ item.sbomFileName }}</td>
+                    <td width="10%" *ngIf="item.valid" class="padding-0">
+                        <button class="sbom-btn sbom-link valid-status" type="button">
+                            <div class="p-3 mb-2 bg-success text-white">VALID</div>
+                        </button>
+                    </td>
+                    <td width="10%" *ngIf="!item.valid" class="padding-0">
+                        <button class="sbom-btn sbom-link valid-status" type="button"
+                            (click)="selectItemToShowErrs(item,errorDetailsModal)">
+                            <div class="p-3 mb-2 bg-danger text-white">
+                                INVALID
+                            </div>
+                        </button>
+                    </td>
+                    <td width="20%" style="font-size: 17px;" class="padding-0">
+                      <button class="sbom-btn sbom-link" type="button" title="Edit">
+                        <i class="fa-solid fa-pen-to-square" (click)="selectFileToEdit(item,errorDetailsModal)"></i>
+                      </button>
+                      <button class="sbom-btn sbom-link" type="button" title="Convert" hidden="false">
+                        <i class="fa-solid fa-left-right" (click)="convertSboms(item)"></i>
+                      </button>
+                      <button class="sbom-btn sbom-link" type="button" title="Download" (click)="downloadContent(item, false)">
+                        <i class="fa-solid fa-download"></i>
+                      </button>
+                      <button class="sbom-btn sbom-link" type="button" title="Delete" (click)="removeSboms(item)">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="!uploadStatusList || uploadStatusList.length === 0" class="alert alert-info text-center" role="alert">
+          No data available
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-6"></div>
+    <div class="col-md-6">
+        <button style="margin-left: 20px" title="Select 2 SBOMs of same schema type to compare" type="button"
+            class="sbom-btn sbom-primary float-right" [disabled]="!enableCompare" [hidden] = "true">
+            Compare
+        </button>
+        <button style="margin-left: 20px" title="Select 2 or more valid SBOMs of same schema type to merge"
+            type="button" class="sbom-btn sbom-primary float-right" (click)="showMergeModal(mergeModal)" [disabled]="!enableMerge">
+            Merge
+        </button>
+    </div>
+ </div>
+</div>

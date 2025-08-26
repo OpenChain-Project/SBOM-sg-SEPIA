@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+SPDX-License-Identifier: CC-BY-4.0 -->
 # Installation Guide
 
 This guide will help you set up both the SBOM Public UI (frontend) and the SbomPublic Backend Service. Please follow the steps below.

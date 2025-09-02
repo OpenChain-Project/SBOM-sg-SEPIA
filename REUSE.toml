@@ -5,6 +5,11 @@
 version = 1
 
 [[annotations]]
+path = "**/pom.xml"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
 path = "DCO.txt"
 SPDx-FileCopyrightText = "Copyright (C) 2004, 2006 The Linux Foundation and its contributors."
 SPDX-License-Identifier = "LicenseRef-scancode-dco-1.1"
@@ -63,3 +68,8 @@ SPDX-License-Identifier = "Apache-2.0"
 path = "Tools/sbom-public-service/mvnw.cmd"
 SPDX-FileCopyrightText = "Copyright 2013-2022 The Apache Software Foundation"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "**/.project"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"

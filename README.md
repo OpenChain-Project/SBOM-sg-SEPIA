@@ -10,7 +10,7 @@ SEPIA is a project which focuses on validating SBOMs by using standard SBOM sche
 
 Additionally, we would like to curate an Open SBOM schema library by collecting schemas used across industry.
 
-It also provides a tooling which helps to validate SBOM schemas and perform operations such as Edit, Merge, Convert, Copy, Compare and Filter.
+It also provides a tooling which helps to validate SBOM schemas and perform operations such as Edit the metadata,Insert missing fields and Merge multiple SBOMs.
 
 
 ## License

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+//
+// SPDX-License-Identifier: MIT
 
 package com.sepia.sbomutils;
 

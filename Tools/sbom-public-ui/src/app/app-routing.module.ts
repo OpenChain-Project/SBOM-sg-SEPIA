@@ -1,6 +1,6 @@
-/*
-  Copyright © 2025 Robert Bosch GmbH. All rights reserved.
-*/
+/* SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+SPDX-License-Identifier: MIT */
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SbomInputComponent } from './sbom-input/sbom-input.component';

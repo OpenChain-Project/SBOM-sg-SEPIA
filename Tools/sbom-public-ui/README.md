@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+SPDX-License-Identifier: CC-BY-4.0 -->
 # SbomUtilsUi
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.8.

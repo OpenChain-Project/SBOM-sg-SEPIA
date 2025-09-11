@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+SPDX-License-Identifier: MIT */
 export const cyclonedx_1_4_schema = {
   "$id": "http://cyclonedx.org/schema/bom-1.4.schema.json",
   "type": "object",

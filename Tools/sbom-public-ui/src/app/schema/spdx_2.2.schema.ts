@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+SPDX-License-Identifier: MIT */
 export const spdx_2_2_schema = {
   "$id": "http://spdx.org/rdf/terms",
   "title": "SPDX 2.2",

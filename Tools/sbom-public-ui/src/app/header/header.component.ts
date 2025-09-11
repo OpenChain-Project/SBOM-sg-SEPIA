@@ -1,6 +1,6 @@
-/*
-  Copyright © 2025 Robert Bosch GmbH. All rights reserved.
-*/
+// SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+// SPDX-License-Identifier: MIT
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import jsPDF from 'jspdf';

@@ -1,6 +1,7 @@
-/*
-  Copyright © 2025 Robert Bosch GmbH. All rights reserved.
-*/
+// SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+//
+// SPDX-License-Identifier: MIT
+
 package com.sepia.sbomutils;
 
 import org.springframework.boot.SpringApplication;

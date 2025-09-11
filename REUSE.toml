@@ -1,0 +1,75 @@
+# SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+#
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+[[annotations]]
+path = "**/pom.xml"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "DCO.txt"
+SPDx-FileCopyrightText = "Copyright (C) 2004, 2006 The Linux Foundation and its contributors."
+SPDX-License-Identifier = "LicenseRef-scancode-dco-1.1"
+
+[[annotations]]
+path = "Images/**"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "Presentations/**"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "Schema/**"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "Tools/sbom-public-ui/*.json"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "Tools/sbom-public-ui/.npmrc"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "Tools/sbom-public-ui/src/favicon.ico"
+SPDX-FileCopyrightText = "Copyright (c) 2010-2025 Google LLC. https://angular.dev/license"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "Tools/sbom-public-service/.settings/*"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "Tools/sbom-public-service/images/media/*"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "Tools/sbom-public-service/src/main/resources/*"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "Tools/sbom-public-service/mvnw"
+SPDX-FileCopyrightText = "Copyright 2013-2022 The Apache Software Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "Tools/sbom-public-service/mvnw.cmd"
+SPDX-FileCopyrightText = "Copyright 2013-2022 The Apache Software Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "**/.project"
+SPDX-FileCopyrightText = "Copyright (C) 2025 Contributors to SEPIA"
+SPDX-License-Identifier = "MIT"

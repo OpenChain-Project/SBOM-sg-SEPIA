@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (C) 2025 Contributors to SEPIA
+
+SPDX-License-Identifier: CC-BY-4.0 -->
 # Third Party Notices
 
 BACKEND MODULES

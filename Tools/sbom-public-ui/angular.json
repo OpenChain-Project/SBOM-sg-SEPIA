@@ -38,14 +38,12 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss",
-              "node_modules/datatables.net-dt/css/jquery.dataTables.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/bootstrap/dist/js/bootstrap.js",
-              "node_modules/datatables.net/js/jquery.dataTables.js"
+              "node_modules/bootstrap/dist/js/bootstrap.js"
             ]
           },
           "configurations": {

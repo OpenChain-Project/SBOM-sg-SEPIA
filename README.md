@@ -99,7 +99,10 @@ For copyrights please see the [CONTRIBUTORS](CONTRIBUTORS) file.
 
 ![alt text](Images/image-3.png)
 
-
+## Docker :
+```
+docker compose up -d 
+```
 ## Status :
 
 * Current features – Validate, Edit, Merge and Integration with SCA tool.

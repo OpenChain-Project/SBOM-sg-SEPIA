@@ -1,5 +1,7 @@
-| Root elements     |  Child elements                           |
-|-------------------|-----------------------|-------------------|
+## SPDX_2.3
+
+| Root Element      | Child Element         |                   |
+|:------------------|:----------------------|:------------------|
 |                   |                       |                   |
 | spdxVersion       |                       |                   |
 | documentNamespace |                       |                   |
@@ -16,3 +18,4 @@
 |                   | primaryPackagePurpose |                   |
 |                   | licenseDeclared       |                   |
 |                   | copyrightText         |                   |
+

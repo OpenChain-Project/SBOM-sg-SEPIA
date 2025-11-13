@@ -15,6 +15,17 @@ Additionally, we would like to curate an Open SBOM schema library by collecting 
 
 It also provides a tooling which helps to validate SBOM schemas and perform operations such as Edit the metadata, Insert missing fields and Merge multiple SBOMs.
 
+## Roadmap (Under Discussion)
+
+1.  Introduce validation checks based on CycloneDX 1.6 schema
+2.  A new feature to convert SPDX 2.3 <-> CycloneDX 1.6 based on a custom schema
+3.  Version upgrades with schema check for various SPDX and CycloneDX schemas
+    * SPDX 2.2 --> SPDX 2.3
+    * SPDX 2.3 --> SPDX 3.0
+    * CycloneDX 1.4 --> CycloneDX 1.6
+    * CycloneDX 1.5 --> CycloneDX 1.6
+4. Comparison feature to filter changes between two different versions of SBOM logs
+
 
 ## License
 

@@ -5,17 +5,10 @@
 |                   |                       |                   |
 | spdxVersion       |                       |                   |
 | documentNamespace |                       |                   |
-| dataLicense       |                       |                   |
 | creationInfo      | created               |                   |
 |                   | creators              |                   |
 |                   |                       |                   |
-| packages          | externalRefs          | referenceLocator  |
-|                   |                       | referenceCategory |
-|                   |                       | referenceType     |
-|                   |                       | comment           |
+| packages          | externalRefs          | referenceCategory |
 |                   | name                  |                   |
 |                   | versionInfo           |                   |
 |                   | primaryPackagePurpose |                   |
-|                   | licenseDeclared       |                   |
-|                   | copyrightText         |                   |
-

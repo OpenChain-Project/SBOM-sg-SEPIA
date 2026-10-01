@@ -24,7 +24,7 @@ Required parameters declared by `automotive_spdx_2.3.schema.json`.
 |                       | copyrightText         |                   |
 |                       | checksums          | algorithm  |
 |                       |                       | checksumValue |
-|  
+|                       |                       |                   |
 | externalDocumentRefs  | checksum              |                   |
 |                       | externalDocumentId    |                   |
 |                       | spdxDocument          |                   |

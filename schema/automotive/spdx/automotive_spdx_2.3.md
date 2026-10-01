@@ -19,9 +19,12 @@ Required parameters declared by `automotive_spdx_2.3.schema.json`.
 |                       | downloadLocation      |                   |
 |                       | licenseDeclared       |                   |
 |                       | licenseConcluded      |                   |
-|                       | packageVerificationCode |                 |
+|                       | packageVerificationCode          | packageVerificationCodeExcludedFiles  |
+|                       |                       | packageVerificationCodeValue |
 |                       | copyrightText         |                   |
-|                       | checksums             |                   |
+|                       | checksums          | algorithm  |
+|                       |                       | checksumValue |
+|  
 | externalDocumentRefs  | checksum              |                   |
 |                       | externalDocumentId    |                   |
 |                       | spdxDocument          |                   |

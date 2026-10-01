@@ -467,6 +467,13 @@ public class SbomUtilityController {
 		if (Constants.CDQ_SPDX2_3_LC.equalsIgnoreCase(type)) {
 			return checkSpdx(root, schemaType, "SPDX-2.3");
 		}
+		if (Constants.AUTOMOTIVE_CYDX1_6_LC.equalsIgnoreCase(type)) {
+			return checkCycloneDx(root, schemaType, "1.6");
+		}
+		if (Constants.AUTOMOTIVE_SPDX2_3_LC.equalsIgnoreCase(type)) {
+			return checkSpdx(root, schemaType, "SPDX-2.3");
+		}
+		
 		return null;
 	}
 

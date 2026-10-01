@@ -214,8 +214,8 @@ rules:
     xfieldsCovered: 1
 
   - ruleId: MAN-SUPPLIER-CREATOR-ORG-001
-    description: 'Sheet row 6. BOM supplier organisation becomes an Organization creator.'
-    sourcePath: metadata.supplier.name
+    description: 'Sheet row 6. BOM supplier organization becomes an Organization creator.'
+    sourcePath: metadata.supplier.name  
     targetPath: creationInfo.creators[]
     cardinality: one-to-one
     transform:

@@ -737,6 +737,12 @@ public class SbomUtilityServiceImpl implements SbomUtilityService {
 					}  else if (schemaType.equalsIgnoreCase(Constants.CDQ_CYDX1_6_LC)) {
 						versionFlag = SpecVersion.VersionFlag.V7;
 						schemaFileName = "/CDQcyclonedx_1.6.json";
+					} else if (schemaType.equalsIgnoreCase(Constants.AUTOMOTIVE_CYDX1_6_LC)) {
+						versionFlag = SpecVersion.VersionFlag.V7;
+						schemaFileName = "/automotive_cyclonedx_1.6.schema.json";
+					} else if (schemaType.equalsIgnoreCase(Constants.AUTOMOTIVE_SPDX2_3_LC)) {
+						versionFlag = SpecVersion.VersionFlag.V201909;
+						schemaFileName = "/automotive_spdx_2.3.schema.json";
 					} 
 					else if (schemaType.equalsIgnoreCase(Constants.CUSTOM)) {
 						String schemaJsonString = bomFilesInputModel.getSchemaJsonString();

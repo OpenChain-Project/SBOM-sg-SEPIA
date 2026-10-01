@@ -14,6 +14,7 @@ Required parameters declared by `automotive_cyclonedx_1.6.schema.json`.
 |              |              | phone               |           |           |
 |              | timestamp    |                    |           |           |
 |              | lifecycles   |                    |           |           |
+|              |              | phase               |           |           |
 |              | component    | name               |           |           |
 |              |              | type                |           |           |
 |              | supplier     | bom-ref             |           |           |

@@ -4,10 +4,11 @@
 
 | Category | Feature | Description |
 |---|---|---|
-| Input types | Upload SBOM File | User can upload an SBOM file in JSON format. Supported versions are:<br>• CycloneDX – v1.4<br>• SPDX – v2.3<br>• CDQ SPDX – v2.3<br>• CDQ CycloneDX – v1.6<br>• Custom Schema |
+| Input types | Upload SBOM File | User can upload an SBOM file in JSON format. Supported versions are:<br>• CycloneDX – v1.4<br>• SPDX – v2.3<br>• SEPIA SPDX – v2.3<br>• SEPIA CycloneDX – v1.6<br>• Custom Schema<br>• Automotive SPDX – v2.3<br>• Automotive CycloneDX – v1.6 |
 | Operations | Validate | Validate the uploaded SBOM against the corresponding schema. If no errors are found, the BOM is valid. Otherwise, the file is not valid and the errors or missing properties are displayed. |
 |            | Edit & Download | User can edit and download the SBOM in JSON/YAML format. |
 |            | Merge | Merge multiple valid SBOM files of the same schema type. |
+|            | Convert | Conversion between SEPIA CycloneDX v1.6 & SEPIA SPDX v2.3 SBOMs. |
 
 ---
 
@@ -19,9 +20,11 @@ Users can upload an SBOM file in JSON format. Supported schema type versions are
 
 - CycloneDX – v1.4
 - SPDX – v2.3
-- CDQ SPDX – v2.3
-- CDQ CycloneDX – v1.6
+- SEPIA SPDX – v2.3
+- SEPIA CycloneDX – v1.6
 - Custom Schema
+- Automotive CycloneDX – v1.6
+- Automotive SPDX – v2.3
 
 Click the **Validate** button after uploading the file. The uploaded SBOM is validated against the corresponding schema. If no errors are found, the BOM is valid. Otherwise, the file is not valid and the errors or missing properties are displayed.
 
@@ -56,18 +59,20 @@ curl --noproxy localhost \
 
 #### Parameters
 
-- **`API_PATH`** – Backend service hosted location.
+- **`API_PATH`** – Backend service hosted location
+  Example:
+  - `http://localhost:9053/uploadAndValidate\`
 
 - **`SELECT_SchemaType`** – Indicates the uploaded file schema type:
 
   | Value | Schema |
   |---|---|
-  | `cdqcydx` | CDQ CycloneDX v1.6 |
+  | `cdqcydx` | SEPIA CycloneDX v1.6 |
   | `cyclonedx` | CycloneDX v1.4 |
   | `spdx` | SPDX v2.3 |
-  | `cdqspdx2.3` | CDQ SPDX v2.3 |
+  | `cdqspdx2.3` | SEPIA SPDX v2.3 |
 
-- **`USER_NTID`** – User session identifier.
+- **`USER_NTID`** – User session identifier(Optional).
 
 - **`SBOM_File_Path`** – Path to the SBOM file to be uploaded.
 
@@ -111,7 +116,7 @@ curl --noproxy localhost \
   | `custom` | Custom Schema |
 
 
-- **`USER_NTID`** – User session identifier.
+- **`USER_NTID`** – User session identifier(Optional).
 
 - **`SBOM_File_Path`** – Path to the SBOM file to be uploaded.
 
@@ -152,13 +157,13 @@ Users can merge valid SBOMs of the same schema type.
 
 ![alt text](images/merge_result.png)
 
-#### CDQ – CycloneDX 1.6 Merge
+#### SEPIA – CycloneDX 1.6 Merge
 
 The user provides input component data, and the merged CycloneDX 1.6 SBOM is generated accordingly.
 
 ![alt text](images/cyclonedx_merge.png)
 
-#### CDQ – SPDX 2.3 Merge
+#### SEPIA – SPDX 2.3 Merge
 
 The user provides input component data. The user-input package SPDX ID establishes the `contains` relationship between each package in the input files.
 
@@ -180,18 +185,20 @@ curl --noproxy localhost \
 
 #### Parameters
 
-- **`API_PATH`** – Backend service hosted location (http://localhost:9053/validateAndMerge).
+- **`API_PATH`** – Backend service hosted location.
+  Example:
+   - 'http://localhost:9053/validateAndMerge'
 
 - **`SELECT_SchemaType`** – Indicates the uploaded file schema type:
 
   | Value | Schema |
   |---|---|
-  | `cdqcydx` | CDQ CycloneDX v1.6 |
+  | `cdqcydx` | SEPIA CycloneDX v1.6 |
   | `cyclonedx` | CycloneDX v1.4 |
   | `spdx` | SPDX v2.3 |
-  | `cdqspdx2.3` | CDQ SPDX v2.3 |
+  | `cdqspdx2.3` | SEPIA SPDX v2.3 |
 
-- **`USERID`** – User session identifier.
+- **`USERID`** – User session identifier(Optional).
 
 - **`SBOM_File_Path`** – Path to the SBOM files to be merged.
 
@@ -201,16 +208,16 @@ curl --noproxy localhost \
 
 | # | Schema Type   | Reference File        |
 |---|---------------|-----------------------|
-| 1 | cdqcydx       | CycloneDX1.6.json     |
+| 1 | cdqcydx       | SEPIA CycloneDX1.6.json     |
 | 2 | cyclonedx     | CycloneDX1.4.json     |
 | 3 | spdx          | Spdx2.3.json          |
-| 4 | cdqspdx2.3    | CDQ_Spdx2.3.json      |
+| 4 | cdqspdx2.3    | SEPIA_Spdx2.3.json      |
 
 ---
 
 ## Sample JSON Content
 
-### 1. cdqcydx (CycloneDX1.6.json)
+### 1. cdqcydx (SEPIA CycloneDX1.6.json)
 
 ```json
 {
@@ -322,7 +329,7 @@ curl --noproxy localhost \
 
 ---
 
-### 4. cdqspdx2.3 (CDQ_Spdx2.3.json)
+### 4. cdqspdx2.3 (SEPIA_Spdx2.3.json)
 
 ```json
 {
@@ -387,10 +394,10 @@ uploadAndValidate <SBOM_File_Path> <SELECT_SchemaType>
 
   | Value | Schema |
   |---|---|
-  | `cdqcydx` | CDQ CycloneDX v1.6 |
+  | `cdqcydx` | SEPIA CycloneDX v1.6 |
   | `cyclonedx` | CycloneDX v1.4 |
   | `spdx` | SPDX v2.3 |
-  | `cdqspdx2.3` | CDQ SPDX v2.3 |
+  | `cdqspdx2.3` | SEPIA SPDX v2.3 |
 
 ---
 
@@ -430,7 +437,7 @@ customValidate C:\test-data\A1bom.json C:\test-data\schema.json -o C:\test-data\
 
 ### 3. Convert SBOM.
 
-Users can convert valid SBOM of the CDQ CycloneDX v1.6, CDQ SPDX v2.3 schema type.
+Users can convert valid SBOM of the SEPIA CycloneDX v1.6, SEPIA SPDX v2.3 schema type.
 
 Click the Convert button on the valid file.
 
@@ -472,8 +479,8 @@ curl --noproxy localhost \
 
   | Value | Schema |
   |---|---|
-  | `cdqcydx` | CDQ CycloneDX v1.6 |
-  | `cdqspdx2.3` | CDQ SPDX v2.3 |
+  | `cdqcydx` | SEPIA CycloneDX v1.6 |
+  | `cdqspdx2.3` | SEPIA SPDX v2.3 |
 
 - **`SBOM_File_Path`** – Path to the SBOM file to be uploaded.
 

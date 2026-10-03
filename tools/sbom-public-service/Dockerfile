@@ -1,31 +1,25 @@
-# Stage 1: Build Java app with Maven
-FROM maven:3.8.6-openjdk-8
+# Stage 1: Build and run the Java application with Maven and Java 17
+FROM maven:3.9-eclipse-temurin-17
 
 WORKDIR /app
 
-# Copy pom.xml and download dependencies first (better caching)
+# Copy Maven configuration first for better dependency-layer caching
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy source and build JAR
+# Copy application source
 COPY src ./src
-RUN mvn clean install -DskipTests
 
-# Stage 2: Run Spring Boot app
-# FROM openjdk:8-jre-slim
+# Build the application
+RUN mvn clean package -DskipTests
 
-# WORKDIR /app
-
-# Copy JAR from build stage
-# COPY --from=build /app/target/sbom-public-*.jar app.jar
-
-# Create upload folder
+# Create the SBOM upload directory
 RUN mkdir -p /data/sbom
 
-# Set the sbom.upload.path property
+# Configure the SBOM upload path
 ENV SBOM_UPLOAD_PATH=/data/sbom
 
 EXPOSE 9051
 
-# ENTRYPOINT ["java", "-jar", "/app/target/sbom-public-*.jar", "--sbom.upload.path=/data/sbom"]
-ENTRYPOINT ["mvn", "spring-boot:run"]
+# Run the built Spring Boot application
+CMD ["sh", "-c", "java -jar target/sbom-utils-service-*.jar --sbom.upload.path=${SBOM_UPLOAD_PATH}"]

@@ -497,28 +497,34 @@ curl --noproxy localhost \
 ---
 ## Running the Application with Docker
 
-The application is packaged as two Docker services: a backend API and a public UI. Both services are defined in `compose.yaml` and can be started together using Docker Compose.
+The application is packaged as two Docker services: a backend API and a public UI. Both services are defined in `docker-compose.yaml` and can be started together using Docker Compose.
 
 ### Services
 
 | Service           | Image                          | Host Port | Container Port | Description                |
 |-------------------|--------------------------------|-----------|----------------|----------------------------|
-| sbom-backend      | mmq1cob737/sbom-backend        | 9053      | 9053           | Backend API service        |
-| sbom-public-ui    | mmq1cob737/sbom-public-ui      | 8080      | 80             | Public-facing web UI       |
+| sbom-backend      | sbom-backend        | 9051      | 9051           | Backend API service        |
+| sbom-public-ui    | sbom-public-ui      | 4200      | 4200             | Public-facing web UI       |
 
-### compose.yaml
+### docker-compose.yaml
 
 ```yaml
 services:
-  sbom-backend:
-    image: mmq1cob737/sbom-backend
+  backend:
+    build: ./tools/sbom-public-service
+    container_name: sbom-backend
     ports:
-      - "9053:9053"   # Adjust as needed
+      - "9051:9051"   # Adjust as needed
+    volumes:
+      - ./data/sbom:/data/sbom
 
-  sbom-public-ui:
-    image: mmq1cob737/sbom-public-ui
+  frontend:
+    build: ./tools/sbom-public-ui
+    container_name: sbom-frontend
     ports:
-      - "8080:80"   # Adjust as needed
+      - "4200:4200"  # Adjust as needed
+    depends_on:
+      - backend
 ```
 
 ### Prerequisites
@@ -528,25 +534,20 @@ services:
 
 ### Steps to Run
 
-1. Navigate to the directory containing `compose.yaml`:
+1. Clone the repository from github and navigate to the directory containing `docker-compose.yaml`:
 
    ```bash
-   cd C:\Users\Docker
+   Example :
+       cd C:\Users\SBOM-sg-SEPIA
    ```
 
-2. Pull the latest images:
+2. Start the services:
 
    ```bash
-   docker compose pull
+   docker compose up --pull always
    ```
 
-3. Start the services in detached mode:
-
-   ```bash
-   docker compose up -d
-   ```
-
-4. Verify the running containers:
+3. Verify the running containers:
 
    ```bash
    docker compose ps
@@ -556,8 +557,8 @@ services:
 
 | Component        | URL                       |
 |------------------|---------------------------|
-| Public UI        | http://localhost:8080/sbom-utils-ui/#/     |
-| Backend API      | http://localhost:9053     |
+| Public UI        | http://localhost:4200/#/     |
+| Backend API      | http://localhost:9051/health     |
 
 ### Stopping the Application
 

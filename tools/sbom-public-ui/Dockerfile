@@ -1,23 +1,25 @@
 # Stage 1: Build Angular app
-FROM node:20-bullseye
+FROM node:20-bookworm
 
-# Update system packages to patch vulnerabilities
-RUN apt-get update && apt-get upgrade -y && apt-get clean
+# Update package indexes and upgrade system packages
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy the rest of the project
+# Copy application source
 COPY . .
 
-# Build Angular app
-# RUN npx ng serve
-
+# Expose Angular development server port
 EXPOSE 4200
 
+# Start Angular application
 CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "4200"]

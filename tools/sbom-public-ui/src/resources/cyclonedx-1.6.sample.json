@@ -61,7 +61,35 @@
       "bom-ref": "",
       "name": "",
       "version": "",
-      "purl": ""
+      "purl": "",
+      "supplier": {
+        "name": "",
+        "url": [],
+        "contact": []
+      },
+      "authors": [
+        {
+          "name": "",
+          "email": "",
+          "phone": ""
+        }
+      ],
+      "description": "",
+      "copyright": "",
+      "hashes": [
+        {
+          "alg": "",
+          "content": ""
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "",
+            "name": ""
+          }
+        }
+      ]
     },
     "manufacturer": {
       "name": "",
@@ -159,7 +187,7 @@
         "url": [],
         "contact": []
       },
-      "author": "",
+      "authors": "",
       "publisher": "",
       "group": "",
       "name": "",
@@ -319,6 +347,14 @@
         {
           "name": "spdx:package:source-info",
           "value": ""
+        },
+        {
+          "name": "spdx:relationship:relationshipType",
+          "value": ""
+        },
+        {
+          "name": "spdx:licenseInfoFromFiles",
+          "value": ""
         }
       ],
       "components": [],
@@ -355,6 +391,7 @@
     },
     {
       "type": "file",
+      "bom-ref": "",
       "properties": [
         {
           "name": "spdx:spdxid",
@@ -402,6 +439,23 @@
         {
           "alg": "",
           "content": ""
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "",
+            "name": "",
+            "url": ""
+          },
+          "expression": ""
+        }
+      ],
+      "authors": [
+        {
+          "name": "",
+          "email": "",
+          "organization": ""
         }
       ]
     }
@@ -517,10 +571,10 @@
       "bom-ref": "",
       "subjects": [],
       "annotator": {
-        "organization": {},
-        "individual": {},
-        "component": {},
-        "service": {}
+        "organization": {"name": ""},
+        "individual": {"name": ""},
+        "component": {"name": ""},
+        "service": {"name": ""}
       },
       "timestamp": "",
       "text": ""

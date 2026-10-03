@@ -101,9 +101,11 @@ SPDX-License-Identifier: MIT -->
                             <span *ngIf="fileToEdit.schemaType == 'spdx'">SPDX V2.3</span>
                             <span *ngIf="fileToEdit.schemaType == 'spdx2.2'">SPDX V2.2</span>
                             <span *ngIf="fileToEdit.schemaType == 'cyclonedx'">CycloneDX V1.4</span>
-                            <span *ngIf="fileToEdit.schemaType == 'cdqspdx2.3'">CDQ SPDX V2.3</span>
-                            <span *ngIf="fileToEdit.schemaType == 'cdqcydx'">CDQ CycloneDX V1.6</span>
-                            <span *ngIf="fileToEdit.schemaType != 'spdx' && fileToEdit.schemaType != 'spdx2.2' && fileToEdit.schemaType != 'cyclonedx' && fileToEdit.schemaType != 'cdqspdx2.3' && fileToEdit.schemaType != 'cdqcydx'">
+                            <span *ngIf="fileToEdit.schemaType == 'cdqspdx2.3'">SEPIA SPDX V2.3</span>
+                            <span *ngIf="fileToEdit.schemaType == 'cdqcydx'">SEPIA CycloneDX V1.6</span>
+                            <span *ngIf="fileToEdit.schemaType == 'automotivecydx1.6'">Automotive CycloneDX V1.6</span>
+                            <span *ngIf="fileToEdit.schemaType == 'automotivespdx2.3'">Automotive SPDX V2.3</span>
+                            <span *ngIf="fileToEdit.schemaType != 'spdx' && fileToEdit.schemaType != 'spdx2.2' && fileToEdit.schemaType != 'cyclonedx' && fileToEdit.schemaType != 'cdqspdx2.3' && fileToEdit.schemaType != 'cdqcydx'&& fileToEdit.schemaType != 'automotivecydx1.6' && fileToEdit.schemaType != 'automotivespdx2.3'">
                               {{ fileToEdit.schemaType | uppercase }} 1.0
                             </span>
                         </div>
@@ -294,7 +296,7 @@ SPDX-License-Identifier: MIT -->
 <ng-template #mergeModal let-close="close" position="top">
     <div class="merge-width">
         <div class="row">
-            <h4>{{ mergeType | uppercase }} Merge</h4>
+            <h4>Merge</h4>
         </div>
         <!-- SPDX -->
         <div [hidden]="(mergeType == 'cyclonedx' || mergeType == 'cdqcydx' || mergeType == 'cdqspdx2.3')">
@@ -365,10 +367,10 @@ SPDX-License-Identifier: MIT -->
             </div>
 
         </div>
-        <!-- CDQ SPDX 2.3 -->
+        <!-- SEPIA SPDX 2.3 -->
         <div [hidden]="(mergeType == 'cyclonedx' || mergeType == 'cdqcydx' || mergeType == 'spdx')">
             <div class="row">
-                <h4 style="font-size: 20px;">CDQ Package Information</h4>
+                <h4 style="font-size: 20px;">SEPIA Package Information</h4>
             </div>
             <div class="row">
                 <div class="col-md-3">
@@ -550,10 +552,10 @@ SPDX-License-Identifier: MIT -->
                 </div>
             </div>
         </div>
-        <!--CDQ CycloneDX 1.6-->
+        <!--SEPIA CycloneDX 1.6-->
         <div [hidden]="(mergeType == 'spdx' || mergeType == 'cdqspdx2.3' || mergeType == 'cyclonedx')">
             <div class="row">
-              <h4 style="font-size: 20px;">CDQ CycloneDX Metadata</h4>
+              <h4 style="font-size: 20px;">SEPIA CycloneDX Metadata</h4>
             </div>
             <div class="row">
                 <div class="col-md-3">
@@ -686,7 +688,7 @@ SPDX-License-Identifier: MIT -->
                   </div>
                 </div>
             </div>
-            <!-- CDQ Metadata License Information
+            <!-- SEPIA Metadata License Information
             <div class="row">
               <div class="col-md-3">
                  <label for="merge_license_info_type" class="form-label">Metadata License Information Type</label>
@@ -774,7 +776,7 @@ SPDX-License-Identifier: MIT -->
           <input type="file" class="form-control" style="border: 1px solid black; border-radius: 4px;" id="sbomFile"
             accept=".json" (change)="uploadFile(inputForm, false,$event)" [(ngModel)]="fileToUpload.sbomFile" name="sbomFile"
             #fileInput>
-          <div *ngIf="fileName" style="margin-top: 5px; color: gray;">
+          <div *ngIf="fileName" style="margin-top: 5px; color: rgb(14, 14, 14); font-weight: bold;">
             Selected File: {{ fileName }}
           </div>
           <div *ngIf="!fileName" class="text-danger">
@@ -801,7 +803,7 @@ SPDX-License-Identifier: MIT -->
               <input type="file" class="form-control" style="border: 1px solid black; border-radius: 4px;" id="schemaFile"
                 accept=".json" (change)="uploadFile(inputForm, true,$event)" [(ngModel)]="fileToUpload.schemaFile" name="schemaFile"
                 multiple>
-                <div *ngIf="schemafileName" style="margin-top: 5px; color: gray;">
+                <div *ngIf="schemafileName" style="margin-top: 5px; color: rgb(15, 15, 15)10, 10, 10); font-weight: bold;">
                   Selected Schema File: {{ schemafileName }}
                 </div>
                 <div *ngIf="!schemafileName" class="text-danger">
@@ -867,9 +869,11 @@ SPDX-License-Identifier: MIT -->
                          <span *ngIf="item.schemaType == 'spdx'">SPDX V2.3</span>
                          <span *ngIf="item.schemaType == 'spdx2.2'">SPDX V2.2</span>
                          <span *ngIf="item.schemaType == 'cyclonedx'">CycloneDX V1.4</span>
-                         <span *ngIf="item.schemaType == 'cdqcydx'">CDQ CycloneDX V1.6</span>
-                         <span *ngIf="item.schemaType == 'cdqspdx2.3'">CDQ SPDX V2.3</span>
-                         <span *ngIf="item.schemaType != 'spdx' && item.schemaType != 'spdx2.2' && item.schemaType != 'cyclonedx' && item.schemaType != 'cdqcydx' && item.schemaType != 'cdqspdx2.3'">
+                         <span *ngIf="item.schemaType == 'cdqcydx'">SEPIA CycloneDX V1.6</span>
+                         <span *ngIf="item.schemaType == 'cdqspdx2.3'">SEPIA SPDX V2.3</span>
+                         <span *ngIf="item.schemaType == 'automotivecydx1.6'">Automotive CycloneDX V1.6</span>
+                         <span *ngIf="item.schemaType == 'automotivespdx2.3'">Automotive SPDX V2.3</span>
+                         <span *ngIf="item.schemaType != 'spdx' && item.schemaType != 'spdx2.2' && item.schemaType != 'cyclonedx' && item.schemaType != 'cdqcydx' && item.schemaType != 'cdqspdx2.3' && item.schemaType != 'automotivecydx1.6' && item.schemaType != 'automotivespdx2.3'">
                           {{ item.schemaType | uppercase }} 1.0
                          </span>
                     </td>

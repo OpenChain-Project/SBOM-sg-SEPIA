@@ -83,6 +83,59 @@
       "SPDXID": "",
       "annotations": [
         {
+          "comment": "",
+          "annotationDate": "",
+          "annotationType": "",
+          "annotator": ""
+        }
+      ],
+      "filesAnalyzed": false,
+      "licenseComments": "",
+      "packageFileName": "",
+      "licenseConcluded": "",
+      "builtDate": "",
+      "releaseDate": "",
+      "validUntilDate": "",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "",
+        "packageVerificationCodeExcludedFiles": []
+      },
+      "summary": "",
+      "comment": "",
+      "licenseInfoFromFiles": [
+        ""
+      ],
+      "licenseDeclared": "",
+      "primaryPackagePurpose": "",
+      "originator": "",
+      "supplier": "",
+      "attributionTexts": [
+        ""
+      ],
+      "checksums": [
+        {
+          "algorithm": "",
+          "checksumValue": ""
+        }
+      ]
+    },
+    {
+      "sourceInfo": "",
+      "externalRefs": [
+        {
+          "referenceLocator": "",
+          "referenceType": ""
+        }
+      ],
+      "downloadLocation": "",
+      "homepage": "",
+      "name": "",
+      "versionInfo": "",
+      "description": "",
+      "copyrightText": "",
+      "SPDXID": "",
+      "annotations": [
+        {
           "comment": ""
         }
       ],

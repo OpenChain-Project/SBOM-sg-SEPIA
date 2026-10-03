@@ -428,6 +428,66 @@ customValidate C:\test-data\A1bom.json C:\test-data\schema.json -o C:\test-data\
 ```
 ---
 
+### 3. Convert SBOM.
+
+Users can convert valid SBOM of the CDQ CycloneDX v1.6, CDQ SPDX v2.3 schema type.
+
+Click the Convert button on the valid file.
+
+![alt text](images/convert.png)
+
+The following message box will displaying for getting the User confirmation.
+
+![alt text](images/ConvertMsgbox.png)
+
+Once the User select ok the Converted SBOM and related information like Errors List, Change Log, Rule Violation List, Conversion Logs can be View.
+
+![alt text](images/ConvertedSbom.png)
+
+Conversion Rules are predefined in the .Yaml files. The rule information details during the conversion are displayed in the Rule Violation List
+
+![alt text](images/rule_violation_list.png)
+
+Conversion log details are displayed in the Conversion Logs
+
+![alt text](images/conversion_logs.png)
+---
+
+### 2. Convert SBOM File via `curl`
+
+
+```bash
+curl --noproxy localhost \
+     --location "API_PATH" \
+     --form "postData={\"schemaType\":\"SELECT_SchemaType\"}" \
+     --form "file=@SBOM_File_Path"
+```
+
+#### Parameters
+- **`API_PATH`** – Backend service hosted location.
+  Example:
+  - `http://localhost:9053/validateAndConvert`
+
+- **`SELECT_SchemaType`** – Indicates the uploaded file schema type:
+
+  | Value | Schema |
+  |---|---|
+  | `cdqcydx` | CDQ CycloneDX v1.6 |
+  | `cdqspdx2.3` | CDQ SPDX v2.3 |
+
+- **`SBOM_File_Path`** – Path to the SBOM file to be uploaded.
+
+---
+
+#### Example
+```bash
+curl --noproxy localhost \
+     --location "http://localhost:9053/validateAndConvert\" \
+     --form "postData={\"schemaType\":\"cdqcydx"}" \
+     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json"
+```
+
+---
 ## Running the Application with Docker
 
 The application is packaged as two Docker services: a backend API and a public UI. Both services are defined in `compose.yaml` and can be started together using Docker Compose.

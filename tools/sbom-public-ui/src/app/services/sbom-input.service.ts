@@ -1236,14 +1236,24 @@ export class SbomInputService {
     },
     {
       "value": "cdqspdx2.3",
-      "label": "CDQ - SPDX V2.3",
+      "label": "SEPIA - SPDX V2.3",
       "version": "2.3"
     },
     {
       "value": "cdqcydx",
-      "label": "CDQ - CycloneDX V1.6",
+      "label": "SEPIA - CycloneDX V1.6",
       "version": "1.6"
-    }
+    },
+    {
+      "value": "automotivecydx1.6",
+      "label": "Automotive - CycloneDX V1.6",
+      "version": "1.6"
+    },
+    {
+      "value": "automotivespdx2.3",
+      "label": "Automotive - SPDX V2.3",
+      "version": "2.3"
+    },
   ]
 
   licenseInfoTypes: any = [

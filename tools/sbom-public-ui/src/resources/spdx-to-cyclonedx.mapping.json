@@ -2,415 +2,458 @@
   {
     "id": 1,
     "section": "document",
-    "source": "document.SPDXID",
-    "target": "bom.metadata.properties[0].[name:\"spdx:spdxid\"]"
-  },
-  {
-    "id": 2,
-    "section": "document",
-    "source": "document.spdxVersion",
-    "target": "bom.metadata.properties[1].[name:\"spdx:document:spdx-version\"]"
-  },
-  {
-    "id": 3,
-    "section": "document",
-    "source": "document.comment",
-    "target": "bom.metadata.properties[2].[name:\"spdx:document:spdx:comment\"]"
-  },
-  {
-    "id": 4,
-    "section": "document",
-    "source": "document.name",
-    "target": "bom.metadata.properties[3].[name:\"spdx:document:name\"]"
-  },
-  {
-    "id": 5,
-    "section": "document",
     "source": "document.documentNamespace",
     "target": "bom.serialNumber"
   },
   {
-    "id": 6,
-    "section": "document",
-    "source": "document.creationInfo.comment",
-    "target": "bom.metadata.properties[5].[name:\"spdx:creation-info:comment\"]"
-  },
-  {
-    "id": 7,
+    "id": 2,
     "section": "document",
     "source": "document.creationInfo.created",
     "target": "bom.metadata.timestamp"
   },
   {
-    "id": 8,
+    "id": 3,
     "section": "document",
-    "source": "document.creationInfo.licenseListVersion",
-    "target": "bom.metadata.properties[6].[name:\"spdx:creation-info:license-list-version\"]"
+    "source": "document.creationInfo.creators.[0]",
+    "target": "bom.metadata.supplier.name"
   },
   {
-    "id": 9,
+    "id": 4,
     "section": "document",
-    "source": "document.externalDocumentRefs[0].checksum.algorithm",
-    "target": "bom.externalReferences[0].hashes[0].alg"
+    "source": "document.creationInfo.creators.[0]",
+    "target": "bom.metadata.manufacturer.name"
   },
   {
-    "id": 10,
-    "section": "document",
-    "source": "document.externalDocumentRefs[0].checksum.checksumValue",
-    "target": "bom.externalReferences[0].hashes[0].content"
-  },
-  {
-    "id": 11,
-    "section": "document",
-    "source": "document.externalDocumentRefs[0].externalDocumentId",
-    "target": "bom.externalReferences[0].comment"
-  },
-  {
-    "id": 12,
-    "section": "document",
-    "source": "document.externalDocumentRefs[0].spdxDocument",
-    "target": "bom.externalReferences[0].url"
-  },
-  {
-    "id": 13,
-    "section": "document",
-    "source": "document.documentDescribes[0]",
-    "target": "bom.metadata.properties[11].[name:\"spdx:document:describes\"]"
-  },
-  {
-    "id": 14,
-    "section": "package-component",
-    "source": "document.packages[0].name",
-    "target": "bom.components[0].name"
-  },
-  {
-    "id": 15,
-    "section": "package-component",
-    "source": "document.packages[0].versionInfo",
-    "target": "bom.components[0].version"
-  },
-  {
-    "id": 16,
-    "section": "package-component",
-    "source": "document.packages[0].copyrightText",
-    "target": "bom.components[0].copyright"
-  },
-  {
-    "id": 17,
-    "section": "package-component",
-    "source": "document.packages[0].description",
-    "target": "bom.components[0].description"
-  },
-  {
-    "id": 18,
-    "section": "package-component",
-    "source": "document.packages[0].SPDXID",
-    "target": "bom.components[0].properties[0].[name:\"packages:spdxid\"]"
-  },
-  {
-    "id": 19,
-    "section": "package-component",
-    "source": "document.packages[0].filesAnalyzed",
-    "target": "bom.components[0].properties[1].[name:\"spdx:files-analyzed\"]"
-  },
-  {
-    "id": 20,
-    "section": "package-component",
-    "source": "document.packages[0].licenseComments",
-    "target": "bom.components[0].properties[2].[name:\"spdx:license-comments\"]"
-  },
-  {
-    "id": 21,
-    "section": "package-component",
-    "source": "document.packages[0].licenseConcluded",
-    "target": "bom.components[0].properties[3].[name:\"spdx:license-concluded\"]"
-  },
-  {
-    "id": 22,
-    "section": "package-component",
-    "source": "document.packages[0].packageFileName",
-    "target": "bom.components[0].properties[4].[name:\"spdx:package:file-name\"]"
-  },
-  {
-    "id": 23,
-    "section": "package-component",
-    "source": "document.packages[0].packageVerificationCode.packageVerificationCodeValue",
-    "target": "bom.components[0].properties[5].[name:\"spdx:package:verification-code:value\"]"
-  },
-  {
-    "id": 24,
-    "section": "package-component",
-    "source": "document.packages[0].packageVerificationCode.packageVerificationCodeExcludedFiles[]",
-    "target": "bom.components[0].properties[6].[name:\"spdx:package:verification-code:excluded-file\"]"
-  },
-  {
-    "id": 25,
-    "section": "package-component",
-    "source": "document.packages[0].sourceInfo",
-    "target": "bom.components[0].properties[7].[name:\"spdx:package:source-info\"]"
-  },
-  {
-    "id": 26,
-    "section": "package-component",
-    "source": "document.packages[0].summary",
-    "target": "bom.components[0].properties[8].[name:\"spdx:package:summary\"]"
-  },
-  {
-    "id": 27,
-    "section": "package-component",
-    "source": "document.packages[0].comment",
-    "target": "bom.components[0].properties[9].[name:\"spdx:comment\"]"
-  },
-  {
-    "id": 28,
-    "section": "package-component",
-    "source": "document.packages[0].builtDate",
-    "target": "bom.components[0].properties[10].[name:\"spdx:package:built-date\"]"
-  },
-  {
-    "id": 29,
-    "section": "package-component",
-    "source": "document.packages[0].releaseDate",
-    "target": "bom.components[0].properties[11].[name:\"spdx:package:release-date\"]"
-  },
-  {
-    "id": 30,
-    "section": "package-component",
-    "source": "document.packages[0].validUntilDate",
-    "target": "bom.components[0].properties[12].[name:\"spdx:package:valid-until-date\"]"
-  },
-  {
-    "id": 31,
-    "section": "package-component",
-    "source": "document.packages[0].primaryPackagePurpose",
-    "target": "bom.components[0].type"
-  },
-  {
-    "id": 32,
-    "section": "package-component",
-    "source": "document.packages[0].licenseInfoFromFiles[0]",
-    "target": "bom.components[0].evidence.licenses[0].license.id"
-  },
-  {
-    "id": 33,
-    "section": "package-component",
-    "source": "document.packages[0].licenseDeclared",
-    "target": "bom.components[0].properties[13].[name:\"spdx:license-declared\"]"
-  },
-  {
-    "id": 34,
-    "section": "package-component",
-    "source": "document.packages[0].licenseDeclared",
-    "target": "bom.components[0].licenses[0].expression"
-  },
-  {
-    "id": 35,
-    "section": "package-component",
-    "source": "document.packages[0].originator",
-    "target": "bom.components[0].properties[14].[name:\"spdx:package:originator\"]"
-  },
-  {
-    "id": 36,
-    "section": "package-component",
-    "source": "document.packages[0].supplier",
-    "target": "bom.components[0].properties[15].[name:\"spdx:package:supplier\"]"
-  },
-  {
-    "id": 37,
-    "section": "package-component",
-    "source": "document.packages[0].attributionTexts[0]",
-    "target": "bom.components[0].evidence.copyright[0].text"
-  },
-  {
-    "id": 38,
-    "section": "package-component",
-    "source": "document.packages[0].checksums[0]",
-    "target": "bom.components[0].hashes[0]"
-  },
-  {
-    "id": 39,
-    "section": "package-component",
-    "source": "document.packages[0].externalRefs[0].referenceLocator",
-    "target": "bom.components[0].purl"
-  },
-  {
-    "id": 40,
-    "section": "package-component",
-    "source": "document.packages[0].externalRefs[0].referenceType",
-    "target": "bom.components[0].cpe"
-  },
-  {
-    "id": 41,
-    "section": "package-component",
-    "source": "document.packages[0].downloadLocation",
-    "target": "bom.components[0].properties[16].[name:\"spdx:download-location\"]"
-  },
-  {
-    "id": 42,
-    "section": "package-component",
-    "source": "document.packages[0].homepage",
-    "target": "bom.components[0].properties[17].[name:\"spdx:homepage\"]"
-  },
-  {
-    "id": 43,
-    "section": "file-component",
-    "source": "document.files[0].fileName",
-    "target": "bom.components[1].name"
-  },
-  {
-    "id": 44,
-    "section": "file-component",
-    "source": "file kind",
-    "target": "bom.components[1].type = file"
-  },
-  {
-    "id": 45,
-    "section": "file-component",
-    "source": "document.files[0].copyrightText",
-    "target": "bom.components[1].copyright"
-  },
-  {
-    "id": 46,
-    "section": "file-component",
-    "source": "document.files[0].SPDXID",
-    "target": "bom.components[1].properties[0].[name:\"spdx:spdxid\"]"
-  },
-  {
-    "id": 47,
-    "section": "file-component",
-    "source": "document.files[0].comment",
-    "target": "bom.components[1].properties[1].[name:\"spdx:comment\"]"
-  },
-  {
-    "id": 48,
-    "section": "file-component",
-    "source": "document.files[0].fileTypes[0]",
-    "target": "bom.components[1].properties[2].[name:\"spdx:file:type\"]"
-  },
-  {
-    "id": 49,
-    "section": "file-component",
-    "source": "document.files[0].licenseComments",
-    "target": "bom.components[1].properties[3].[name:\"spdx:license-comments\"]"
-  },
-  {
-    "id": 50,
-    "section": "file-component",
-    "source": "document.files[0].licenseConcluded",
-    "target": "bom.components[1].properties[4].[name:\"spdx:license-concluded\"]"
-  },
-  {
-    "id": 51,
-    "section": "file-component",
-    "source": "document.files[0].fileContributors[0]",
-    "target": "bom.components[1].properties[5].[name:\"spdx:file:contributor\"]"
-  },
-  {
-    "id": 52,
-    "section": "file-component",
-    "source": "document.files[0].noticeText",
-    "target": "bom.components[1].properties[6].[name:\"spdx:file:notice-text\"]"
-  },
-  {
-    "id": 53,
-    "section": "file-component",
-    "source": "document.files[0].attributionTexts[0]",
-    "target": "bom.components[1].evidence.copyright[0].text"
-  },
-  {
-    "id": 54,
-    "section": "file-component",
-    "source": "document.files[0].checksums[0]",
-    "target": "bom.components[1].hashes[0]"
-  },
-  {
-    "id": 55,
-    "section": "document",
-    "source": "document.annotations[0].comment",
-    "target": "bom.metadata.properties[12].[name:\"annotations.comment\"]"
-  },
-  {
-    "id": 56,
-    "section": "document",
-    "source": "document.annotations[0].annotator",
-    "target": "bom.metadata.properties[13].[name:\"annotations.annotator\"]"
-  },
-  {
-    "id": 57,
-    "section": "document",
-    "source": "document.annotations[0].annotationType",
-    "target": "bom.metadata.properties[14].[name:\"annotations.annotationType\"]"
-  },
-  {
-    "id": 58,
-    "section": "document",
-    "source": "document.annotations[0].annotationDate",
-    "target": "bom.metadata.properties[15].[name:\"annotations.annotationDate\"]"
-  },
-  {
-    "id": 59,
-    "section": "package-component",
-    "source": "document.packages[0].annotations[0].comment",
-    "target": "bom.components[0].properties[18].[name:\"spdx:annotation.comment\"]"
-  },
-  {
-    "id": 60,
-    "section": "file-component",
-    "source": "document.files[0].annotations[0].comment",
-    "target": "bom.components[1].properties[7].[name:\"spdx:file:annotation.comment\"]"
-  },
-  {
-    "id": 61,
-    "section": "package-component",
-    "source": "document.packages[0].externalRefs[0].referenceLocator",
-    "target": "bom.components[0].properties[19].[name:\"spdx:external-reference\"]"
-  },
-  {
-    "id": 62,
+    "id": 5,
     "section": "document",
     "source": "document.creationInfo.creators[1]",
     "target": "bom.metadata.authors[0].name"
   },
   {
-    "id": 63,
-    "section": "document",
-    "source": "document.creationInfo.creators[0]",
-    "target": "bom.metadata.supplier.name"
-  },
-  {
-    "id": 64,
+    "id": 6,
     "section": "document",
     "source": "document.creationInfo.creators[2]",
     "target": "bom.metadata.tools.components[0].name"
   },
   {
-    "id": 65,
-    "section": "document",
-    "source": "document.creationInfo.creators[0]",
-    "target": "bom.metadata.manufacturer.name"
-  },
-  {
-    "id": 66,
+    "id": 7,
     "section": "document",
     "source": "document.documentDescribes[0]",
     "target": "bom.metadata.component.name"
   },
   {
-    "id": 67,
+    "id": 8,
+    "section": "package-component",
+    "source": "document.packages[0].name",
+    "target": "bom.components[0].name"
+  },
+  {
+    "id": 9,
+    "section": "package-component",
+    "source": "document.packages[0].versionInfo",
+    "target": "bom.components[0].version"
+  },
+  {
+    "id": 10,
+    "section": "package-component",
+    "source": "document.packages[0].primaryPackagePurpose",
+    "target": "bom.components[0].type"
+  },
+  {
+    "id": 11,
+    "section": "package-component",
+    "source": "document.packages[0].externalRefs[0].referenceLocator",
+    "target": "bom.components[0].purl"
+  },
+  {
+    "id": 12,
+    "section": "package-component",
+    "source": "document.packages[0].externalRefs[0].referenceLocator",
+    "target": "bom.components[0].cpe"
+  },
+  {
+    "id": 13,
+    "section": "package-component",
+    "source": "document.packages[0].externalRefs[0].referenceLocator",
+    "target": "bom.components[0].properties[19].[name:\"spdx:external-reference\"]"
+  },
+  {
+    "id": 14,
     "section": "document",
     "source": "document.relationships[0].spdxElementId",
     "target": "bom.dependencies[0].ref"
   },
   {
-    "id": 68,
+    "id": 15,
     "section": "document",
     "source": "document.relationships[0].relatedSpdxElement",
     "target": "bom.dependencies[0].dependsOn[0]"
   },
   {
-    "id": 69,
+    "id": 16,
+    "section": "document",
+    "source": "document.relationships[0].relatedSpdxElement",
+    "target": "bom.components.[0].properties[24].[name:\"spdx:relationship:relationshipType\"]"
+  },
+  {
+    "id": 17,
+    "section": "package-component",
+    "source": "document.relationships[0].relationshipType",
+    "target": "bom.components.[0].properties[24].[name:\"spdx:relationship:relationshipType\"]"
+  },
+  {
+    "id": 18,
     "section": "document",
     "source": "document.dataLicense",
     "target": "bom.metadata.licenses[0].license.id"
+  },
+  {
+    "id": 19,
+    "section": "package-component",
+    "source": "document.externalDocumentRefs.[0].spdxDocument",
+    "target": "bom.externalReferences.[0].url"
+  },
+  {
+    "id": 20,
+    "section": "package-component",
+    "source": "document.externalDocumentRefs.[0].externalDocumentId",
+    "target": "bom.externalReferences.[0].comment"
+  },
+  {
+    "id": 21,
+    "section": "package-component",
+    "source": "document.externalDocumentRefs.[0].checksum.algorithm",
+    "target": "bom.externalReferences.[0].hashes.[0].alg"
+  },
+  {
+    "id": 22,
+    "section": "package-component",
+    "source": "document.externalDocumentRefs.[0].checksum.checksumValue",
+    "target": "bom.externalReferences.[0].hashes.[0].content"
+  },
+  {
+    "id": 23,
+    "section": "document",
+    "source": "document.annotations[0].annotator",
+    "target": "bom.annotations.[0].annotator"
+  },
+  {
+    "id": 24,
+    "section": "package-component",
+    "source": "document.annotations[0].annotationDate",
+    "target": "bom.annotations.[0].timestamp"
+  },
+  {
+    "id": 25,
+    "section": "package-component",
+    "source": "document.annotations[0].annotationType",
+    "target": "bom.annotations.[0].text"
+  },
+  {
+    "id": 26,
+    "section": "package-component",
+    "source": "document.annotations[0].comment",
+    "target": "bom.annotations.[0].text"
+  },
+  {
+    "id": 27,
+    "section": "document",
+    "source": "document.name",
+    "target": "bom.properties"
+  },
+  {
+    "id": 28,
+    "section": "document",
+    "source": "document.comment",
+    "target": "bom.properties"
+  },
+  {
+    "id": 29,
+    "section": "document",
+    "source": "document.creationInfo.comment",
+    "target": "bom.properties"
+  },
+  {
+    "id": 30,
+    "section": "document",
+    "source": "document.creationInfo.licenseListVersion",
+    "target": "bom.properties"
+  },
+
+  {
+    "id": 31,
+    "section": "package-component",
+    "source": "document.packages.[0].SPDXID",
+    "target": "bom.components.[0].bom-ref"
+  },
+  {
+    "id": 33,
+    "section": "package-component",
+    "source": "document.packages.[0].checksums.[0].algorithm",
+    "target": "bom.components.[0].hashes.[0].alg"
+  },
+  {
+    "id": 34,
+    "section": "package-component",
+    "source": "document.packages.[0].checksums.[0].checksumValue",
+    "target": "bom.components.[0].hashes.[0].content"
+  },
+  {
+    "id": 35,
+    "section": "package-component",
+    "source": "document.packages[0].copyrightText",
+    "target": "bom.components[0].copyright"
+  },
+  {
+    "id": 36,
+    "section": "package-component",
+    "source": "document.packages[0].description",
+    "target": "bom.components[0].description"
+  },
+  {
+    "id": 37,
+    "section": "package-component",
+    "source": "document.packages[0].downloadLocation",
+    "target": "bom.components[0].externalReferences"
+  },
+  {
+    "id": 38,
+    "section": "package-component",
+    "source": "document.packages[0].homepage",
+    "target": "bom.components[0].externalReferences"
+  },
+  {
+    "id": 39,
+    "section": "package-component",
+    "source": "document.packages.[0].licenseConcluded",
+    "target": "bom.components.[0].licenses.[0].expression"
+  },
+  {
+    "id": 40,
+    "section": "package-component",
+    "source": "document.packages.[0].licenseDeclared",
+    "target": "bom.components.[0].properties.[13].name"
+  },
+  {
+    "id": 41,
+    "section": "package-component",
+    "source": "document.packages.[0].licenseInfoFromFiles.[0]",
+    "target": "bom.components.[0].properties.[25].name"
+  },
+  {
+    "id": 42,
+    "section": "package-component",
+    "source": "document.packages.[0].originator",
+    "target": "bom.components.[0].authors"
+  },
+  {
+    "id": 43,
+    "section": "package-component",
+    "source": "document.packages.[0].originator",
+    "target": "bom.components.[0].publisher"
+  },
+  {
+    "id": 44,
+    "section": "package-component",
+    "source": "document.packages.[0].supplier",
+    "target": "bom.components.[0].supplier.name"
+  },
+  {
+    "id": 45,
+    "section": "package-component",
+    "source": "document.packages.[0].SPDXID",
+    "target": "bom.annotations.[0].subjects"
+  },
+  {
+    "id": 46,
+    "section": "package-component",
+    "source": "document.packages.[0].annotations.[0].comment",
+    "target": "bom.annotations.[0].text"
+  },
+  {
+    "id": 47,
+    "section": "package-component",
+    "source": "document.packages.[0].annotations.[0].annotator",
+    "target": "bom.annotations.[0].annotator"
+  },
+  {
+    "id": 48,
+    "section": "package-component",
+    "source": "document.packages.[0].annotations.[0].annotationDate",
+    "target": "bom.annotations.[0].timestamp"
+  },
+  {
+    "id": 49,
+    "section": "package-component",
+    "source": "document.packages.[0].annotations.[0].annotationType",
+    "target": "bom.annotations.[0].text"
+  },
+  {
+    "id": 50,
+    "section": "package-component",
+    "source": "document.packages.[0].comment",
+    "target": "bom.properties"
+  },
+  {
+    "id": 51,
+    "section": "package-component",
+    "source": "document.packages.[0].licenseComments",
+    "target": "bom.properties"
+  },
+  {
+    "id": 52,
+    "section": "package-component",
+    "source": "document.packages.[0].sourceInfo",
+    "target": "bom.properties"
+  },
+  {
+    "id": 53,
+    "section": "package-component",
+    "source": "document.packages.[0].packageFileName",
+    "target": "bom.properties"
+  },
+  {
+    "id": 54,
+    "section": "package-component",
+    "source": "document.packages.[0].builtDate",
+    "target": "bom.properties"
+  },
+  {
+    "id": 55,
+    "section": "package-component",
+    "source": "document.packages.[0].attributionTexts.[0]",
+    "target": "bom.properties"
+  },
+ {
+    "id": 56,
+    "section": "package-component",
+    "source": "document.packages.[0].releaseDate",
+    "target": "bom.properties"
+  },
+  {
+    "id": 57,
+    "section": "package-component",
+    "source": "document.packages.[0].validUntilDate",
+    "target": "bom.properties"
+  },
+  {
+    "id": 58,
+    "section": "file-component",
+    "source": "document.files.[0].fileName",
+    "target": "bom.components.[1].name"
+  },
+  {
+    "id": 59,
+    "section": "file-component",
+    "source": "document.files.[0].SPDXID",
+    "target": "bom.components.[1].bom-ref"
+  },
+  {
+    "id": 60,
+    "section": "file-component",
+    "source": "document.files.[0].copyrightText",
+    "target": "bom.components.[1].copyright"
+  },
+  {
+    "id": 61,
+    "section": "file-component",
+    "source": "document.files.[0].checksums.[0].algorithm",
+    "target": "bom.components.[1].hashes.[0].alg"
+  },
+   {
+    "id": 62,
+    "section": "file-component",
+    "source": "document.files.[0].checksums.[0].checksumValue",
+    "target": "bom.components.[1].hashes.[0].content"
+  },
+  {
+    "id": 63,
+    "section": "file-component",
+    "source": "document.files.[0].licenseConcluded",
+    "target": "bom.components.[1].licenses.[0].expression"
+  },
+  {
+    "id": 64,
+    "section": "file-component",
+    "source": "document.files.[0].licenseInfoInFiles.[0]",
+    "target": "bom.components.[1].properties"
+  },
+  {
+    "id": 65,
+    "section": "file-component",
+    "source": "document.files.[0].fileContributors.[0]",
+    "target": "bom.components.[1].authors.[0].name"
+  },
+  {
+    "id": 66,
+    "section": "file-component",
+    "source": "document.files.[0].annotations.[0].annotationDate",
+    "target": "bom.annotations.[0].timestamp"
+  },
+  {
+    "id": 67,
+    "section": "file-component",
+    "source": "document.files.[0].annotations.[0].annotator",
+    "target": "bom.annotations.[0].annotator"
+  },
+  {
+    "id": 68,
+    "section": "file-component",
+    "source": "document.files.[0].annotations.[0].annotationType",
+    "target": "bom.annotations.[0].text"
+  },
+  {
+    "id": 69,
+    "section": "file-component",
+    "source": "document.files.[0].annotations.[0].comment",
+    "target": "bom.annotations.[0].text"
+  },
+  {
+    "id": 70,
+    "section": "document",
+    "source": "document.hasExtractedLicensingInfos.[0].hasExtractedLicensingInfosName",
+    "target": "bom.properties"
+  },
+  {
+    "id": 71,
+    "section": "document",
+    "source": "document.hasExtractedLicensingInfos.[0].hasExtractedLicensingInfosName",
+    "target": "bom.properties"
+  },
+  {
+    "id": 72,
+    "section": "document",
+    "source": "document.hasExtractedLicensingInfos.[0].licenseId",
+    "target": "bom.properties"
+  },
+  {
+    "id": 73,
+    "section": "file-component",
+    "source": "document.files.[0].comment",
+    "target": "bom.components.[1].properties"
+  },
+  {
+    "id": 74,
+    "section": "file-component",
+    "source": "document.files.[0].licenseComments",
+    "target": "bom.components.[1].properties"
+  },
+  {
+    "id": 75,
+    "section": "file-component",
+    "source": "document.files.[0].attributionTexts.[0]",
+    "target": "bom.components.[1].properties"
+  },
+  {
+    "id": 76,
+    "section": "file-component",
+    "source": "document.files.[0].noticeText",
+    "target": "bom.components.[1].properties"
+  },
+  {
+    "id": 77,
+    "section": "file-component",
+    "source": "document.files.[0].fileTypes.[0]",
+    "target": "bom.components.[1].properties"
   }
 ]

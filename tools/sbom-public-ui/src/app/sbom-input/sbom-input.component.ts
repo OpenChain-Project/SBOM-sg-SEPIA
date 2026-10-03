@@ -17,6 +17,7 @@ import { spdx_2_3_schema } from '../schema/spdx_2.3.schema';
 import { spdx_2_2_schema } from '../schema/spdx_2.2.schema';
 import { cyclonedx_1_4_schema } from '../schema/cyclonedx_1.4.schema';
 import { cdq_spdx_2_3_schema } from '../schema/cdq_spdx_2.3.schema';
+import { automotive_spdx_2_3_schema } from '../schema/automotive_spdx_2.3.schema';
 import { AttachmentText, ComponentType, CycloneDXSBOMStandard, License, LicenseIDs, OrganizationalContactObject } from '../models/cyclonedx.model';
 import { CreationInfo, externalRefs, Packages, primaryPackagePurpose, referenceCategory, SpdxModel } from '../models/spdx.model';
 import JSZip from 'jszip';
@@ -24,6 +25,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { HealthCheckService } from '../services/health-check.service';
 import { cdq_cyclonedx_1_6_schema } from '../schema/cdq_cyclonedx_1.6.schema';
+import { automotive_cyclonedx_1_6_schema } from '../schema/automotive_cyclonedx_1.6.schema';
 import { CDQComponentType, CDQCycloneDXSBOMStandard, CDQExternalReference, CDQLicense, CDQLicenseIDs, CDQOrganizationalContactObject, CDQOrganizationalEntityObject } from '../models/cdqcyclonedx.model';
 import { FormValidationUtil } from '../utils/validation.util';
 
@@ -395,7 +397,21 @@ export class SbomInputComponent {
       this.editorOptions.schema = sanitizedSchema;
       this.editorOptions.sortObjectKeys = true;
     }
-     else if (this.fileToEdit.schemaType === "custom") {
+    else if (this.fileToEdit.schemaType === "automotivecydx1.6") {
+      this.fileToEdit.sbomJson =this.sanitizeSchemaObject(JSON.parse(this.fileToEdit.sbomJsonString)) ;
+      let sanitizedSchema = this.sanitizeSchemaObject(JSON.parse(JSON.stringify(automotive_cyclonedx_1_6_schema)));
+      this.fileToEdit.schemaJsonString = JSON.stringify(sanitizedSchema);
+      this.editorOptions.schema = sanitizedSchema;
+      this.editorOptions.sortObjectKeys = true;
+    }
+    else if (this.fileToEdit.schemaType === "automotivespdx2.3") {
+      this.fileToEdit.sbomJson =this.sanitizeSchemaObject(JSON.parse(this.fileToEdit.sbomJsonString)) ;
+      let sanitizedSchema = this.sanitizeSchemaObject(JSON.parse(JSON.stringify(automotive_spdx_2_3_schema)));
+      this.fileToEdit.schemaJsonString = JSON.stringify(sanitizedSchema);
+      this.editorOptions.schema = sanitizedSchema;
+      this.editorOptions.sortObjectKeys = true;
+    }
+     else if (this.fileToEdit.schemaType === "custom" ||  this.fileToEdit.schemaType === "automotivespdx2.3") {
       this.fileToEdit.sbomJson =this.sanitizeSchemaObject(JSON.parse(this.fileToEdit.sbomJsonString)) ;
       let sanitizedSchema = this.sanitizeSchemaObject(JSON.parse(this.fileToEdit.schemaJsonString));
       this.fileToEdit.schemaJsonString = JSON.stringify(sanitizedSchema);
@@ -707,7 +723,7 @@ export class SbomInputComponent {
       }
     }
 
-    this.enableMerge = isAllSelectedFilesValid && this.sbomListToProcess.length > 1 && this.schemaTypesToMerge.size === 1 && (Array.from(this.schemaTypesToMerge)[0] !== 'spdx2.2');
+    this.enableMerge = isAllSelectedFilesValid && this.sbomListToProcess.length > 1 && this.schemaTypesToMerge.size === 1 && (Array.from(this.schemaTypesToMerge)[0] !== 'spdx2.2') && (Array.from(this.schemaTypesToMerge)[0] !== 'automotivecydx1.6' ) && (Array.from(this.schemaTypesToMerge)[0] !== 'automotivespdx2.3');
     this.enableCompare = this.schemaTypesToMerge.size === 1 && this.sbomListToProcess.length === 2 && (Array.from(this.schemaTypesToMerge)[0] !== 'spdx2.2');
     this.mergeType = Array.from(this.schemaTypesToMerge)[0];
     console.log("mergeType:" + this.mergeType);
@@ -861,9 +877,9 @@ export class SbomInputComponent {
       case 'cyclonedx':
         return 'CycloneDX V1.4';
       case 'cdqcydx':
-        return 'CDQ CycloneDX V1.6';
+        return 'SEPIA CycloneDX V1.6';
       case 'cdqspdx2.3':
-        return 'CDQ SPDX V2.3';
+        return 'SEPIA SPDX V2.3';
       default:
         return schemaType;
     }

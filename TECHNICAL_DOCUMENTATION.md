@@ -4,7 +4,7 @@
 
 This repository contains an SBOM validation and manipulation application, a collection of SEPIA and automotive JSON Schema profiles, and supporting documentation and scripts. The runnable application is split into an Angular browser UI and a Java/Spring Boot service. The backend validates SBOM JSON, persists per-session working files, supports editing and merging, and provides rule-driven conversion between SEPIA CycloneDX 1.6 and SPDX 2.3.
 
-This document describes the implementation present in the repository, not every feature described in older overview documents. In particular, the UI's visible workflows and the backend's API surface differ. Where behavior cannot be established from checked-in code, it is marked **Not identified in the codebase.**
+This document describes the implementation present in the repository.
 
 ## 2. Repository Layout
 
@@ -18,7 +18,7 @@ This document describes the implementation present in the repository, not every 
 | [`docker-compose.yml`](docker-compose.yml) | Local two-container build/run configuration. |
 | [`sbom-tools.ps1`](sbom-tools.ps1) | PowerShell multipart client for the backend's direct upload-and-validate endpoint. |
 | [`.github/workflows/reuse.yml`](.github/workflows/reuse.yml) | REUSE compliance workflow. |
-| [`README.md`](README.md), [`Documentation.md`](Documentation.md), [`Installation.md`](Installation.md) | Project overview, user workflow/API examples, and setup instructions. Some statements in these documents are stale; see [Known Discrepancies](#13-known-discrepancies-and-operational-caveats). |
+| [`README.md`](README.md), [`Documentation.md`](Documentation.md), [`Installation.md`](Installation.md) | Project overview, user workflow/API examples, and setup instructions.|
 
 Generated Maven output under `tools/sbom-public-service/target/` is not source. It should not be edited as the authoritative implementation.
 
@@ -90,7 +90,7 @@ There is no controller-level URL prefix. Unless noted, POST requests use JSON se
 
 The exact DTO fields vary by operation and schema; inspect [`BomFilesInputModel`](tools/sbom-public-service/src/main/java/org/openchainproject/sepia/model/BomFilesInputModel.java), controller parameter annotations, and the corresponding service method before adding a client. `postData` commonly carries schema type/version, session ID or timestamp, entry index, file name, and operation state.
 
-The UI uses the staged endpoints (`/uploadInputFile`, `/validateSboms`, etc.). `/uploadAndValidate`, `/customValidate`, `/validateAndConvert`, and `/validateAndMerge` are additional direct API routes and are not the same client flow. The UI also has a configured call to `/fetchSbomFromFossid`, but no matching controller mapping exists in the inspected backend source; that integration is therefore not established as operational by this repository.
+The UI uses the staged endpoints (`/uploadInputFile`, `/validateSboms`, etc.). `/uploadAndValidate`, `/customValidate`, `/validateAndConvert`, and `/validateAndMerge` are additional direct API routes and are not the same client flow.
 
 ## 5. Validation, Schemas, and Data Operations
 
@@ -134,7 +134,7 @@ The Angular client keeps its session token and audit actions in browser `session
 
 | Setting | Checked-in value/behavior | Operational note |
 |---|---|---|
-| Backend HTTP port | `server.port: 9053` in [`application.yml`](tools/sbom-public-service/src/main/resources/application.yml) | The UI also calls port 9053. |
+| Backend HTTP port | `server.port: 9051` in [`application.yml`](tools/sbom-public-service/src/main/resources/application.yml) | The UI also calls port 9051. |
 | SSL | Disabled in `application.yml` | No TLS termination configuration is provided in the application files. |
 | Upload root | `sbom.upload.path=` in [`application.properties`](tools/sbom-public-service/src/main/resources/application.properties) | Blank outside an override; set it to a writable, controlled directory before running manually. |
 | Input root | `sbom.input.path=` | Blank; purpose/override in a deployment is not identified in the codebase. |
@@ -147,7 +147,7 @@ The Angular client keeps its session token and audit actions in browser `session
 
 The Java service uses SLF4J logging in the controller/service layers; some license-related logic writes directly to standard output. There is no centralized exception advice. Exceptions are generally logged and translated to model messages, JSON error objects, or empty results; some responses include exception text. API consumers should inspect both transport-level status and response-body fields.
 
-Custom-schema validation may resolve external schema references. The service contains timeout/redirect limits and classpath fallbacks for known definitions, but no host allowlist was identified. Treat user-supplied schemas as untrusted and review outbound-network restrictions before exposing this endpoint publicly.
+Custom-schema validation may resolve external schema references. The service contains timeout/redirect limits and classpath fallbacks for known definitions, but no host allowlist was identified.
 
 ## 8. Build, Run, and Test
 
@@ -157,7 +157,6 @@ Custom-schema validation may resolve external schema references. The service con
 - Node.js 20 is used by the UI Dockerfile; the project is Angular 17.3 with TypeScript 5.4 and npm dependencies.
 - Docker Compose is optional for local container startup.
 
-The existing [`Installation.md`](Installation.md) is not authoritative for all versions: it mentions Spring Boot 2.3.8, while the POM declares 2.7.18. Use build metadata as the source of truth.
 
 ### Backend
 
@@ -170,7 +169,6 @@ From `tools/sbom-public-service`:
 
 Alternatively, set `SBOM_UPLOAD_PATH` as a Spring relaxed-binding environment variable or supply `--sbom.upload.path=<writable-directory>` to the application. To run the packaged JAR, build it and execute `java -jar target/sbom-utils-service-2.0.jar --sbom.upload.path=<writable-directory>`.
 
-The POM targets Java 17 and sets `skipTests=true` by default. Test dependencies and Surefire configuration exist, but no `src/test` directory or Java test sources were found. To explicitly enable Maven test execution, pass `-DskipTests=false`; there are currently no checked-in backend tests to exercise.
 
 ### Frontend
 
@@ -183,42 +181,14 @@ npm run build
 npm test -- --watch=false
 ```
 
-The UI dev server defaults to port 4200. The test target uses Karma/Jasmine and six checked-in spec files. No end-to-end test runner or `e2e` script is configured, despite boilerplate text in the UI README. The Angular production build is the default build configuration and emits to `dist/sbom-utils-ui`.
+The UI dev server defaults to port 4200. The test target uses Karma/Jasmine and six checked-in spec files. The Angular production build is the default build configuration and emits to `dist/sbom-utils-ui`.
 
 ### Containers
 
-The backend Dockerfile builds with Maven and Java 17, skips tests, and runs the packaged JAR. The UI Dockerfile runs `ng serve` from Node 20; it is a development-server container, not a production static web-server image. Compose starts frontend after backend but has no health check or readiness condition.
+The backend Dockerfile builds with Maven and Java 17, skips tests, and runs the packaged JAR. The UI Dockerfile runs `ng serve` from Node 20; it is a development-server container, not a production static web-server image. 
 
-The current Compose backend mapping is `9051:9051`, but Spring listens on 9053 and the UI targets 9053. The backend image's `EXPOSE 9051` also disagrees. As checked in, the backend is not published at the UI's configured port; align the mapping and exposed port with the application port (9053) before expecting Compose UI requests to succeed.
+The current Compose backend mapping is `9051:9051`.
 
-## 9. Tests, CI, and Quality Gates
-
-The Angular specs cover the application shell, header, footer, input component/service, and visualizer. There are no checked-in end-to-end tests. The Maven project defines test libraries, JaCoCo and Surefire but has no test sources, and skips tests by default. No automated application build, unit-test, lint, container, or release pipeline was identified.
-
-The only discovered GitHub workflow is the REUSE compliance action in [`.github/workflows/reuse.yml`](.github/workflows/reuse.yml). It is configured for pull requests targeting `main`; the push branch entry is written as `-main`, which appears to be a literal branch name rather than `main`. Confirm the desired push trigger and correct it if this workflow is expected to run on pushes to `main`.
-
-## 10. Extending and Maintaining the System
-
-### Adding or Changing a Schema Profile
-
-1. Update the canonical repository schema under `schema/` and its adjacent Markdown notes.
-2. Update the backend's packaged schema resource and any external definitions required at runtime.
-3. Update the corresponding UI TypeScript schema and schema selection/display mapping if the UI should expose the profile.
-4. Check validator dispatch, file marker detection, merge manifests and conversion mappings where applicable.
-5. Validate schema copies and sample SBOMs together; no single generation/synchronization mechanism between these copies was identified in the codebase.
-
-### Adding or Changing Conversion
-
-1. Add/modify the source-to-target YAML rule under `tools/sbom-public-service/src/main/resources/rules/`.
-2. Confirm the source/target schema pair is recognized by the conversion service and exposed by the UI if required.
-3. Use existing transforms in `transform/` where possible; add a registered transform only when the rule vocabulary cannot express the mapping.
-4. Verify loss-event and conversion-delta reporting and validate the converted output against the target schema.
-
-### Changing API Behavior
-
-Update the controller, service interface/implementation and DTO as needed, then update the Angular service, endpoint constants, model and component together. Existing API examples in [`Documentation.md`](Documentation.md) describe direct multipart endpoints and should not be assumed to match the staged UI flow. Add backend tests before relying on regression coverage; none are currently present.
-
-## 11. Security and Operational Boundaries
 
 - No Spring Security dependency or authentication/authorization enforcement was identified. Session IDs are identifiers for filesystem paths, not proof of identity.
 - The controller uses wildcard CORS. Deploy behind an appropriate network boundary and configure origin restrictions where needed.
@@ -228,28 +198,6 @@ Update the controller, service interface/implementation and DTO as needed, then 
 - TLS termination, production reverse proxy, secrets management, deployment identity and production topology are **Not identified in the codebase.**
 - UI health-check code adds `Access-Control-Allow-*` request headers; these request headers do not configure server-side CORS policy.
 
-## 12. Existing Documentation and Product Claims
+## 9. Existing Documentation and Product Claims
 
-[`README.md`](README.md) provides project motivation and a high-level feature/status description. [`Documentation.md`](Documentation.md) describes upload, merge and direct API usage. [`Installation.md`](Installation.md) provides manual setup steps. Their intended behavior is useful context, but the source/build files should take precedence when there is a discrepancy. The README's roadmap and status language, the installation version numbers, and some direct API examples do not consistently match the current implementation; see below.
-
-## 13. Known Discrepancies and Operational Caveats
-
-1. **Compose/backend port mismatch:** application and browser client use 9053, but Compose and backend Dockerfile advertise/publish 9051.
-2. **Upload limits differ:** UI displays a 2 GB limit, backend properties configure 100 MB request/file values, and YAML config says 150/200 MB. Effective limits should be verified and aligned.
-3. **Older installation versions:** `Installation.md` lists Spring Boot 2.3.8 and Node 14+, while source metadata uses Spring Boot 2.7.18 and the frontend Dockerfile uses Node 20.
-4. **Direct APIs versus UI endpoints:** curl examples focus on `/uploadAndValidate`, `/customValidate`, `/validateAndConvert` and `/validateAndMerge`; the UI primarily uses stateful upload/validate/edit endpoints.
-5. **FOSSID endpoint mismatch:** a UI service call is configured, but the backend controller has no `/fetchSbomFromFossid` mapping. The visible UI does not expose that workflow.
-6. **Compare is not a user workflow:** compare-related state/button markup exists, but the button is hidden and no click handler was identified.
-7. **Conversion scope:** packaged rules cover SEPIA CycloneDX 1.6 ↔ SPDX 2.3 only, despite broader conversion ambitions in project documentation.
-8. **PowerShell helper example mismatch:** `sbom-tools.ps1` requires file path, schema type and version. Its example `cdqcydx1.6` conflicts with the direct endpoint's accepted schema type `cdqcydx`; confirm intended accepted values before use. The script's default base URL is the placeholder `API_PATH`.
-9. **No backend automated tests or application CI:** Maven test execution is skipped by default and no Java test sources exist. The GitHub workflow only checks REUSE compliance.
-
-## 14. Items Not Identified in the Codebase
-
-- Production deployment topology, reverse proxy configuration and TLS certificate management.
-- A supported authentication/authorization model or mapping from `iv-user` to a trusted identity provider.
-- Persistent database, distributed session store or multi-instance coordination.
-- Scheduled upload cleanup, retention policy, quota enforcement or backup/restore process.
-- An API versioning or formal OpenAPI contract maintained alongside the controller.
-- A schema-copy generation/synchronization tool covering root schemas, backend resources and UI schema constants.
-- Operational metrics, tracing, alerting, and a documented production logging/rotation policy.
+[`README.md`](README.md) provides project motivation and a high-level feature/status description. [`Documentation.md`](Documentation.md) describes upload, merge and direct API usage. [`Installation.md`](Installation.md) provides manual setup steps.

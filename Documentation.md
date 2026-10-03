@@ -9,6 +9,7 @@
 |            | Edit & Download | User can edit and download the SBOM in JSON/YAML format. |
 |            | Merge | Merge multiple valid SBOM files of the same schema type. |
 |            | Convert | Conversion between SEPIA CycloneDX v1.6 & SEPIA SPDX v2.3 SBOMs. |
+|            | SBOM Convert Visualizar | SPDX 2.3 ↔ CycloneDX 1.6 Interactive Mapping Explorer |
 
 ---
 
@@ -460,7 +461,13 @@ Conversion log details are displayed in the Conversion Logs
 ![alt text](images/conversion_logs.png)
 ---
 
-### 2. Convert SBOM File via `curl`
+### 4. SBOM Convert Visualizar.
+The user can visualize the conversion between CycloneDX <-> SPDX using the SBOM Visualizar
+
+![alt text](images/convert_visualizer.png)
+--- 
+
+### Convert SBOM File via `curl`
 
 
 ```bash

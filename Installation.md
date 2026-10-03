@@ -13,7 +13,7 @@ Before you begin, ensure you have the following installed on your system:
 
 - **Java 17**
 - **Apache Maven 3.8.6**
-- **Spring Boot 2.3.8**
+- **Spring Boot 2.7.18**
 - **Eclipse IDE** (or any preferred Java IDE)
 - **Node.js** (version 14.x or higher recommended) - [Download Node.js](https://nodejs.org/)
 - **npm** (comes with Node.js) - [Learn more](https://www.npmjs.com/)

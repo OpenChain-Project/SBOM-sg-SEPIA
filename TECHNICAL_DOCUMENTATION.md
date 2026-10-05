@@ -185,18 +185,8 @@ The UI dev server defaults to port 4200. The test target uses Karma/Jasmine and 
 
 ### Containers
 
-The backend Dockerfile builds with Maven and Java 17, skips tests, and runs the packaged JAR. The UI Dockerfile runs `ng serve` from Node 20; it is a development-server container, not a production static web-server image. 
-
+The backend Dockerfile builds with Maven and Java 17, skips tests, and runs the packaged JAR. The UI Dockerfile runs `ng serve` from Node 20; it is a development-server container, not a production static web-server image.   
 The current Compose backend mapping is `9051:9051`.
-
-
-- No Spring Security dependency or authentication/authorization enforcement was identified. Session IDs are identifiers for filesystem paths, not proof of identity.
-- The controller uses wildcard CORS. Deploy behind an appropriate network boundary and configure origin restrictions where needed.
-- Session IDs and original upload names participate in filesystem path construction. No clear path-containment check was identified in the inspected service; validate and constrain these values before exposing the service to untrusted callers.
-- Custom JSON Schema references can cause outbound retrieval. Restrict outbound traffic and consider an explicit allowed-host policy before accepting schemas from untrusted users.
-- Uploaded SBOMs, schemas and logs are stored on disk. A retention/cleanup schedule, encryption-at-rest mechanism, backup policy and storage quota are **Not identified in the codebase.**
-- TLS termination, production reverse proxy, secrets management, deployment identity and production topology are **Not identified in the codebase.**
-- UI health-check code adds `Access-Control-Allow-*` request headers; these request headers do not configure server-side CORS policy.
 
 ## 9. Existing Documentation and Product Claims
 

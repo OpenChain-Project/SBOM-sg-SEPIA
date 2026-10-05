@@ -1,18 +1,5 @@
 # SBOM Validator – Features
 
-## Overview
-
-| Category | Feature | Description |
-|---|---|---|
-| Input types | Upload SBOM File | User can upload an SBOM file in JSON format. Supported versions are:<br>• CycloneDX – v1.4<br>• SPDX – v2.3<br>• SEPIA SPDX – v2.3<br>• SEPIA CycloneDX – v1.6<br>• Custom Schema<br>• Automotive SPDX – v2.3<br>• Automotive CycloneDX – v1.6 |
-| Operations | Validate | Validate the uploaded SBOM against the corresponding schema. If no errors are found, the BOM is valid. Otherwise, the file is not valid and the errors or missing properties are displayed. |
-|            | Edit & Download | User can edit and download the SBOM in JSON/YAML format. |
-|            | Merge | Merge multiple valid SBOM files of the same schema type. |
-|            | Convert | Conversion between SEPIA CycloneDX v1.6 & SEPIA SPDX v2.3 SBOMs. |
-|            | SBOM Convert Visualizar | SPDX 2.3 ↔ CycloneDX 1.6 Interactive Mapping Explorer |
-
----
-
 ## How to Use
 
 ### 1. Upload SBOM File through the User Interface

@@ -139,7 +139,7 @@ Conversion is a separate YAML-rule pipeline: [`ConversionService`](tools/sbom-pu
     xfieldsCovered: 1
 ```
 
-# Rule Description Reference
+### Rule Description Reference
 
 This table documents the properties used to define and process conversion rules.
 
@@ -162,7 +162,7 @@ This table documents the properties used to define and process conversion rules.
 | `xfieldsCovered` | Count of source leaf fields the rule accounts for. | Integer | Coverage accounting |
 | `xsplitGroup` | Links rules produced by splitting one logical rule. | -  | Reviewers only |
 
-# Transform Function Reference
+### Transform Function Reference
 
 This table documents the transform functions used by the SBOM conversion rules.
 
@@ -178,6 +178,17 @@ This table documents the transform functions used by the SBOM conversion rules.
 | `prefixStrip` | Removes a leading literal. | Convert SPDX prefixed string conventions, such as `SPDXRef-`, `Person: `, `Organization: `, and `Tool: `, into CycloneDX typed structures where the type is carried by the field name rather than a text prefix. | `OPT-SPDX-PKG-SPDXID-001`: `SPDXRef-glibc` → `bom-ref = glibc`. |
 | `idNormalize` | Canonicalises an identifier according to the target format's reference rules, including character set, casing, and uniqueness. It registers the old-to-new pair in the ID table so every referring endpoint is rewritten consistently. | Ensure `bom-ref` values are valid and references such as `dependencies[].ref` and `annotations[].subjects[]` continue to resolve after conversion. | `SPDXRef-Package::libpng@1.6` → `bom-ref = Package-libpng-1.6`, with all referring relationship endpoints rewritten to match. |
 | `uuidExtract` | Scans the source string for an embedded RFC 4122 UUID and re-emits it through a `format` pattern. `onNoMatch: fabricate` generates a fresh UUID. | CycloneDX `serialNumber` must match `urn:uuid:*`, while SPDX `documentNamespace` is a free URI. This recovers an existing UUID and provides a valid serial when one is absent. | `http://spdx.org/spdxdocs/example-444504E0-4F89-41D3-9A0C-0305E82C3301` → `serialNumber = urn:uuid:444504E0-4F89-41D3-9A0C-0305E82C3301`. |
+
+### Event Kind Reference
+
+This table documents the event kinds emitted by the rule engine during SBOM conversion.
+
+| Event kind | Description | When the rule engine emits it |
+|---|---|---|
+| `DROPPED` | A source value has no representation in the target and is discarded. The rule's `lossReason` and `severityIfLost` are attached. | The `onAbsent` or `onUnmappable` policy resolves to `drop`, `annotate`, `property`, or `emitNoAssertion`. |
+| `MODIFIED` | The value survives but is reshaped; it does not appear verbatim in the target. | `uuidExtract` recovers the UUID inside `documentNamespace` and re-emits it as `urn:uuid:<uuid>`. |
+| `FABRICATED` | A target value is invented because the target specification requires it and no source value exists. This flags non-authoritative data. | The `constant` transform writes a literal such as `bomFormat`, `specVersion`, `SPDX-2.3`, `CC0-1.0`, `NOASSERTION`, `library`, or `OTHER`. |
+| `RENAMED` | An identifier is rewritten to satisfy the target grammar, and every reference to it is updated through the document-scoped symbol table. | `idNormalize` sanitises `bom-ref` as `SPDXRef-*` or `LicenseRef-*` and de-duplicates collisions. |
 
 
 ## 6. Data Model, Sessions, and Persistence

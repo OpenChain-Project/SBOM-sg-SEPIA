@@ -162,6 +162,22 @@ This table documents the properties used to define and process conversion rules.
 | `xfieldsCovered` | Count of source leaf fields the rule accounts for. | Integer | Coverage accounting |
 | `xsplitGroup` | Links rules produced by splitting one logical rule. | -  | Reviewers only |
 
+# Transform Function Reference
+
+This table documents the transform functions used by the SBOM conversion rules.
+
+| Transform | Functionality description | Purpose | Example |
+|---|---|---|---|
+| `identity` | Passes the source value through unchanged; no reshaping or coercion. Only the path changes. | Straight 1:1 field moves where both formats agree on type and semantics. | `MAN-CREATED-TIMESTAMP-001`: `creationInfo.created` = `2026-08-20T10:00:00Z` → `metadata.timestamp` = `2026-08-20T10:00:00Z` |
+| `join` | Concatenates multiple source values, or the members of an array, into one scalar using a separator. | Collapse a multi-valued CycloneDX field into a single-valued SPDX slot without losing the individual entries. | `OPT-BOM-PROPERTIES-001`: CycloneDX `properties[].name` and `properties[].value` mapped to `comment`. |
+| `template` | Builds a new value or whole object from a pattern. | The workhorse for structural conversion. | `metadata.supplier.name` mapped to `creationInfo.creators[]` using `Organization: {value}`. |
+| `enumMap` | Looks the source value up in a table and writes the mapped result. Supports an optional `default` for unlisted values, `field` to select the object key used for lookup, and `keyMap` to rename object keys while copying. | Reconcile enum values such as package purposes, hash algorithms, and relationship types. | `MAN-PACKAGE-TYPE-001`: `primaryPackagePurpose = OPERATING_SYSTEM` → `components[].type = operating-system`; `ARCHIVE` → `file`; unlisted values → default `library`.<br><br>`keyMap`: `{"algorithm":"SHA256","checksumValue":"ab12…"}` → `{"alg":"SHA-256","content":"ab12…"}` |
+| `firstOnly` | Takes the first value produced by the ordered source paths and discards the rest. | Fit a multi-valued or multi-candidate SPDX source into a single-valued CycloneDX field, with a deterministic and documented precedence order. | `OPT-SPDX-PKG-DESCRIPTION-001`: sources `[description, summary]` → `components[].description`. If `description` exists, it wins; `summary` is truncated. |
+| `normalizeToSingleLine` | Flattens embedded newlines and collapses whitespace runs into a single-line string. | Make multi-line SPDX free text, such as licence texts, comments, and notices, safe for CycloneDX fields and property values expected to be single-line. | Newline-containing `packages[].description` content mapped to `components[].description` as a single-line string. |
+| `constant` | Ignores the source, with rules using `sourcePath: null`, and writes a fixed literal. | Emit CycloneDX specification-mandatory fields that have no SPDX counterpart and supply house-policy defaults. | `MAN-CDX-BOMFORMAT-001`: `bomFormat = CycloneDX`.<br>`MAN-CDX-SPECVERSION-001`: `specVersion = 1.6`. |
+| `prefixStrip` | Removes a leading literal. | Convert SPDX prefixed string conventions, such as `SPDXRef-`, `Person: `, `Organization: `, and `Tool: `, into CycloneDX typed structures where the type is carried by the field name rather than a text prefix. | `OPT-SPDX-PKG-SPDXID-001`: `SPDXRef-glibc` → `bom-ref = glibc`. |
+| `idNormalize` | Canonicalises an identifier according to the target format's reference rules, including character set, casing, and uniqueness. It registers the old-to-new pair in the ID table so every referring endpoint is rewritten consistently. | Ensure `bom-ref` values are valid and references such as `dependencies[].ref` and `annotations[].subjects[]` continue to resolve after conversion. | `SPDXRef-Package::libpng@1.6` → `bom-ref = Package-libpng-1.6`, with all referring relationship endpoints rewritten to match. |
+| `uuidExtract` | Scans the source string for an embedded RFC 4122 UUID and re-emits it through a `format` pattern. `onNoMatch: fabricate` generates a fresh UUID. | CycloneDX `serialNumber` must match `urn:uuid:*`, while SPDX `documentNamespace` is a free URI. This recovers an existing UUID and provides a valid serial when one is absent. | `http://spdx.org/spdxdocs/example-444504E0-4F89-41D3-9A0C-0305E82C3301` → `serialNumber = urn:uuid:444504E0-4F89-41D3-9A0C-0305E82C3301`. |
 
 
 ## 6. Data Model, Sessions, and Persistence

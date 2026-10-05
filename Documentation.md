@@ -84,7 +84,7 @@ curl --noproxy localhost \
 curl --noproxy localhost \
      --location "http://localhost:9053/uploadAndValidate\" \
      --form "postData={\"schemaType\":\"cdqcydx",\"sessionId\":\"TEE123\"}" \
-     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json"
+     --form "file=@C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json"
 ```
 
 #### Example for generating log details in to a file
@@ -92,7 +92,7 @@ curl --noproxy localhost \
 curl --noproxy localhost \
      --location "http://localhost:9053/uploadAndValidate\" \
      --form "postData={\"schemaType\":\"cdqcydx",\"sessionId\":\"TEE123\"}" \
-     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json" -o "C:\Users\CDQ0302\SPDX-2.3\edited-Spdx-Valid-1_log.txt"
+     --form "file=@C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json" -o "C:\Users\SEPIA\SPDX-2.3\edited-Spdx-Valid-1_log.txt"
 ```
 
 ###  Upload & Validate SBOM File using Custom Schema via `curl`
@@ -130,7 +130,7 @@ curl --noproxy localhost \
 curl --noproxy localhost \
      --location "http://localhost:9053/customValidate\" \
      --form "postData={\"schemaType\":\"custom",\"sessionId\":\"TEE123\"}" \
-     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json" --form "schemaFile=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX_Schema.json"
+     --form "file=@C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json" --form "schemaFile=@C:\Users\SEPIA\CYDX-1.6\CycloneDX_Schema.json"
 ```
 
 #### Example for generating log details in to a file
@@ -138,7 +138,7 @@ curl --noproxy localhost \
 curl --noproxy localhost \
      --location "http://localhost:9053/customValidate\" \
      --form "postData={\"schemaType\":\"custom",\"sessionId\":\"TEE123\"}" \
-     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json" --form "schemaFile=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX_Schema.json" -o "C:\Users\CDQ0302\SPDX-2.3\edited-CycloneDX_log.txt"
+     --form "file=@C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json" --form "schemaFile=@C:\Users\SEPIA\CYDX-1.6\CycloneDX_Schema.json" -o "C:\Users\SEPIA\SPDX-2.3\edited-CycloneDX_log.txt"
 ```
 ---
 
@@ -363,8 +363,8 @@ curl --noproxy localhost \
 curl --noproxy localhost \
      --location "http://localhost:9053/validateAndMerge\" \
      --form "postData={\"schemaType\":\"cdqcydx",\"sessionId\":\"TEE123\"}" \
-     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json,C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-2.json,C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-3.json"
-     --form "manifestFile=@C:\Users\CDQ0302\Manifest_Files\CycloneDX1.6.json"
+     --form "file=@C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json,C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-2.json,C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-3.json"
+     --form "manifestFile=@C:\Users\SEPIA\Manifest_Files\CycloneDX1.6.json"
 ```
 
 ---
@@ -404,15 +404,15 @@ uploadAndValidate <SBOM_File_Path> <SELECT_SchemaType>
 
 #### Example
 ```bash
-uploadAndValidate C:\Users\CDQ0302\SPDX-2.3\edited-Spdx-Valid-1.json cdqspdx2.3
-uploadAndValidate C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json cdqcydx
+uploadAndValidate C:\Users\SEPIA\SPDX-2.3\edited-Spdx-Valid-1.json cdqspdx2.3
+uploadAndValidate C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json cdqcydx
 ```
 
 #### Example for generating log details in to a file
 ```bash
-uploadAndValidate C:\Users\CDQ0302\SPDX-2.3\edited-Spdx-Valid-1.json cdqspdx2.3 -o C:\Users\CDQ0302\SPDX-2.3\edited-Spdx-Valid-1_log.txt
+uploadAndValidate C:\Users\SEPIA\SPDX-2.3\edited-Spdx-Valid-1.json cdqspdx2.3 -o C:\Users\SEPIA\SPDX-2.3\edited-Spdx-Valid-1_log.txt
 
-uploadAndValidate C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json cdqcydx -o C:\Users\CDQ0302\SPDX-2.3\CycloneDX-Valid-1_log.txt
+uploadAndValidate C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json cdqcydx -o C:\Users\SEPIA\SPDX-2.3\CycloneDX-Valid-1_log.txt
 ```
 ---
 
@@ -498,7 +498,7 @@ curl --noproxy localhost \
 curl --noproxy localhost \
      --location "http://localhost:9053/validateAndConvert\" \
      --form "postData={\"schemaType\":\"cdqcydx"}" \
-     --form "file=@C:\Users\CDQ0302\CYDX-1.6\CycloneDX-Valid-1.json"
+     --form "file=@C:\Users\SEPIA\CYDX-1.6\CycloneDX-Valid-1.json"
 ```
 
 ---
@@ -508,10 +508,10 @@ The application is packaged as two Docker services: a backend API and a public U
 
 ### Services
 
-| Service           | Image                          | Host Port | Container Port | Description                |
+| Service           | Container                          | Host Port | Container Port | Description                |
 |-------------------|--------------------------------|-----------|----------------|----------------------------|
 | sbom-backend      | sbom-backend        | 9051      | 9051           | Backend API service        |
-| sbom-public-ui    | sbom-public-ui      | 4200      | 4200             | Public-facing web UI       |
+| sbom-public-ui    | sbom-frontend      | 4200      | 4200             | Public-facing web UI       |
 
 ### docker-compose.yaml
 

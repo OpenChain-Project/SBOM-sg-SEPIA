@@ -120,6 +120,50 @@ SPDX merging combines packages, files, snippets, annotations, external document 
 
 Conversion is a separate YAML-rule pipeline: [`ConversionService`](tools/sbom-public-service/src/main/java/org/openchainproject/sepia/service/ConversionService.java) loads and validates mappings through [`YamlRuleRepository`](tools/sbom-public-service/src/main/java/org/openchainproject/sepia/rule/YamlRuleRepository.java), then invokes [`RuleEngine`](tools/sbom-public-service/src/main/java/org/openchainproject/sepia/service/RuleEngine.java). Packaged rule pairs cover only CycloneDX 1.6 to SPDX 2.3 and SPDX 2.3 to CycloneDX 1.6. Transform implementations are under [`transform/`](tools/sbom-public-service/src/main/java/org/openchainproject/sepia/transform/), with loss policies/events and conversion-delta analysis used to report data that is lost, modified, or added. The multipart `/validateAndConvert` route validates the source before conversion; `/convertSbom` does not perform that same source-validation step before conversion, but validates output.
 
+### Rule format specified in the .yaml file
+   ```bash
+  - ruleId: MAN-SUPPLIER-CREATOR-ORG-001
+    description: ‘BOM supplier organization becomes an Organization creator.'
+    sourcePath: metadata.supplier.name
+    targetPath: creationInfo.creators[]
+    cardinality: one-to-one
+    transform:
+      function: template
+      args: {format: "Organization: {value}“}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+    xfieldsCovered: 1
+```
+
+# Rule Description Reference
+
+This table documents the properties used to define and process conversion rules.
+
+| Property | Purpose | Allowed values | Consumed by |
+|---|---|---|---|
+| `ruleId` | Unique identifier; the audit key stamped on every loss event. | `MAN-*` / `OPT-*` string | RuleValidator, PolicyEngine, TransformContext |
+| `description` | Human rationale for the mapping decision. | Text | Reviewers only |
+| `sourcePath` | Input JSON path(s). | Path / list of paths / `null` | RuleEngine, ConversionDeltaAnalyzer |
+| `targetPath` | Output JSON path(s). `null` marks a pure-loss rule. | Path / list / `null` | RuleEngine, ConversionDeltaAnalyzer |
+| `cardinality` | Shape of the mapping. | `one-to-one`, `one-to-many`, `many-to-one`, `none` | RuleValidator |
+| `transform.function` | Which transform to apply. | `Identity`, `join`, `template`, `enumMap`, `firstOnly`, `normalizeToSingleLine`, `constant`, `prefixStrip`, `idNormalize`, `uuidExtract` | RuleValidator, TransformRegistry, RuleEngine |
+| `transform.args` | Transform parameters. | Not specified | TransformRegistry, transforms |
+| `onAbsent` | Action when `sourcePath` yields nothing. | `drop`: silently ignores.<br>`Annotate`: records a `DROPPED` loss event with reason "Source value is absent".<br>`fail`: aborts the whole conversion with a `ConversionException`. | PolicyEngine, RuleValidator |
+| `onUnmappable` | Action when a value exists but cannot be converted. | `drop`: silently ignores.<br>`Annotate`: records a `DROPPED` loss event with a reason.<br>`fail`: aborts the whole conversion with a `ConversionException`. | PolicyEngine, RuleValidator |
+| `severityIfLost` | Business impact stamped on the loss event. | `BLOCKER`, `MAJOR`, `MINOR`, `INFORMATIONAL` | PolicyEngine, TransformContext |
+| `authority` | Provenance of the decision. | `spec`, `house-policy` | Reviewers only |
+| `lossReason` | Explanation written into the loss report for lost data. | Text | PolicyEngine, ConversionDeltaAnalyzer |
+| `prohibitFabrication` | Restricts the use of assumed or inferred values; `true` is illegal with `constant`. | `true`, `false` | RuleValidator |
+| `xbucket` | Classifies the conversion outcome of the rule. | `Native`: clean mapping to a first-class target field.<br>`Degraded`: preserved, but only as free text / a namespaced property.<br>`Fabricated`: value invented to satisfy a target-mandatory field.<br>`Lost`: no representation; recorded with a `lossReason`. | Metrics / reporting |
+| `xfieldsCovered` | Count of source leaf fields the rule accounts for. | Integer | Coverage accounting |
+| `xsplitGroup` | Links rules produced by splitting one logical rule. | -  | Reviewers only |
+
+
+
 ## 6. Data Model, Sessions, and Persistence
 
 The backend uses local filesystem directories, not a relational or document database. The service derives entry paths from the configured upload root and request session, index, and schema type. It stores uploaded input and, as applicable, schema copies, validation logs and edited content. Entry deletion and session clearing recursively remove directories.

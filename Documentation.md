@@ -454,6 +454,27 @@ The user can visualize the conversion between CycloneDX <-> SPDX using the SBOM 
 ![alt text](images/convert_visualizer.png)
 --- 
 
+### Rule format specified in the .yaml file
+ ```bash
+  - ruleId: MAN-SUPPLIER-CREATOR-ORG-001
+    description: ‘BOM supplier organization becomes an Organization creator.'
+    sourcePath: metadata.supplier.name
+    targetPath: creationInfo.creators[]
+    cardinality: one-to-one
+    transform:
+      function: template
+      args: {format: "Organization: {value}“}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+    xfieldsCovered: 1
+```
+The description of each Rule-level properties are explained in the TECHNICAL_DOCUMENTATION.md file.
+
+---
 ### Convert SBOM File via `curl`
 
 

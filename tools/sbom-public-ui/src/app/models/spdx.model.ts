@@ -190,6 +190,14 @@ export enum primaryPackagePurpose {
   OPERATING_SYSTEM = "OPERATING_SYSTEM",
   FILE = "FILE"
 };
+
+export enum referenceCategory {
+  OTHER = "OTHER",
+  PERSISTENT_ID = "PERSISTENT-ID",
+  SECURITY = "SECURITY",
+  PACKAGE_MANAGER = "PACKAGE-MANAGER",
+}
+
 export class Files {
   SPDXID!: string;
   annotations?: {

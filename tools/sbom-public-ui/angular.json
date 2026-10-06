@@ -33,17 +33,27 @@
             "assets": [
 
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/resources",
+              {
+                "glob": "web.xml",
+                "input": "src/WEB-INF",
+                "output": "/WEB-INF"
+              }
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss",
+              "node_modules/datatables.net-dt/css/dataTables.dataTables.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/bootstrap/dist/js/bootstrap.js"
+              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/datatables.net/js/dataTables.js",
+              "node_modules/angular/angular.js",
+              "node_modules/d3/dist/d3.min.js"
             ]
           },
           "configurations": {
@@ -51,8 +61,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3mb",
-                  "maximumError": "4mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",

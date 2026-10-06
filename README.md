@@ -13,18 +13,20 @@ SEPIA is a project which focuses on validating SBOMs by using standard SBOM sche
 
 Additionally, we would like to curate an Open SBOM schema library by collecting schemas used across industry.
 
-It also provides a tooling which helps to validate SBOM schemas and perform operations such as Edit the metadata, Insert missing fields and Merge multiple SBOMs.
+It also provides a tooling which helps to validate SBOM schemas and perform operations such as Edit the metadata, Insert missing fields,Merge multiple SBOMs and Conversion between SEPIA CycloneDX v1.6 & SEPIA SPDX v2.3 SBOMs.
 
-## Roadmap (Under Discussion)
+## Overview
 
-1.  Introduce validation checks based on CycloneDX 1.6 schema
-2.  A new feature to convert SPDX 2.3 <-> CycloneDX 1.6 based on a custom schema
-3.  Version upgrades with schema check for various SPDX and CycloneDX schemas
-    * SPDX 2.2 --> SPDX 2.3
-    * SPDX 2.3 --> SPDX 3.0
-    * CycloneDX 1.4 --> CycloneDX 1.6
-    * CycloneDX 1.5 --> CycloneDX 1.6
-4. Comparison feature to filter changes between two different versions of SBOM logs
+| Category | Feature | Description |
+|---|---|---|
+| Input types | Upload SBOM File | User can upload an SBOM file in JSON format. Supported versions are:<br>• CycloneDX – v1.4<br>• SPDX – v2.3<br>• SEPIA SPDX – v2.3<br>• SEPIA CycloneDX – v1.6<br>• Custom Schema<br>• Automotive SPDX – v2.3<br>• Automotive CycloneDX – v1.6 |
+| Operations | Validate | Validate the uploaded SBOM against the corresponding schema. If no errors are found, the BOM is valid. Otherwise, the file is not valid and the errors or missing properties are displayed. |
+|            | Edit & Download | User can edit and download the SBOM in JSON/YAML format. |
+|            | Merge | Merge multiple valid SBOM files of the same schema type. |
+|            | Convert | Conversion between SEPIA CycloneDX v1.6 & SEPIA SPDX v2.3 SBOMs. |
+|            | SBOM Convert Visualizar | SPDX 2.3 ↔ CycloneDX 1.6 Interactive Mapping Explorer |
+
+---
 
 
 ## License

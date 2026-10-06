@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -37,6 +38,7 @@ public class BomFilesInputModel {
 	@ApiModelProperty(required = true)
 	private String schemaVersion;
 	
+	@JsonIgnore
 	private MultipartFile sbomFile;
 	
 	private MultipartFile schemaFile;
@@ -48,7 +50,8 @@ public class BomFilesInputModel {
 	private int index;
 	
 	@ApiModelProperty(required = true)
-	private String timestamp;
+	//private String timestamp;
+	private String sessionId;
 	
 	@ApiModelProperty(hidden = true)
 	private String sbomJsonString;
@@ -98,6 +101,9 @@ public class BomFilesInputModel {
     }
 	
 	@ApiModelProperty(required = false)
+	private String logOutputPath;
+	
+	@ApiModelProperty(required = false)
 	private String fossidServer;
 	
 	@ApiModelProperty(required = false)
@@ -114,4 +120,10 @@ public class BomFilesInputModel {
 	
 	@ApiModelProperty(required = false)
 	private Integer status;
+	
+	@ApiModelProperty(required = false)
+	private List<org.openchainproject.sepia.loss.LossEvent> lossEvent = new ArrayList<>();
+	
+	@ApiModelProperty(required = false)
+	private List<org.openchainproject.sepia.loss.ConversionDelta> conversionDeltas = new ArrayList<>();
 }

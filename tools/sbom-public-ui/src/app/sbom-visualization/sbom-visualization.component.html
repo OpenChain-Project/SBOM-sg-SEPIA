@@ -1,0 +1,138 @@
+<!--
+ Parts of this file are created by genAI by using GitHub Copilot.
+ This notice needs to remain attached to any reproduction of or excerpt from this file.
+
+SPDX-FileCopyrightText: Copyright (C) 2026 Contributors to SEPIA
+SPDX-License-Identifier: MIT -->
+
+<div ngNonBindable class="sbom-visualization-root" ng-controller="MainController as vm"><!-- ═══ HEADER ═══ -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-hex">⬡</div>
+      <div class="brand-copy">
+        <h1>SBOM Visualizar</h1>
+        <p>SPDX 2.3 ↔ CycloneDX 1.6 Interactive Mapping Explorer</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <fieldset class="bom-toggle">
+        <button type="button" class="tog-btn"
+                ng-class="{active: vm.selectedType==='spdx'}"
+                ng-click="vm.setType('spdx')">SPDX → CycloneDX</button>
+        <button type="button" class="tog-btn"
+                ng-class="{active: vm.selectedType==='cyclonedx'}"
+                ng-click="vm.setType('cyclonedx')">CycloneDX → SPDX</button>
+      </fieldset>
+      <input class="search-box" type="search" placeholder="Search fields…"
+             ng-model="vm.searchQuery"
+             ng-model-options="{debounce: 180}"
+             aria-label="Search fields" />
+      <fieldset class="filter-chips">
+        <button type="button" class="chip"
+                ng-repeat="s in vm.sectionOptions"
+                ng-class="{active: vm.filterSection===s.key}"
+                ng-click="vm.setFilter(s.key)">{{s.label}}</button>
+      </fieldset>
+      <button type="button" class="reset-btn" ng-click="vm.reset()">↺ Reset</button>
+    </div>
+  </header>
+
+  <!-- ═══ STATS BAR ═══ -->
+  <div class="stats-bar" ng-if="vm.isLoaded">
+    <span class="sb-item"><span class="sb-val">{{vm.stats.sourceFields}}</span> source fields</span>
+    <span class="sb-dot">·</span>
+    <span class="sb-item"><span class="sb-val">{{vm.activeMappings.length}}</span> mapping rules</span>
+    <span class="sb-dot">·</span>
+    <span class="sb-item"><span class="sb-val">{{vm.stats.targetFields}}</span> output fields</span>
+    <span class="sb-active" ng-if="vm.activeMappingIds.length">
+      <span class="sb-val accent">{{vm.activeMappingIds.length}}</span> active connection{{vm.activeMappingIds.length === 1 ? '' : 's'}}
+    </span>
+    <span class="sb-hint">Click a source node to reveal its mapped target</span>
+  </div>
+
+  <!-- ═══ MAIN TWO-PANE + RIBBON AREA ═══ -->
+  <main class="trees-area" ng-if="vm.isLoaded" id="treesArea">
+
+    <!-- Left: Source BOM -->
+    <section class="tree-pane" id="leftPane">
+      <div class="pane-label">
+        <span class="type-badge" ng-class="vm.selectedType + '-badge'">{{vm.sourceLabel}}</span>
+        <span class="pane-sub">source</span>
+        <span class="pane-hint" ng-if="vm.activeMappingIds.length">{{vm.highlightedPaths.left.length}} fields highlighted</span>
+      </div>
+      <markmap-tree
+        data="vm.sourceBom"
+        root-label="vm.sourceLabel"
+        root-path="vm.sourceRootPath"
+        side="left"
+        search-query="vm.searchQuery"
+        active-paths="vm.highlightedPaths.left"
+        on-node-event="vm.onNodeEvent(type, side, path, key, el)">
+      </markmap-tree>
+    </section>
+
+    <!-- Right: Converted BOM -->
+    <section class="tree-pane" id="rightPane">
+      <div class="pane-label">
+        <span class="type-badge alt-badge">{{vm.targetLabel}}</span>
+        <span class="pane-sub">converted</span>
+        <span class="pane-hint" ng-if="vm.activeMappingIds.length">{{vm.highlightedPaths.right.length}} fields highlighted</span>
+      </div>
+      <markmap-tree
+        data="vm.convertedBom"
+        root-label="vm.targetLabel"
+        root-path="vm.targetRootPath"
+        side="right"
+        expand-all="false"
+        search-query="vm.searchQuery"
+        active-paths="vm.highlightedPaths.right"
+        expand-paths="vm.targetExpandPaths"
+        on-node-event="vm.onNodeEvent(type, side, path, key, el)">
+      </markmap-tree>
+    </section>
+
+    <!-- Sankey Ribbon Overlay (covers full trees-area) -->
+    <ribbon-layer
+      active-mappings="vm.visibleMappings"
+      active-ids="vm.activeMappingIds">
+    </ribbon-layer>
+
+  </main>
+
+  <!-- ═══ LOADING / ERROR ═══ -->
+  <div class="loading-screen" ng-if="!vm.isLoaded">
+    <div class="spinner"></div>
+    <p ng-if="!vm.loadError">Loading SBOM data...</p>
+    <p class="load-error" ng-if="vm.loadError">{{vm.loadError}}</p>
+  </div>
+
+  <!-- ═══ MAPPING DRAWER (collapsible footer) ═══ -->
+  <footer class="mapping-drawer" ng-if="vm.isLoaded">
+    <button type="button" class="drawer-toggle" ng-click="vm.drawerOpen = !vm.drawerOpen"
+            ng-keydown="$event.key==='Enter' && (vm.drawerOpen = !vm.drawerOpen)">
+      <span class="dt-label">Mapping Rules</span>
+      <span class="dt-count">{{vm.filteredMappings.length}}<span ng-if="vm.filteredMappings.length < vm.activeMappings.length"> / {{vm.activeMappings.length}}</span></span>
+      <span class="dt-arrow">{{vm.drawerOpen ? '▼' : '▲'}}</span>
+    </button>
+    <div class="drawer-body" ng-if="vm.drawerOpen">
+      <div class="mg-header">
+        <span>#</span><span>Source Field</span><span>Section</span><span>Target Field</span>
+      </div>
+      <div class="mg-scroll">
+        <button type="button" class="mg-row"
+          ng-repeat="m in vm.filteredMappings track by m.id"
+          ng-class="{active: vm.activeMappingIds.indexOf(m.id) >= 0}"
+          ng-click="vm.selectMapping(m.id)"
+          ng-mouseenter="vm.hoverMapping(m.id)"
+          ng-mouseleave="vm.clearMappingHover()"
+          ng-focus="vm.hoverMapping(m.id)"
+          ng-blur="vm.clearMappingHover()">
+          <span class="mr-id">{{m.id}}</span>
+          <span class="mr-src" title="{{m.source}}">{{m.source}}</span>
+          <span class="mr-sec" ng-class="'sec-'+vm.sectionClass(m.section)">{{m.section}}</span>
+          <span class="mr-tgt" title="{{m.target}}">{{m.target}}</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+</div>

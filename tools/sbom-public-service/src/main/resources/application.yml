@@ -8,8 +8,11 @@ spring:
     name: sbom-utils-service
   servlet:
     multipart:
-      max-file-size: 100MB
+      max-file-size: 150MB
       max-request-size: 200MB
   jmx:
     default-domain: sbom-utils-service
+sbom:
+  rules:
+    base-location: classpath:/rules
     

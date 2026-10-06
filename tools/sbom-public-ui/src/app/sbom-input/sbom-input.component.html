@@ -48,6 +48,28 @@ SPDX-License-Identifier: MIT -->
     </div>
   </div>
 </ng-template>
+<ng-template #convertConfirmModal let-close="close">
+  <div class="alert alert-warning" role="alert">
+    <div class="row">
+      <div class="col-md-12">
+        <strong>The {{ convertSourceSchema }} BOM converted to the {{ convertTargetSchema }} BOM. Data may be lost during the conversion. Are you sure to proceed?</strong>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-8">
+        <button style="margin-left: 20px" title="Click to Cancel" type="button" class="sbom-btn sbom-secondary float-right"
+          (click)="closeDialogBox()">
+          Cancel
+        </button>
+        <button style="margin-left: 20px" title="Click to Proceed" type="button" class="sbom-btn sbom-primary float-right"
+          (click)="proceedConvert()">
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
 <ng-template #errorDetailsModal let-close="close" position="top">
 
     <tabset #tabset>
@@ -79,7 +101,11 @@ SPDX-License-Identifier: MIT -->
                             <span *ngIf="fileToEdit.schemaType == 'spdx'">SPDX V2.3</span>
                             <span *ngIf="fileToEdit.schemaType == 'spdx2.2'">SPDX V2.2</span>
                             <span *ngIf="fileToEdit.schemaType == 'cyclonedx'">CycloneDX V1.4</span>
-                            <span *ngIf="fileToEdit.schemaType != 'spdx' && fileToEdit.schemaType != 'spdx2.2' && fileToEdit.schemaType != 'cyclonedx'">
+                            <span *ngIf="fileToEdit.schemaType == 'cdqspdx2.3'">SEPIA SPDX V2.3</span>
+                            <span *ngIf="fileToEdit.schemaType == 'cdqcydx'">SEPIA CycloneDX V1.6</span>
+                            <span *ngIf="fileToEdit.schemaType == 'automotivecydx1.6'">Automotive CycloneDX V1.6</span>
+                            <span *ngIf="fileToEdit.schemaType == 'automotivespdx2.3'">Automotive SPDX V2.3</span>
+                            <span *ngIf="fileToEdit.schemaType != 'spdx' && fileToEdit.schemaType != 'spdx2.2' && fileToEdit.schemaType != 'cyclonedx' && fileToEdit.schemaType != 'cdqspdx2.3' && fileToEdit.schemaType != 'cdqcydx'&& fileToEdit.schemaType != 'automotivecydx1.6' && fileToEdit.schemaType != 'automotivespdx2.3'">
                               {{ fileToEdit.schemaType | uppercase }} 1.0
                             </span>
                         </div>
@@ -148,6 +174,104 @@ SPDX-License-Identifier: MIT -->
               </div>
             <!-- </div> -->
         </tab>
+        <tab heading="Rule Violation List" style="padding: 20px;">
+           <h4>Events Based on Rules</h4>
+           <section class="severity-summary" aria-labelledby="severitySummaryHeading">
+            <h5 id="severitySummaryHeading">Severity Summary</h5>
+            <div class="severity-summary-items">
+              <div class="severity-summary-item severity-total">
+                <span>Total Events</span>
+                <strong>{{ fileToEdit.lossEvent.length }}</strong>
+              </div>
+              <div class="severity-summary-item">
+                <span class="severity-indicator severity-blocker" aria-hidden="true"></span>
+                <span>BLOCKER</span>
+                <strong>{{ getLossEventSeverityCount('blocker') }}</strong>
+              </div>
+              <div class="severity-summary-item">
+                <span class="severity-indicator severity-major" aria-hidden="true"></span>
+                <span>MAJOR</span>
+                <strong>{{ getLossEventSeverityCount('major') }}</strong>
+              </div>
+              <div class="severity-summary-item">
+                <span class="severity-indicator severity-minor" aria-hidden="true"></span>
+                <span>MINOR</span>
+                <strong>{{ getLossEventSeverityCount('minor') }}</strong>
+              </div>
+              <div class="severity-summary-item">
+                <span class="severity-indicator severity-informational" aria-hidden="true"></span>
+                <span>INFORMATIONAL</span>
+                <strong>{{ getLossEventSeverityCount('informational') }}</strong>
+              </div>
+            </div>
+           </section>
+           <div class="table-container">
+            <table id="lossEventTable" class="table table-hover table-striped m-table">
+              <thead>
+                <tr>
+                  <!-- <th width="10%">S No</th> -->
+                  <th width="10%">Rule Id</th>
+                  <th width="10%">Severity</th>
+                  <th width="10%">Kind</th>
+                  <th width="10%">Source Path</th>
+                  <th width="10%">Source Value</th>
+                  <th width="10%">Target Path</th>
+                  <th width="10%">Target Value</th>
+                  <th width="10%">Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of fileToEdit.lossEvent; let i = index">
+                  <!-- <td width="10%" style="padding-left: 30px;">{{ i + 1 }}</td> -->
+                  <td width="10%">{{ item.ruleId }}</td>
+                  <td width="10%" class="loss-event-severity">
+                    <span class="severity-indicator" [ngClass]="getLossEventSeverityClass(item.severity)" aria-hidden="true"></span>
+                    {{ item.severity }}
+                  </td>
+                  <td width="10%">{{ item.kind }}</td>
+                  <td width="10%">{{ item.sourcePath != null ? item.sourcePath : "-" }}</td>
+                  <td width="10%">{{ item.sourceValue != null ? item.sourceValue : "-" }}</td>
+                  <td width="10%">{{ item.targetPath != null ? item.targetPath : "-" }}</td>
+                  <td width="10%">{{ item.targetValue != null ? item.targetValue : "-" }}</td>
+                  <td width="10%">{{ item.reason != null ? item.reason : "-" }}</td>
+                </tr>
+              </tbody>
+              </table>
+            </div>
+        </tab>
+        <tab heading="Conversion Logs" style="padding: 20px;">
+            <h4>Conversion Log details</h4>
+            <div class="table-container">
+                <table id="logTable" class="table table-hover table-striped m-table">
+                    <thead>
+                        <tr>
+                            <!-- <th width="10%">S No</th> -->
+                            <th width="5%">Category</th>
+                            <th width="5%">Source Path</th>
+                            <th width="5%">Target Path</th>
+                            <th width="5%">Value</th>
+                            <th width="10%">Reason</th>
+                            <th width="10%">RuleId</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of fileToEdit.conversionDeltas; let i = index">
+                            <!-- <td width="10%" style="padding-left: 30px;">{{ i + 1 }}</td> -->
+                            <td width="5%">{{ item.category }}</td>
+                            <td width="5%">{{ item.sourcePath }}</td>
+                            <td width="5%">{{ item.targetPath }}</td>
+                            <td width="5%">{{ item.value }}</td>
+                            <td width="10%">{{ item.reason }}</td>
+                            <td width="10%">{{ item.ruleId }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="fileToEdit.conversionDeltas == null || fileToEdit.conversionDeltas.length == 0" class="alert alert-info text-center" role="alert">
+                  No data available
+                </div>
+            </div>
+
+        </tab>
     </tabset>
     <div class="row">
         <div class="col-md-8"></div>
@@ -172,9 +296,10 @@ SPDX-License-Identifier: MIT -->
 <ng-template #mergeModal let-close="close" position="top">
     <div class="merge-width">
         <div class="row">
-            <h4>{{ mergeType | uppercase }} Merge</h4>
+            <h4>Merge</h4>
         </div>
-        <div [hidden]="mergeType == 'cyclonedx'">
+        <!-- SPDX -->
+        <div [hidden]="(mergeType == 'cyclonedx' || mergeType == 'cdqcydx' || mergeType == 'cdqspdx2.3')">
             <div class="row">
                 <h4 style="font-size: 20px;">Package Information</h4>
             </div>
@@ -182,43 +307,139 @@ SPDX-License-Identifier: MIT -->
                 <div class="col-md-3">
                   <label for="packagename" class="form-label">Package name</label>
                   <input type="text" class="form-control custom-input" id="packagename" name="packagename" required
-                    [(ngModel)]="spdxMerged.packages[0].name" />
+                    [(ngModel)]="spdxMerged.packages[0].name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('packageName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('packageName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-3">
                     <label for="packageversion" class="form-label">Package version</label>
                     <input type="text" class="form-control custom-input" id="packageversion" name="packageversion" required
-                    [(ngModel)]="spdxMerged.packages[0].versionInfo" />
+                    [(ngModel)]="spdxMerged.packages[0].versionInfo"
+                    [ngClass]="{'is-invalid': isFieldInvalid('packageVersion', mergeType)}" />
+                    <div *ngIf="isFieldInvalid('packageVersion', mergeType)" class="text-danger" style="font-size: 12px;">
+                      This field is required
+                    </div>
                 </div>
                 <div class="col-md-3">
                   <label for="primary_package_purpose" class="form-label">Primary Package Purpose</label>
                   <select class="form-select custom-select-input" id="primary_package_purpose" name="primary_package_purpose"
-                    [(ngModel)]="spdxMerged.packages[0].primaryPackagePurpose" required>
+                    [(ngModel)]="spdxMerged.packages[0].primaryPackagePurpose" required
+                    [ngClass]="{'is-invalid': isFieldInvalid('primaryPackagePurpose', mergeType)}">
                     <option *ngFor="let type of primaryPackagePurposeList | keyvalue" [value]="type.key">
                       {{ type.value }}
                     </option>
                   </select>
+                  <div *ngIf="isFieldInvalid('primaryPackagePurpose', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-3">
                   <label for="PackageLicenseDeclared" class="form-label">Package License Declared</label>
                   <input type="text" class="form-control custom-input" id="PackageLicenseDeclared" name="PackageLicenseDeclared" required
-                  [(ngModel)]="spdxMerged.packages[0].licenseDeclared" />
+                  [(ngModel)]="spdxMerged.packages[0].licenseDeclared"
+                  [ngClass]="{'is-invalid': isFieldInvalid('licenseDeclared', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('licenseDeclared', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                   <label for="creators_organization" class="form-label">Creators Organization</label>
                   <input type="text" class="form-control custom-input" id="creators_organization" name="creators_organization" required
-                  [(ngModel)]="spdxMerged.creationInfo.creators[1]" />
+                  [(ngModel)]="spdxMerged.creationInfo.creators[1]"
+                  [ngClass]="{'is-invalid': isFieldInvalid('creatorsOrganization', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('creatorsOrganization', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label for="creators_person" class="form-label">Creators Person</label>
                   <input type="text" class="form-control custom-input" id="creators_person" name="creators_person" required
-                    [(ngModel)]="spdxMerged.creationInfo.creators[2]" />
+                    [(ngModel)]="spdxMerged.creationInfo.creators[2]"
+                    [ngClass]="{'is-invalid': isFieldInvalid('creatorsPerson', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('creatorsPerson', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
             </div>
 
         </div>
-        <div [hidden]="mergeType == 'spdx'">
+        <!-- SEPIA SPDX 2.3 -->
+        <div [hidden]="(mergeType == 'cyclonedx' || mergeType == 'cdqcydx' || mergeType == 'spdx')">
+            <div class="row">
+                <h4 style="font-size: 20px;">SEPIA Package Information</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="packagename" class="form-label">Package name <span style="color: red;">*</span></label>
+                  <input type="text" class="form-control custom-input" id="packagename" name="packagename" required
+                    [(ngModel)]="cdqSpdxMerged.packages[0].name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('packageName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('packageName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="packageversion" class="form-label">Package version <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control custom-input" id="packageversion" name="packageversion" required
+                    [(ngModel)]="cdqSpdxMerged.packages[0].versionInfo"
+                    [ngClass]="{'is-invalid': isFieldInvalid('packageVersion', mergeType)}" />
+                    <div *ngIf="isFieldInvalid('packageVersion', mergeType)" class="text-danger" style="font-size: 12px;">
+                      This field is required
+                    </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="primary_package_purpose" class="form-label">Primary Package Purpose <span style="color: red;">*</span></label>
+                  <select class="form-select custom-select-input" id="primary_package_purpose" name="primary_package_purpose"
+                    [(ngModel)]="cdqSpdxMerged.packages[0].primaryPackagePurpose" required
+                    [ngClass]="{'is-invalid': isFieldInvalid('primaryPackagePurpose', mergeType)}">
+                    <option *ngFor="let type of primaryPackagePurposeList | keyvalue" [value]="type.key">
+                      {{ type.value }}
+                    </option>
+                  </select>
+                  <div *ngIf="isFieldInvalid('primaryPackagePurpose', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="PackageLicenseConcluded" class="form-label">Package License Concluded(Optional)</label>
+                  <input type="text" class="form-control custom-input" id="PackageLicenseConcluded" name="PackageLicenseConcluded" required
+                  [(ngModel)]="cdqSpdxMerged.packages[0].licenseConcluded" />
+                </div>
+            </div>
+            <div class="row">
+                 <div class="col-md-3">
+                  <label for="external_refcategory" class="form-label">External Reference Category <span style="color: red;">*</span></label>
+                  <select class="form-select custom-select-input" id="external_refcategory" name="external_refcategory"
+                    [(ngModel)]="cdqSpdxMerged.packages[0].externalRefs[0].referenceCategory" required
+                    [ngClass]="{'is-invalid': isFieldInvalid('externalRefCategory', mergeType)}">
+                    <option *ngFor="let type of referenceCategoryList | keyvalue" [value]="type.key">
+                      {{ type.value }}
+                    </option>
+                  </select>
+                  <div *ngIf="isFieldInvalid('externalRefCategory', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                  <label for="creators_organization" class="form-label">Creators Organization(Optional)</label>
+                  <input type="text" class="form-control custom-input" id="creators_organization" name="creators_organization" required
+                  [(ngModel)]="cdqSpdxMerged.creationInfo.creators[1]" />
+                </div>
+                <div class="col-md-6">
+                  <label for="creators_person" class="form-label">Creators Person(Optional)</label>
+                  <input type="text" class="form-control custom-input" id="creators_person" name="creators_person" required
+                    [(ngModel)]="cdqSpdxMerged.creationInfo.creators[2]" />
+                </div>
+            </div>
+        </div>
+        <!-- CycloneDX -->
+        <div [hidden]="(mergeType == 'spdx' || mergeType == 'cdqspdx2.3' || mergeType == 'cdqcydx')">
             <div class="row">
                 <h4 style="font-size: 20px;">Metadata</h4>
             </div>
@@ -226,70 +447,275 @@ SPDX-License-Identifier: MIT -->
                 <div class="col-md-3">
                   <label for="meta_comp_name" class="form-label">Component Name</label>
                   <input type="text" class="form-control custom-input" id="meta_comp_name" name="meta_comp_name" required
-                    [(ngModel)]="cdxMerged.metadata.component.name" />
+                    [(ngModel)]="cdxMerged.metadata.component.name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('componentName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('componentName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-3">
                     <label for="meta_comp_group" class="form-label">Component Group</label>
                     <input type="text" class="form-control custom-input" id="meta_comp_group" name="meta_comp_group" required
-                      [(ngModel)]="cdxMerged.metadata.component.group" />
+                      [(ngModel)]="cdxMerged.metadata.component.group"
+                      [ngClass]="{'is-invalid': isFieldInvalid('componentGroup', mergeType)}" />
+                    <div *ngIf="isFieldInvalid('componentGroup', mergeType)" class="text-danger" style="font-size: 12px;">
+                      This field is required
+                    </div>
                 </div>
                 <div class="col-md-3">
                   <label for="meta_comp_type" class="form-label">Component Type</label>
                   <select class="form-select custom-select-input" id="meta_comp_type" name="meta_comp_type"
-                    [(ngModel)]="cdxMerged.metadata.component.type" required>
+                    [(ngModel)]="cdxMerged.metadata.component.type" required
+                    [ngClass]="{'is-invalid': isFieldInvalid('componentType', mergeType)}">
                     <option *ngFor="let type of compTypeList | keyvalue" [value]="type.key">
                       {{ type.value }}
                     </option>
                   </select>
+                  <div *ngIf="isFieldInvalid('componentType', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-3">
                    <label for="meta_comp_version" class="form-label">Component Version</label>
                    <input type="text" class="form-control custom-input" id="meta_comp_version" name="meta_comp_version" required
-                      [(ngModel)]="cdxMerged.metadata.component.version" />
+                      [(ngModel)]="cdxMerged.metadata.component.version"
+                      [ngClass]="{'is-invalid': isFieldInvalid('componentVersion', mergeType)}" />
+                   <div *ngIf="isFieldInvalid('componentVersion', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                   </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
                   <label for="merge_license_info_type" class="form-label">Component License Information Type</label>
                   <select class="form-select custom-select-input" id="merge_license_info_type" name="merge_license_info_type"
-                    [(ngModel)]="mergeLicenseInfoType" (change)="clearLicenses()" required>
+                    [(ngModel)]="mergeLicenseInfoType" (change)="clearLicenses()" required
+                    [ngClass]="{'is-invalid': isFieldInvalid('licenseInfoType', mergeType)}">
                     <option *ngFor="let infoType of licenseInfoTypes" [value]="infoType.value">
                       {{ infoType.label }}
                     </option>
                   </select>
+                  <div *ngIf="isFieldInvalid('licenseInfoType', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-3" [hidden]="mergeLicenseInfoType != 'licId'">
                     <label for="license_id" class="form-label">Component License ID</label>
                     <select class="form-select custom-select-input" id="license_id" name="license_id"
-                      [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.id" required>
+                      [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.id" required
+                      [ngClass]="{'is-invalid': isFieldInvalid('licenseId', mergeType)}">
                       <option *ngFor="let idType of licenseIdTypes | keyvalue" [value]="idType.key">
                         {{ idType.value }}
                       </option>
                     </select>
+                    <div *ngIf="isFieldInvalid('licenseId', mergeType)" class="text-danger" style="font-size: 12px;">
+                      This field is required
+                    </div>
                 </div>
                 <div class="col-md-6" [hidden]="mergeLicenseInfoType != 'licName'">
                   <label for="license_name" class="form-label">Component License Name</label>
                   <input type="text" class="form-control custom-input" id="license_name" name="license_name" required
-                    [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.name" />
+                    [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('licenseName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('licenseName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-6" [hidden]="mergeLicenseInfoType != 'licText'">
                   <label for="license_text" class="form-label">Component License Text</label>
                   <textarea class="form-control custom-input" id="license_text" name="license_text" rows="4"
-                    [(ngModel)]="this.cdxMerged.metadata.component.licenses[0].license.text.content"></textarea>
+                    [(ngModel)]="cdxMerged.metadata.component.licenses[0].expression"
+                    [ngClass]="{'is-invalid': isFieldInvalid('licenseText', mergeType)}"></textarea>
+                  <div *ngIf="isFieldInvalid('licenseText', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
                   <label for="meta_sup_name" class="form-label">Supplier Name</label>
                   <input type="text" class="form-control custom-input" id="meta_sup_name" name="meta_sup_name" required
-                    [(ngModel)]="cdxMerged.metadata.supplier.name" />
+                    [(ngModel)]="cdxMerged.metadata.supplier.name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('supplierName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('supplierName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label for="meta_sup_email" class="form-label">Supplier Contact Email</label>
                   <input type="text" class="form-control custom-input" id="meta_sup_email" name="meta_sup_email" required
-                    [(ngModel)]="cdxMerged.metadata.supplier.contact[0].email" />
+                    [(ngModel)]="cdxMerged.metadata.supplier.contact[0].email"
+                    [ngClass]="{'is-invalid': isFieldInvalid('supplierEmail', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('supplierEmail', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
                 </div>
             </div>
+        </div>
+        <!--SEPIA CycloneDX 1.6-->
+        <div [hidden]="(mergeType == 'spdx' || mergeType == 'cdqspdx2.3' || mergeType == 'cyclonedx')">
+            <div class="row">
+              <h4 style="font-size: 20px;">SEPIA CycloneDX Metadata</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="meta_comp_name" class="form-label">Component Name <span style="color: red;">*</span></label>
+                  <input type="text" class="form-control custom-input" id="meta_comp_name" name="meta_comp_name" required
+                    [(ngModel)]="cdqCydxMerged.metadata.component.name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('componentName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('componentName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="meta_comp_group" class="form-label">Component Group <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control custom-input" id="meta_comp_group" name="meta_comp_group" required
+                      [(ngModel)]="cdqCydxMerged.metadata.component.group"
+                      [ngClass]="{'is-invalid': isFieldInvalid('componentGroup', mergeType)}" />
+                    <div *ngIf="isFieldInvalid('componentGroup', mergeType)" class="text-danger" style="font-size: 12px;">
+                      This field is required
+                    </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="meta_comp_type" class="form-label">Component Type <span style="color: red;">*</span></label>
+                  <select class="form-select custom-select-input" id="meta_comp_type" name="meta_comp_type"
+                    [(ngModel)]="cdqCydxMerged.metadata.component.type" required
+                    [ngClass]="{'is-invalid': isFieldInvalid('componentType', mergeType)}">
+                    <option *ngFor="let type of cdqcompTypeList | keyvalue" [value]="type.key">
+                      {{ type.value }}
+                    </option>
+                  </select>
+                  <div *ngIf="isFieldInvalid('componentType', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+                </div>
+                <div class="col-md-3">
+                   <label for="meta_comp_version" class="form-label">Component Version <span style="color: red;">*</span></label>
+                   <input type="text" class="form-control custom-input" id="meta_comp_version" name="meta_comp_version" required
+                      [(ngModel)]="cdqCydxMerged.metadata.component.version"
+                      [ngClass]="{'is-invalid': isFieldInvalid('componentVersion', mergeType)}" />
+                   <div *ngIf="isFieldInvalid('componentVersion', mergeType)" class="text-danger" style="font-size: 12px;">
+                     This field is required
+                   </div>
+                </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                  <label for="meta_comp_purl" class="form-label">Component PURL <span style="color: red;">*</span></label>
+                  <input type="text" class="form-control custom-input" id="meta_comp_purl" name="meta_comp_purl" required
+                    [(ngModel)]="cdqCydxMerged.metadata.component.purl"
+                    [ngClass]="{'is-invalid': isFieldInvalid('componentPurl', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('componentPurl', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+              </div>
+              <div class="col-md-3">
+                 <label for="merge_license_info_type" class="form-label">Component License Information Type</label>
+                  <select class="form-select custom-select-input" id="merge_license_info_type" name="merge_license_info_type"
+                    [(ngModel)]="cdqMergeLicenseInfoType" (change)="cdqclearLicenses()" required>
+                    <option *ngFor="let infoType of cdqLicenseInfoTypes" [value]="infoType.value">
+                      {{ infoType.label }}
+                    </option>
+                  </select>
+              </div>
+              <div class="col-md-3" *ngIf="cdqMergeLicenseInfoType === 'licId'">
+                    <label for="license_id" class="form-label">Component License ID(Optional)</label>
+                    <select class="form-select custom-select-input" id="license_id" name="license_id"
+                      [(ngModel)]="this.cdqCydxMerged.metadata.component.licenses[0].license!.id" required>
+                      <option *ngFor="let idType of cdqLicenseIdTypes | keyvalue" [value]="idType.key">
+                        {{ idType.value }}
+                      </option>
+                    </select>
+              </div>
+              <div class="col-md-3" *ngIf="cdqMergeLicenseInfoType === 'licName'">
+                  <label for="license_name" class="form-label">Component License Name(Optional)</label>
+                  <input type="text" class="form-control custom-input" id="license_name" name="license_name" required
+                    [(ngModel)]="this.cdqCydxMerged.metadata.component.licenses[0].license!.name" />
+              </div>
+              <div class="col-md-3" *ngIf="cdqMergeLicenseInfoType === 'licText'">
+                  <label for="license_text" class="form-label">Component License Expression(Optional)</label>
+                  <textarea class="form-control custom-input" id="license_text" name="license_text" rows="4"
+                    [(ngModel)]="cdqCydxMerged.metadata.component.licenses[0].expression"></textarea>
+              </div>
+              <div class="col-md-3">
+                  <label for="meta_externalRef_url" class="form-label">ExternalReferences URL(Optional)</label>
+                  <input type="text" class="form-control custom-input" id="meta_externalRef_url" name="meta_externalRef_url" required
+                    [(ngModel)]="cdqCydxMerged.metadata.component.externalReferences[0].url" />
+              </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="meta_sup_name" class="form-label">Supplier Name <span style="color: red;">*</span></label>
+                  <input type="text" class="form-control custom-input" id="meta_sup_name" name="meta_sup_name" required
+                    [(ngModel)]="cdqCydxMerged.metadata.supplier.name"
+                    [ngClass]="{'is-invalid': isFieldInvalid('supplierName', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('supplierName', mergeType)" class="text-danger" style="font-size: 12px;">
+                    This field is required
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="meta_sup_email" class="form-label">Supplier Contact Email(Optional)</label>
+                  <input type="text" class="form-control custom-input" id="meta_sup_email" name="meta_sup_email" required
+                    [(ngModel)]="cdqCydxMerged.metadata.supplier.contact[0].email" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                  <label for="meta_authors_name" class="form-label">Authors Name <span style="color: red;">*</span></label>
+                  <input type="text" class="form-control custom-input" id="meta_authors_name" name="meta_authors_name"
+                    [(ngModel)]="cdqCydxMerged.metadata.authors[0].name"
+                    [disabled]="isManufacturerNameDisabled()"
+                    [ngClass]="{'is-invalid': isFieldInvalid('authorsOrManufacturer', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('authorsOrManufacturer', mergeType)" class="text-danger" style="font-size: 12px;">
+                    Either Authors Name or Manufacturer Name is required
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-center justify-content-center" style="min-height: 48px;">
+                  <label style="margin: 0; font-weight: 800; color: #292828;">OR</label>
+            </div>
+            <div class="row">
+                 <div class="col-md-3">
+                  <label for="meta_manufacturer_name" class="form-label">Manufacturer Name <span style="color: red;">*</span></label>
+                  <input type="text" class="form-control custom-input" id="meta_manufacturer_name" name="meta_manufacturer_name"
+                    [(ngModel)]="cdqCydxMerged.metadata.manufacturer.name"
+                    [disabled]="isAuthorsNameDisabled()"
+                    [ngClass]="{'is-invalid': isFieldInvalid('authorsOrManufacturer', mergeType)}" />
+                  <div *ngIf="isFieldInvalid('authorsOrManufacturer', mergeType)" class="text-danger" style="font-size: 12px;">
+                    Either Authors Name or Manufacturer Name is required
+                  </div>
+                </div>
+            </div>
+            <!-- SEPIA Metadata License Information
+            <div class="row">
+              <div class="col-md-3">
+                 <label for="merge_license_info_type" class="form-label">Metadata License Information Type</label>
+                  <select class="form-select custom-select-input" id="merge_license_info_type" name="merge_license_info_type"
+                    [(ngModel)]="cdqMergeMetaLicenseInfoType" (change)="cdqMetadataClearLicenses()" required>
+                    <option *ngFor="let infoType of cdqLicenseInfoTypes" [value]="infoType.value">
+                      {{ infoType.label }}
+                    </option>
+                  </select>
+              </div>
+              <div class="col-md-3" [hidden]="cdqMergeMetaLicenseInfoType != 'licId'">
+                    <label for="metadata_license_id" class="form-label">Metadata License ID</label>
+                    <select class="form-select custom-select-input" id="metadata_license_id" name="metadata_license_id"
+                      [(ngModel)]="this.cdqCydxMerged.metadata.licenses[0].license.id" required>
+                      <option *ngFor="let idType of cdqLicenseIdTypes | keyvalue" [value]="idType.key">
+                        {{ idType.value }}
+                      </option>
+                    </select>
+              </div>
+              <div class="col-md-6" [hidden]="cdqMergeMetaLicenseInfoType != 'licName'">
+                  <label for="license_name" class="form-label">Metadata License Name</label>
+                  <input type="text" class="form-control custom-input" id="license_name" name="license_name" required
+                    [(ngModel)]="this.cdqCydxMerged.metadata.licenses[0].license.name" />
+              </div>
+            </div>
+             -->
+
         </div>
         <div class="row">
             <div class="col-md-8"></div>
@@ -300,13 +726,17 @@ SPDX-License-Identifier: MIT -->
                     <!-- mergeModal -->
                 </button>
                 <button style="margin-left: 20px" title="Submit" type="button" class="sbom-btn sbom-primary float-right"
-                    (click)="mergeSelectedBoms(errorDetailsModal)">
+                    (click)="validateAndMerge(errorDetailsModal)">
                     Submit
                 </button>
             </div>
         </div>
     </div>
 </ng-template>
+
+<div *ngIf="mergeFormValidationMessage" class="alert alert-danger" role="alert" style="margin-top: 10px;">
+  <strong>Validation Error:</strong> {{ mergeFormValidationMessage }}
+</div>
 
 <div *ngIf="isDialogBoxOpen" class="dialogBox-overlay">
   <div class="dialogBox">
@@ -346,7 +776,7 @@ SPDX-License-Identifier: MIT -->
           <input type="file" class="form-control" style="border: 1px solid black; border-radius: 4px;" id="sbomFile"
             accept=".json" (change)="uploadFile(inputForm, false,$event)" [(ngModel)]="fileToUpload.sbomFile" name="sbomFile"
             #fileInput>
-          <div *ngIf="fileName" style="margin-top: 5px; color: gray;">
+          <div *ngIf="fileName" style="margin-top: 5px; color: rgb(14, 14, 14); font-weight: bold;">
             Selected File: {{ fileName }}
           </div>
           <div *ngIf="!fileName" class="text-danger">
@@ -373,7 +803,7 @@ SPDX-License-Identifier: MIT -->
               <input type="file" class="form-control" style="border: 1px solid black; border-radius: 4px;" id="schemaFile"
                 accept=".json" (change)="uploadFile(inputForm, true,$event)" [(ngModel)]="fileToUpload.schemaFile" name="schemaFile"
                 multiple>
-                <div *ngIf="schemafileName" style="margin-top: 5px; color: gray;">
+                <div *ngIf="schemafileName" style="margin-top: 5px; color: rgb(15, 15, 15)10, 10, 10); font-weight: bold;">
                   Selected Schema File: {{ schemafileName }}
                 </div>
                 <div *ngIf="!schemafileName" class="text-danger">
@@ -439,7 +869,11 @@ SPDX-License-Identifier: MIT -->
                          <span *ngIf="item.schemaType == 'spdx'">SPDX V2.3</span>
                          <span *ngIf="item.schemaType == 'spdx2.2'">SPDX V2.2</span>
                          <span *ngIf="item.schemaType == 'cyclonedx'">CycloneDX V1.4</span>
-                         <span *ngIf="item.schemaType != 'spdx' && item.schemaType != 'spdx2.2' && item.schemaType != 'cyclonedx'">
+                         <span *ngIf="item.schemaType == 'cdqcydx'">SEPIA CycloneDX V1.6</span>
+                         <span *ngIf="item.schemaType == 'cdqspdx2.3'">SEPIA SPDX V2.3</span>
+                         <span *ngIf="item.schemaType == 'automotivecydx1.6'">Automotive CycloneDX V1.6</span>
+                         <span *ngIf="item.schemaType == 'automotivespdx2.3'">Automotive SPDX V2.3</span>
+                         <span *ngIf="item.schemaType != 'spdx' && item.schemaType != 'spdx2.2' && item.schemaType != 'cyclonedx' && item.schemaType != 'cdqcydx' && item.schemaType != 'cdqspdx2.3' && item.schemaType != 'automotivecydx1.6' && item.schemaType != 'automotivespdx2.3'">
                           {{ item.schemaType | uppercase }} 1.0
                          </span>
                     </td>
@@ -461,8 +895,8 @@ SPDX-License-Identifier: MIT -->
                       <button class="sbom-btn sbom-link" type="button" title="Edit">
                         <i class="fa-solid fa-pen-to-square" (click)="selectFileToEdit(item,errorDetailsModal)"></i>
                       </button>
-                      <button class="sbom-btn sbom-link" type="button" title="Convert" hidden="false">
-                        <i class="fa-solid fa-left-right" (click)="convertSboms(item)"></i>
+                      <button class="sbom-btn sbom-link" type="button" title="Convert" [disabled]="!canConvert(item)">
+                        <i class="fa-solid fa-left-right" (click)="confirmConvert(item,errorDetailsModal)"></i>
                       </button>
                       <button class="sbom-btn sbom-link" type="button" title="Download" (click)="downloadContent(item, false)">
                         <i class="fa-solid fa-download"></i>

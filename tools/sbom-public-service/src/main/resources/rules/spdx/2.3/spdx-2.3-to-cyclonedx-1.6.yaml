@@ -1,0 +1,1529 @@
+# Parts of this file are created by genAI by using GitHub Copilot. 
+# This notice needs to remain attached to any reproduction of or excerpt from this file.
+
+
+# SPDX-FileCopyrightText: Copyright (C) 2026 Contributors to SEPIA
+#
+# SPDX-License-Identifier: MIT
+# =====================================================================
+# COMPLETE mapping rules (mandatory + optional): SPDX 2.3 -> CycloneDX 1.6
+# Version 3.0.0 - consolidates and supersedes:
+#   spdx-2_3-to-cyclonedx-1_6-mandatory.yaml v2.0.0
+#   spdx-2_3-to-cyclonedx-1_6-optional.yaml  v2.0.0 (v1.0.0 header, v2 content)
+#
+# Authority for the mandatory (MAN-) set: Samplemapping.xlsx read in
+# reverse. Gap authority for this revision: Missing_Fields.xlsx
+# (2026-08-20) plus a full path-diff of CDQspdx_2_3_schema.json against
+# rule sourcePaths.
+#
+# Dialect: Rules_Descriptions_Yaml.xlsx with the agreed extensions
+# (owner decisions 2026-08-14 and 2026-08-20) - see the forward file
+# header for the full list.
+#
+# CHANGES LOCKED 2026-08-20 (this revision):
+#   1. Option A rule-splitting APPLIED. template.args strings contain no
+#      function calls. Validation invariant: every {token} in template
+#      args must either be an ENGINE VARIABLE - {value}, {field}, {index}
+#      - or name a source field declared in the rule's sourcePath.
+#      Rules split from one v2.0.0 rule share an xsplitGroup key.
+#      Split rules replace: OPT-SPDX-DOC-ANNOTATIONS-001,
+#      OPT-SPDX-PKG-EXTREF-OTHER-001, OPT-SPDX-PKG-ANNOTATIONS-001,
+#      OPT-SPDX-PKG-ORIGINATOR-001, OPT-SPDX-FILE-CORE-001,
+#      OPT-SPDX-FILE-ANNOTATIONS-001, OPT-SPDX-EXTRACTEDLIC-001,
+#      OPT-SPDX-EXTDOCREF-001, MAN-RELATIONSHIP-DEPENDENCY-001.
+#   2. Sections lost in full now enumerate their IMMEDIATE children in
+#      sourcePath (revieweds, snippets - per Missing_Fields.xlsx).
+#   3. Duplicate rules deduplicated (MAN- kept, OPT- dropped):
+#      bomFormat, specVersion, version constants; DEPENDS_ON/
+#      DEPENDENCY_OF relationship mapping (was in both files).
+#   4. NEW coverage: SPDX document "name" now degrades to the property
+#      spdx:document:name (it had no reverse rule at all - path diff).
+#   5. Sibling-field defect fixed: OPT-SPDX-EXTRACTEDLIC-COMMENT-
+#      DEGRADED-001 now declares licenseId in sourcePath.
+#   6. Reference rewriting: OPT-SPDX-PKG-SPDXID-001 registers the
+#      SPDXID -> bom-ref table; relationship/annotation/dependency
+#      endpoints are rewritten through it (RENAMED events).
+#
+# CycloneDX validity notes:
+#   * bomFormat, specVersion, version are spec-mandatory -> constants.
+#   * components[].type is spec-mandatory on EVERY component; mapped
+#     from primaryPackagePurpose where present, else fabricated as
+#     "library" (house-policy, FABRICATED event).
+#   * CDQ SCHEMA FINDING (2026-08-20): CDQcyclonedx_1_6.json marks
+#     "version" AND "purl" required on every component (stricter than
+#     upstream CycloneDX 1.6). A package with no versionInfo or no purl
+#     external reference therefore converts to a CDQ-schema-invalid
+#     component. Both rules keep prohibitFabrication: true - the loss
+#     is recorded MAJOR instead of inventing identity data. Owner
+#     decision needed if CDQ validity must be guaranteed.
+#   * serialNumber must match urn:uuid:*; a documentNamespace that is
+#     not a urn:uuid URI is unmappable and a fresh serial is fabricated.
+#
+# STILL OPEN (unchanged by this revision):
+#   * authors-XOR-manufacturer conditional (engine conformance TODO).
+#   * "fabricate"-as-rule-key vs "constant"-as-transform decision.
+#
+# Extension keys (x-*) are non-normative; engines must ignore them.
+# =====================================================================
+ruleSetId: spdx-2.3-to-cyclonedx-1.6
+version: 3.0.2
+description: Consolidated mandatory + optional rules for the generic SBOM mapping engine, SPDX 2.3 source, CycloneDX 1.6 target. Supersedes the separate v2.0.0 mandatory and optional files.
+appliesTo:
+  source:
+    format: spdx
+    version: "2.3"
+  target:
+    format: cyclonedx
+    version: "1.6"
+defaults:
+  onAbsent: annotate
+  onUnmappable: annotate
+  defaultSeverityIfLost: MAJOR
+  authority: spec
+allowedTransforms:
+  - identity
+  - join
+  - template
+  - enumMap
+  - firstOnly
+  - normalizeToSingleLine
+  - constant
+  - prefixStrip
+  - idNormalize
+  - uuidExtract
+rules:
+
+  # ==================================================================
+  # MANDATORY SET (Samplemapping.xlsx authority, reversed)
+  # ==================================================================
+
+  # ------------------------------------------------------------------
+  # Spec-mandatory CycloneDX document constants (fabricated)
+  # ------------------------------------------------------------------
+  - ruleId: MAN-CDX-BOMFORMAT-001
+    sourcePath: null
+    targetPath: bomFormat
+    cardinality: one-to-one
+    transform: {function: constant, args: {value: "CycloneDX"}}
+    onAbsent: drop
+    onUnmappable: fail
+    severityIfLost: BLOCKER
+    authority: spec
+    prohibitFabrication: false
+    xbucket: fabricated
+
+  - ruleId: MAN-CDX-SPECVERSION-001
+    sourcePath: null
+    targetPath: specVersion
+    cardinality: one-to-one
+    transform: {function: constant, args: {value: "1.6"}}
+    onAbsent: drop
+    onUnmappable: fail
+    severityIfLost: BLOCKER
+    authority: spec
+    prohibitFabrication: false
+    xbucket: fabricated
+
+  - ruleId: MAN-CDX-BOMVERSION-001
+    description: SPDX 2.3 has no document-revision field, so the BOM revision is fixed at 1.
+    sourcePath: null
+    targetPath: version
+    cardinality: one-to-one
+    transform: {function: constant, args: {value: 1}}
+    onAbsent: drop
+    onUnmappable: fail
+    severityIfLost: MINOR
+    authority: spec
+    prohibitFabrication: false
+    xbucket: fabricated
+
+  # ------------------------------------------------------------------
+  # Document identity (sheet rows 17, 18)
+  # ------------------------------------------------------------------
+  - ruleId: MAN-CREATED-TIMESTAMP-001
+    description: Sheet row 17. creationInfo.created is spec-mandatory in SPDX, so onAbsent indicates an invalid source document.
+    sourcePath: creationInfo.created
+    targetPath: metadata.timestamp
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-NAMESPACE-SERIALNUMBER-001
+    description: 'Sheet row 18. serialNumber must match urn:uuid:<uuid>. uuidExtract pulls the RFC 4122 UUID embedded in documentNamespace (e.g. http://spdx.org/spdxdocs/example-444504E0-4F89-41D3-9A0C-0305E82C3301) and reshapes it as urn:uuid:<uuid> (MODIFIED); a namespace already in urn:uuid form passes through unchanged; a namespace carrying no UUID has a fresh urn:uuid serial fabricated (FABRICATED), the original namespace captured in the loss event (recordSourceValue).'
+    sourcePath: documentNamespace
+    targetPath: serialNumber
+    cardinality: one-to-one
+    transform: {function: uuidExtract, args: {format: "urn:uuid:{value}", onNoMatch: fabricate}}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: false
+    xbucket: native
+
+  # ------------------------------------------------------------------
+  # creators -> metadata (sheet rows 6, 14, 15, 16)
+  # ------------------------------------------------------------------
+  - ruleId: MAN-CREATOR-ORG-SUPPLIER-001
+    description: 'Sheet row 6. The Organization creator becomes the BOM supplier organisation.'
+    sourcePath: "creationInfo.creators[?startsWith 'Organization: ']"
+    targetPath: metadata.supplier.name
+    cardinality: one-to-one
+    transform:
+      function: prefixStrip
+      args: {prefix: "Organization: "}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-CREATOR-PERSON-AUTHORS-001
+    description: 'Sheet row 14, conditional pair with row 16. Person creators become BOM authors. A trailing "(email)" stays inside the name string (MODIFIED); e-mail splitting is not expressible with the agreed transforms.'
+    sourcePath: "creationInfo.creators[?startsWith 'Person: ']"
+    targetPath: metadata.authors[].name
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefix: "Person: "}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-CREATOR-ORG-MANUFACTURER-001
+    description: 'Sheet row 16, conditional pair with row 14 - emitted only when no Person creator exists (engine-evaluated condition; this dialect has no conditional construct). Duplicates the Organization creator into metadata.manufacturer for automation-generated BOMs.'
+    sourcePath: "creationInfo.creators[?startsWith 'Organization: ']"
+    targetPath: metadata.manufacturer.name
+    cardinality: one-to-one
+    transform:
+      function: prefixStrip
+      args: {prefix: "Organization: "}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: house-policy
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-CREATOR-TOOL-TOOLS-001
+    description: 'Sheet row 15. Tool creators become metadata.tools.components entries. The whole "name-version" token is kept as the component name (MODIFIED); reliable splitting is not possible because tool names may contain hyphens. Note - metadataToolsComponent requires only "name" in the CDQ schema, so no type constant is fabricated.'
+    sourcePath: "creationInfo.creators[?startsWith 'Tool: ']"
+    targetPath: metadata.tools.components[].name
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefix: "Tool: "}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  # ------------------------------------------------------------------
+  # Root package -> metadata.component (sheet rows 1, 3, 4, 9).
+  # "The root package" = the package referenced by documentDescribes
+  # (or the target of a DESCRIBES relationship); REPARENTED. The first
+  # documentDescribes entry that resolves to an existing package is used,
+  # so a dangling reference at documentDescribes[0] does not suppress it.
+  # ------------------------------------------------------------------
+  - ruleId: MAN-ROOT-NAME-001
+    description: Sheet row 1.
+    sourcePath: "packages[?SPDXID in documentDescribes].name"
+    targetPath: metadata.component.name
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: BLOCKER
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-ROOT-BOMREF-001
+    description: 'The described (root) package''s SPDXID becomes metadata.component.bom-ref after SPDXRef- strip, mirroring OPT-SPDX-PKG-SPDXID-001 for ordinary components and keeping dependency/relationship endpoints resolvable to the root component.'
+    sourcePath: "packages[?SPDXID in documentDescribes].SPDXID"
+    targetPath: metadata.component.bom-ref
+    cardinality: one-to-one
+    transform:
+      function: prefixStrip
+      args: {prefix: "SPDXRef-"}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-ROOT-DOCUMENTDESCRIBES-001
+    sourcePath: documentDescribes[]
+    targetPath: metadata.properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:file:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: MAN-ROOT-TYPE-001
+    description: 'Sheet row 3. primaryPackagePurpose maps onto the spec-mandatory component type. SOURCE/ARCHIVE/INSTALL/OTHER have no CycloneDX counterpart and coerce per house policy.'
+    sourcePath: "packages[?SPDXID in documentDescribes].primaryPackagePurpose"
+    targetPath: metadata.component.type
+    cardinality: one-to-one
+    transform:
+      function: enumMap
+      args:
+        table:
+          APPLICATION: application
+          FRAMEWORK: framework
+          LIBRARY: library
+          CONTAINER: container
+          OPERATING_SYSTEM: operating-system
+          DEVICE: device
+          FIRMWARE: firmware
+          FILE: file
+          SOURCE: library
+          ARCHIVE: file
+          INSTALL: application
+          OTHER: library
+        default: library
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: house-policy
+    prohibitFabrication: false
+    xbucket: native
+
+  - ruleId: MAN-ROOT-VERSION-001
+    description: Sheet row 4. See CDQ SCHEMA FINDING in the header - version is required on every CDQ component.
+    sourcePath: "packages[?SPDXID in documentDescribes].versionInfo"
+    targetPath: metadata.component.version
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: annotate
+    onUnmappable: fail
+    severityIfLost: MAJOR
+    authority: house-policy
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-ROOT-PURL-001
+    description: Sheet row 9. The purl external reference of the root package returns to the first-class purl field. See CDQ SCHEMA FINDING - purl is required on every CDQ component; absence is a MAJOR loss, not fabricated.
+    sourcePath: "packages[?SPDXID in documentDescribes].externalRefs[?referenceType=='purl'].referenceLocator"
+    targetPath: metadata.component.purl
+    cardinality: one-to-one
+    transform: {function: firstOnly}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  # ------------------------------------------------------------------
+  # Packages -> components (sheet rows 20, 21, 22, 23)
+  # ------------------------------------------------------------------
+  - ruleId: MAN-PACKAGE-NAME-001
+    sourcePath: packages[].name
+    targetPath: components[].name
+    cardinality: one-to-many
+    transform: {function: identity}
+    onAbsent: fail
+    onUnmappable: fail
+    severityIfLost: BLOCKER
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-PACKAGE-VERSION-001
+    description: Sheet row 21. versionInfo is optional in the SPDX spec, so absence is annotated rather than failed. See CDQ SCHEMA FINDING - the resulting component is CDQ-schema-invalid without it.
+    sourcePath: packages[].versionInfo
+    targetPath: components[].version
+    cardinality: one-to-many
+    transform: {function: identity}
+    onAbsent: annotate
+    onUnmappable: fail
+    severityIfLost: MAJOR
+    authority: house-policy
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-PACKAGE-TYPE-001
+    description: 'primaryPackagePurpose maps onto the spec-mandatory components[].type for every package (sheet row 3 names only the root, but CycloneDX requires type everywhere). Paired with the fabrication default below.'
+    sourcePath: packages[].primaryPackagePurpose
+    targetPath: components[].type
+    cardinality: one-to-many
+    transform:
+      function: enumMap
+      args:
+        table:
+          APPLICATION: application
+          FRAMEWORK: framework
+          LIBRARY: library
+          CONTAINER: container
+          OPERATING_SYSTEM: operating-system
+          DEVICE: device
+          FIRMWARE: firmware
+          FILE: file
+          SOURCE: library
+          ARCHIVE: file
+          INSTALL: application
+          OTHER: library
+        default: library
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: house-policy
+    prohibitFabrication: false
+    xbucket: native
+
+  - ruleId: MAN-PACKAGE-TYPE-DEFAULT-001
+    description: 'components[].type is spec-mandatory in CycloneDX. When a package carries no primaryPackagePurpose the engine fabricates "library" and records FABRICATED.'
+    sourcePath: null
+    targetPath: components[].type
+    cardinality: one-to-one
+    transform: {function: constant, args: {value: "library", onlyWhenAbsent: true}}
+    onAbsent: drop
+    onUnmappable: fail
+    severityIfLost: BLOCKER
+    authority: house-policy
+    prohibitFabrication: false
+    xbucket: fabricated
+
+  - ruleId: MAN-PACKAGE-CPE-001
+    description: 'Sheet row 22. Both cpe23Type and cpe22Type locators return to the single components[].cpe field; when both exist the 2.3 form wins (firstOnly on the filter order) and the loser is recorded TRUNCATED.'
+    sourcePath:
+      - "packages[].externalRefs[?referenceCategory=='SECURITY'].referenceLocator"
+    targetPath: components[].cpe
+    cardinality: one-to-many
+    transform: {function: firstOnly}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  - ruleId: MAN-PACKAGE-EXTERNALREFS-001
+    sourcePath: packages[].externalRefs[].referenceLocator
+    targetPath: components[].properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:file:{field}", value: "{value}"}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1    
+
+  - ruleId: MAN-PACKAGE-PURL-001
+    description: Sheet rows 9/23. See CDQ SCHEMA FINDING - purl is required on every CDQ component; absence is a MAJOR loss, not fabricated.
+    sourcePath: "packages[].externalRefs[?referenceType=='purl'].referenceLocator"
+    targetPath: components[].purl
+    cardinality: one-to-many
+    transform: {function: firstOnly}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    prohibitFabrication: true
+    xbucket: native
+
+  # ------------------------------------------------------------------
+  # Dependency graph (Option A split of MAN-RELATIONSHIP-DEPENDENCY-001;
+  # deduplicates OPT-SPDX-REL-DEPENDS-001, which restated it).
+  # Endpoint ids are rewritten SPDXRef -> bom-ref through the table
+  # registered by OPT-SPDX-PKG-SPDXID-001 (RENAMED).
+  #
+  # 3.0.2 - all dependency-like SPDX relationship types now feed the
+  # CycloneDX dependencies[] graph (owner decision 2026-09-03), not just
+  # DEPENDS_ON/DEPENDENCY_OF. Direct-link forms (DEPENDS_ON, DYNAMIC_LINK,
+  # STATIC_LINK) are forward edges (spdxElementId depends on
+  # relatedSpdxElement); the *_OF forms (DEPENDENCY_OF, TEST_DEPENDENCY_OF,
+  # BUILD_DEPENDENCY_OF, DEV_DEPENDENCY_OF, OPTIONAL_DEPENDENCY_OF,
+  # PROVIDED_DEPENDENCY_OF, RUNTIME_DEPENDENCY_OF) are inverted edges
+  # (relatedSpdxElement depends on spdxElementId).
+  # ------------------------------------------------------------------
+  - ruleId: MAN-RELATIONSHIP-DEPENDSON-001
+    description: 'Each direct-link relationship (DEPENDS_ON, DYNAMIC_LINK, STATIC_LINK) becomes a forward dependency edge: spdxElementId depends on relatedSpdxElement. The engine merges edges sharing the same ref into one dependencies[] entry.'
+    sourcePath:
+      - "relationships[?relationshipType in ['DEPENDS_ON','DYNAMIC_LINK','STATIC_LINK']].spdxElementId"
+      - "relationships[?relationshipType in ['DEPENDS_ON','DYNAMIC_LINK','STATIC_LINK']].relatedSpdxElement"
+    targetPath: dependencies[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args:
+        ref: "{spdxElementId}"
+        dependsOn: "[{relatedSpdxElement}]"
+    onAbsent: drop
+    onUnmappable: fail
+    severityIfLost: BLOCKER
+    authority: spec
+    prohibitFabrication: true
+    xsplitGroup: relationship-dependency
+    xbucket: native
+
+  - ruleId: MAN-RELATIONSHIP-DEPENDENCYOF-001
+    description: 'Each *_OF relationship (DEPENDENCY_OF, TEST_DEPENDENCY_OF, BUILD_DEPENDENCY_OF, DEV_DEPENDENCY_OF, OPTIONAL_DEPENDENCY_OF, PROVIDED_DEPENDENCY_OF, RUNTIME_DEPENDENCY_OF) is inverted into a dependency edge: relatedSpdxElement depends on spdxElementId (REPARENTED).'
+    sourcePath:
+      - "relationships[?relationshipType in ['DEPENDENCY_OF','TEST_DEPENDENCY_OF','BUILD_DEPENDENCY_OF','DEV_DEPENDENCY_OF','OPTIONAL_DEPENDENCY_OF','PROVIDED_DEPENDENCY_OF','RUNTIME_DEPENDENCY_OF']].spdxElementId"
+      - "relationships[?relationshipType in ['DEPENDENCY_OF','TEST_DEPENDENCY_OF','BUILD_DEPENDENCY_OF','DEV_DEPENDENCY_OF','OPTIONAL_DEPENDENCY_OF','PROVIDED_DEPENDENCY_OF','RUNTIME_DEPENDENCY_OF']].relatedSpdxElement"
+    targetPath: dependencies[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args:
+        ref: "{relatedSpdxElement}"
+        dependsOn: "[{spdxElementId}]"
+    onAbsent: drop
+    onUnmappable: fail
+    severityIfLost: BLOCKER
+    authority: spec
+    prohibitFabrication: true
+    xsplitGroup: relationship-dependency
+    xbucket: native
+
+  # ==================================================================
+  # OPTIONAL SET
+  # ==================================================================
+
+  # ------------------------------------------------------------------
+  # Document level: mapped
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-DATALICENSE-001
+    description: dataLicense (always CC0-1.0) is representable as the license of the BOM itself.
+    sourcePath: dataLicense
+    targetPath: metadata.licenses[].license.id
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xbucket: native
+    xfieldsCovered: 1
+
+  # --- External document refs (Option A split of OPT-SPDX-EXTDOCREF-001)
+  - ruleId: OPT-SPDX-EXTDOCREF-URL-001
+    description: External document references become BOM-type external references; the documentRef id is preserved in the comment.
+    sourcePath:
+      - "externalDocumentRefs[].spdxDocument"
+      - "externalDocumentRefs[].externalDocumentId"
+    targetPath: externalReferences[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args:
+        type: "bom"
+        url: "{spdxDocument}"
+        comment: "{externalDocumentId}"
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: extdocref
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-EXTDOCREF-HASH-ALG-001
+    description: Option A split. Checksum algorithm of the external document ref becomes the hash algorithm of the bom-type external reference.
+    sourcePath: externalDocumentRefs[].checksum.algorithm
+    targetPath: externalReferences[].hashes[].alg
+    cardinality: one-to-one
+    transform:
+      function: enumMap
+      args:
+        table:
+          MD5: MD5
+          SHA1: SHA-1
+          SHA256: SHA-256
+          SHA384: SHA-384
+          SHA512: SHA-512
+          SHA3-256: SHA3-256
+          SHA3-384: SHA3-384
+          SHA3-512: SHA3-512
+          BLAKE2b-256: BLAKE2b-256
+          BLAKE2b-384: BLAKE2b-384
+          BLAKE2b-512: BLAKE2b-512
+          BLAKE3: BLAKE3
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: extdocref
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-EXTDOCREF-HASH-VALUE-001
+    description: Option A split. Checksum value of the external document ref.
+    sourcePath: externalDocumentRefs[].checksum.checksumValue
+    targetPath: externalReferences[].hashes[].content
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: extdocref
+    xbucket: native
+    xfieldsCovered: 1
+
+  # OPT-SPDX-DESCRIBES-001 removed: the described (root) package is REPARENTED to
+  # metadata.component as an object by the MAN-ROOT-* rules above (which read the
+  # described package via `packages[?SPDXID in documentDescribes]`). The former rule
+  # wrote the raw documentDescribes SPDXID as a scalar to metadata.component, which
+  # produced an invalid string value and clobbered that object.
+
+  # --- Document annotations (Option A split of OPT-SPDX-DOC-ANNOTATIONS-001)
+  - ruleId: OPT-SPDX-DOC-ANNOTATION-ANNOTATOR-001
+    description: 'The prefixed SPDX annotator string is stripped; the matched prefix selects the CycloneDX annotator alternative - "Person: " -> annotator.individual.name, "Organization: " -> annotator.organization.name, "Tool: " -> annotator.service.name (MODIFIED). Sub-key selection by matched prefix is documented prefixStrip engine semantics.'
+    sourcePath: annotations[].annotator
+    targetPath: annotations[].annotator
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args:
+        prefixMap:
+          "Person: ": individual.name
+          "Organization: ": organization.name
+          "Tool: ": service.name
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: doc-annotations
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-DOC-ANNOTATION-TIMESTAMP-001
+    sourcePath: annotations[].annotationDate
+    targetPath: annotations[].timestamp
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: doc-annotations
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-DOC-ANNOTATION-TEXT-001
+    description: annotationType has no CycloneDX field and is folded into the text prefix (MODIFIED).
+    sourcePath:
+      - "annotations[].annotationType"
+      - "annotations[].comment"
+    targetPath: annotations[].text
+    cardinality: many-to-one
+    transform:
+      function: template
+      args: {format: "[{annotationType}] {comment}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: doc-annotations
+    xbucket: native
+    xfieldsCovered: 2
+
+
+  - ruleId: OPT-SPDX-DOC-COMMENTS-DEGRADED-001
+    description: 'Document-level free text preserved as namespaced properties. 3.0.0 - SPDX document "name" added (it had no reverse rule at all; CycloneDX has no document-name field, the root component name comes from the described package).'
+    sourcePath:
+      - "name"
+      - "comment"
+      - "creationInfo.comment"
+      - "creationInfo.licenseListVersion"
+    targetPath: properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:document:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xbucket: degraded
+    xfieldsCovered: 4
+
+  # ------------------------------------------------------------------
+  # Document level: lost
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-DOC-LOST-001
+    sourcePath:
+      - "spdxVersion"
+      - "SPDXID"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: INFORMATIONAL
+    authority: spec
+    lossReason: Format discriminators consumed by the conversion; bomFormat/specVersion are emitted as constants.
+    xbucket: lost
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-REVIEWEDS-LOST-001
+    description: Immediate children enumerated in 3.0.0 per Missing_Fields.xlsx.
+    sourcePath:
+      - "revieweds[].reviewDate"
+      - "revieweds[].reviewer"
+      - "revieweds[].comment"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: INFORMATIONAL
+    authority: spec
+    lossReason: Review Information was deprecated in SPDX 2.0 in favour of annotations; not converted.
+    xbucket: lost
+    xfieldsCovered: 3
+
+  # ------------------------------------------------------------------
+  # Package -> Component
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-PKG-SPDXID-001
+    description: 'SPDXID becomes the component bom-ref after prefix strip. This rule registers the per-document SPDXID -> bom-ref table used to rewrite relationship, dependency and annotation endpoints (RENAMED events).'
+    sourcePath: packages[].SPDXID
+    targetPath: components[].bom-ref
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefix: "SPDXRef-"}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-CHECKSUMS-001
+    description: Reverse hash algorithm map. SPDX algorithms with no CycloneDX equivalent (SHA224, MD2, MD4, MD6, ADLER32) are unmappable and annotated. keyMap renames the SPDX object keys (algorithm/checksumValue) to the CycloneDX hash keys (alg/content).
+    sourcePath: packages[].checksums[]
+    targetPath: components[].hashes[]
+    cardinality: one-to-many
+    transform:
+      function: enumMap
+      args:
+        field: algorithm
+        keyMap:
+          algorithm: alg
+          checksumValue: content
+        table:
+          MD5: MD5
+          SHA1: SHA-1
+          SHA256: SHA-256
+          SHA384: SHA-384
+          SHA512: SHA-512
+          SHA3-256: SHA3-256
+          SHA3-384: SHA3-384
+          SHA3-512: SHA3-512
+          BLAKE2b-256: BLAKE2b-256
+          BLAKE2b-384: BLAKE2b-384
+          BLAKE2b-512: BLAKE2b-512
+          BLAKE3: BLAKE3
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-PKG-COPYRIGHT-001
+    sourcePath: packages[].copyrightText
+    targetPath: components[].copyright
+    cardinality: one-to-many
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-DESCRIPTION-001
+    description: description wins; summary is used only when description is absent (firstOnly), otherwise summary degrades to a property.
+    sourcePath:
+      - "packages[].description"
+      - "packages[].summary"
+    targetPath: components[].description
+    cardinality: many-to-one
+    transform: {function: firstOnly}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-PKG-DOWNLOAD-001
+    description: downloadLocation becomes a distribution external reference. NOASSERTION/NONE are dropped as carrying no information.
+    sourcePath: packages[].downloadLocation
+    targetPath: components[].externalReferences[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {type: "distribution", url: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-HOMEPAGE-001
+    sourcePath: packages[].homepage
+    targetPath: components[].externalReferences[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {type: "website", url: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-EXTREF-IDS-001
+    description: Identifier-bearing external refs return to first-class CycloneDX fields (structured target dispatch) - swh -> swhid[], gitoid -> omniborId[], swid -> swid.tagId (MODIFIED, CycloneDX swid is richer). purl and cpe23Type/cpe22Type belong to the mandatory set.
+    sourcePath:
+      - "packages[].externalRefs[].referenceType"
+      - "packages[].externalRefs[].referenceLocator"
+    targetPath:
+      - "components[].swhid[]"
+      - "components[].omniborId[]"
+      - "components[].swid.tagId"
+    cardinality: one-to-many
+    transform:
+      function: enumMap
+      args:
+        field: referenceType
+        table:
+          swh: components[].swhid[]
+          gitoid: components[].omniborId[]
+          swid: components[].swid.tagId
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 2
+
+  # --- Remaining external refs (whole-object; excludes purl + cpe which are first-class)
+  - ruleId: OPT-SPDX-PKG-EXTREF-OTHER-001
+    description: 'Remaining external refs (advisory, fix, url, maven-central, npm, nuget, bower, OTHER/*) become CycloneDX external references. purl and cpe23Type/cpe22Type are excluded - they map to the first-class purl/cpe fields. Emitted as one whole object appended to the terminal externalReferences[] array so a ref''s type/url/comment stay together (no split-index padding), with the original referenceCategory/referenceType preserved in the comment for reversibility.'
+    sourcePath:
+      - "packages[].externalRefs[?referenceType not in ['purl','cpe23Type','cpe22Type']].referenceLocator"
+      - "packages[].externalRefs[?referenceType not in ['purl','cpe23Type','cpe22Type']].referenceCategory"
+      - "packages[].externalRefs[?referenceType not in ['purl','cpe23Type','cpe22Type']].referenceType"
+      - "packages[].externalRefs[?referenceType not in ['purl','cpe23Type','cpe22Type']].comment"
+    targetPath: components[].externalReferences[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args:
+        type: "other"
+        url: "{referenceLocator}"
+        comment: "spdx:{referenceCategory}:{referenceType} {comment}"
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 3
+
+  # --- Licenses
+  - ruleId: OPT-SPDX-PKG-LICENSE-CONCLUDED-001
+    sourcePath: packages[].licenseConcluded
+    targetPath: components[].licenses[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {expression: "{value}", acknowledgement: "concluded"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-LICENSE-DECLARED-001
+    sourcePath: packages[].licenseDeclared
+    targetPath: components[].properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:file:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-LICENSEFROMFILES-001
+    description: File-scan license findings are evidence, not assertions - mapped to component evidence licenses (MODIFIED).
+    sourcePath: packages[].licenseInfoFromFiles[]
+    targetPath: components[].properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:packages:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xbucket: native
+    xfieldsCovered: 1
+
+  # --- Originator (Option A split of OPT-SPDX-PKG-ORIGINATOR-001)
+  - ruleId: OPT-SPDX-PKG-ORIGINATOR-PERSON-001
+    description: 'Option A split - explicit prefix filter replaces the compound dispatch-plus-strip rule. "Person: N (e)" -> authors[].name; the trailing "(email)" stays inside the name (MODIFIED); NOASSERTION dropped. Filter sits on packages[] because originator is a scalar.'
+    sourcePath: "packages[?originator startsWith 'Person: '].originator"
+    targetPath: components[].authors[].name
+    cardinality: one-to-one
+    transform:
+      function: prefixStrip
+      args: {prefix: "Person: "}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: pkg-originator
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-ORIGINATOR-ORG-001
+    description: 'Option A split. "Organization: N" -> publisher; NOASSERTION dropped. Filter sits on packages[] because originator is a scalar.'
+    sourcePath: "packages[?originator startsWith 'Organization: '].originator"
+    targetPath: components[].publisher
+    cardinality: one-to-one
+    transform:
+      function: prefixStrip
+      args: {prefix: "Organization: "}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: pkg-originator
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-SUPPLIER-001
+    description: Reverse of sheet row 25 - prefix stripped, name (and trailing e-mail, MODIFIED) into supplier name. NOASSERTION dropped.
+    sourcePath: packages[].supplier
+    targetPath: components[].supplier.name
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefixes: ["Organization: ", "Person: "]}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  # --- Package annotations (Option A split of OPT-SPDX-PKG-ANNOTATIONS-001)
+  - ruleId: OPT-SPDX-PKG-ANNOTATION-SUBJECTS-001
+    description: Option A split. The owning package's SPDXID (stripped to the bom-ref form) becomes the annotation subject, attaching the annotation to the right component (REPARENTED).
+    sourcePath: packages[].SPDXID
+    targetPath: annotations[].subjects[]
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefix: "SPDXRef-"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: pkg-annotations
+    xbucket: native
+    xfieldsCovered: 0
+
+  - ruleId: OPT-SPDX-PKG-ANNOTATION-ANNOTATOR-001
+    description: 'Option A split - replaces the pseudo call "prefixStrip({annotator})". Matched prefix selects the annotator alternative (individual / organization / service), documented prefixStrip engine semantics.'
+    sourcePath: packages[].annotations[].annotator
+    targetPath: annotations[].annotator
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args:
+        prefixMap:
+          "Person: ": individual.name
+          "Organization: ": organization.name
+          "Tool: ": service.name
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: pkg-annotations
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-ANNOTATION-TIMESTAMP-001
+    sourcePath: packages[].annotations[].annotationDate
+    targetPath: annotations[].timestamp
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: pkg-annotations
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-PKG-ANNOTATION-TEXT-001
+    sourcePath:
+      - "packages[].annotations[].annotationType"
+      - "packages[].annotations[].comment"
+    targetPath: annotations[].text
+    cardinality: many-to-one
+    transform:
+      function: template
+      args: {format: "[{annotationType}] {comment}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: pkg-annotations
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-PKG-TEXTUAL-DEGRADED-001
+    description: Package fields with no CycloneDX slot but preservable text become namespaced component properties (spdx:package:*).
+    sourcePath:
+      - "packages[].comment"
+      - "packages[].licenseComments"
+      - "packages[].sourceInfo"
+      - "packages[].packageFileName"
+      - "packages[].attributionTexts[]"
+      - "packages[].builtDate"
+      - "packages[].releaseDate"
+      - "packages[].validUntilDate"
+    targetPath: components[].properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:package:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xbucket: degraded
+    xfieldsCovered: 8
+
+  - ruleId: OPT-SPDX-PKG-LOST-001
+    sourcePath:
+      - "packages[].filesAnalyzed"
+      - "packages[].packageVerificationCode.packageVerificationCodeValue"
+      - "packages[].packageVerificationCode.packageVerificationCodeExcludedFiles[]"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    lossReason: File-analysis flag and verification code are meaningless without the SPDX file model; CycloneDX has no equivalent.
+    xbucket: lost
+    xfieldsCovered: 3
+
+  # ------------------------------------------------------------------
+  # Files -> top-level components[type=file]
+  # 3.0.1 - files map to first-class top-level components (siblings of the
+  # package components) rather than components[].components[]. Orphan files
+  # (no owning package via hasFiles) have no valid parent component, and a
+  # container component with no name is invalid CycloneDX; a top-level
+  # component of type "file" is the valid, lossless representation.
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-FILE-NAME-001
+    description: Each SPDX file becomes a top-level component; fileName -> name.
+    sourcePath: files[].fileName
+    targetPath: components[].name
+    cardinality: one-to-many
+    transform: {function: identity}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-TYPE-001
+    description: 'components[].type is spec-mandatory; file components are typed "file". Emitted as a per-file mapping (keyed off SPDXID) so it lands on the file component only, leaving package components to the library default.'
+    sourcePath: files[].SPDXID
+    targetPath: components[].type
+    cardinality: one-to-many
+    transform: {function: template, args: {format: "file"}}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 0
+
+  - ruleId: OPT-SPDX-FILE-BOMREF-001
+    description: File SPDXIDs join the same id-rewriting table as package SPDXIDs.
+    sourcePath: files[].SPDXID
+    targetPath: components[].bom-ref
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefix: "SPDXRef-"}
+    onAbsent: annotate
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-CHECKSUMS-001
+    description: Same reverse algorithm table as packages; unmappable algorithms (SHA224, MD2, MD4, MD6, ADLER32) annotated. keyMap renames the SPDX object keys (algorithm/checksumValue) to the CycloneDX hash keys (alg/content).
+    sourcePath: files[].checksums[]
+    targetPath: components[].hashes[]
+    cardinality: one-to-many
+    transform:
+      function: enumMap
+      args:
+        field: algorithm
+        keyMap:
+          algorithm: alg
+          checksumValue: content
+        table:
+          MD5: MD5
+          SHA1: SHA-1
+          SHA256: SHA-256
+          SHA384: SHA-384
+          SHA512: SHA-512
+          SHA3-256: SHA3-256
+          SHA3-384: SHA3-384
+          SHA3-512: SHA3-512
+          BLAKE2b-256: BLAKE2b-256
+          BLAKE2b-384: BLAKE2b-384
+          BLAKE2b-512: BLAKE2b-512
+          BLAKE3: BLAKE3
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-FILE-COPYRIGHT-001
+    sourcePath: files[].copyrightText
+    targetPath: components[].copyright
+    cardinality: one-to-many
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-LICENSE-CONCLUDED-001
+    sourcePath: files[].licenseConcluded
+    targetPath: components[].licenses[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {expression: "{value}", acknowledgement: "concluded"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-LICENSEINFO-001
+    description: File-scan license findings are evidence, not assertions (MODIFIED).
+    sourcePath: files[].licenseInfoInFiles[]
+    targetPath: components[].properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:file:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-CONTRIBUTORS-001
+    sourcePath: files[].fileContributors[]
+    targetPath: components[].authors[].name
+    cardinality: one-to-many
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-core
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-STRUCTURE-001
+    description: 'hasFiles (package -> file containment) has no lossless CycloneDX target now that files are top-level components; the linkage is recorded as a loss rather than fabricating an unnamed nesting container.'
+    sourcePath: packages[].hasFiles[]
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    lossReason: Package-to-file containment (hasFiles) is not represented; files are emitted as top-level file components.
+    xbucket: lost
+    xfieldsCovered: 1
+
+  # --- File annotations (Option A split of OPT-SPDX-FILE-ANNOTATIONS-001)
+  - ruleId: OPT-SPDX-FILE-ANNOTATION-SUBJECTS-001
+    sourcePath: files[].SPDXID
+    targetPath: annotations[].subjects[]
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args: {prefix: "SPDXRef-"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-annotations
+    xbucket: native
+    xfieldsCovered: 0
+
+  - ruleId: OPT-SPDX-FILE-ANNOTATION-ANNOTATOR-001
+    description: Option A split - replaces the pseudo call "prefixStrip({annotator})".
+    sourcePath: files[].annotations[].annotator
+    targetPath: annotations[].annotator
+    cardinality: one-to-many
+    transform:
+      function: prefixStrip
+      args:
+        prefixMap:
+          "Person: ": individual.name
+          "Organization: ": organization.name
+          "Tool: ": service.name
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-annotations
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-ANNOTATION-TIMESTAMP-001
+    sourcePath: files[].annotations[].annotationDate
+    targetPath: annotations[].timestamp
+    cardinality: one-to-one
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-annotations
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-FILE-ANNOTATION-TEXT-001
+    sourcePath:
+      - "files[].annotations[].annotationType"
+      - "files[].annotations[].comment"
+    targetPath: annotations[].text
+    cardinality: many-to-one
+    transform:
+      function: template
+      args: {format: "[{annotationType}] {comment}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: file-annotations
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-FILE-TEXTUAL-DEGRADED-001
+    sourcePath:
+      - "files[].comment"
+      - "files[].licenseComments"
+      - "files[].noticeText"
+      - "files[].attributionTexts[]"
+      - "files[].fileTypes[]"
+    targetPath: components[].properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:file:{field}", value: "{value}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xbucket: degraded
+    xfieldsCovered: 5
+
+  - ruleId: OPT-SPDX-FILE-DEPRECATED-LOST-001
+    sourcePath:
+      - "files[].artifactOfs[]"
+      - "files[].fileDependencies[]"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: INFORMATIONAL
+    authority: spec
+    lossReason: Deprecated since SPDX 2.1; not converted.
+    xbucket: lost
+    xfieldsCovered: 2
+
+  # ------------------------------------------------------------------
+  # Snippets: no CycloneDX concept - immediate children enumerated in
+  # 3.0.0 per Missing_Fields.xlsx.
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-SNIPPETS-LOST-001
+    sourcePath:
+      - "snippets[].SPDXID"
+      - "snippets[].name"
+      - "snippets[].snippetFromFile"
+      - "snippets[].ranges[]"
+      - "snippets[].licenseConcluded"
+      - "snippets[].licenseInfoInSnippets[]"
+      - "snippets[].licenseComments"
+      - "snippets[].copyrightText"
+      - "snippets[].comment"
+      - "snippets[].attributionTexts[]"
+      - "snippets[].annotations[]"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    lossReason: CycloneDX 1.6 has no snippet/byte-range model (19 leaf fields incl. ranges and pointers).
+    xbucket: lost
+    xfieldsCovered: 19
+
+  # ------------------------------------------------------------------
+  # Relationships (DEPENDS_ON / DEPENDENCY_OF are mandatory rules above)
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-REL-STRUCTURAL-001
+    description: 'Applied by the engine post-processor (SPDX source + CycloneDX target). 3.0.3 - all structural relationships are recorded flat as a spdx:relationship:<TYPE> property (no tree restructuring, so bom-refs stay unique). CONTAINS/CONTAINED_BY keep the spdx:relationship:contains property on the parent component; ANCESTOR_OF/DESCENDANT_OF/VARIANT_OF/DESCRIBES/DESCRIBED_BY are recorded as a spdx:relationship:<TYPE> property on the spdxElementId component, valued with the relatedSpdxElement bom-ref. DESCRIBES/DESCRIBED_BY are ALSO covered by the MAN-ROOT-* rules (metadata.component), which are unchanged. Endpoint ids are rewritten SPDXRef- -> bom-ref.'
+    sourcePath: "relationships[?relationshipType in ['CONTAINS','CONTAINED_BY','ANCESTOR_OF','DESCENDANT_OF','VARIANT_OF','DESCRIBES','DESCRIBED_BY']]"
+    targetPath:
+      - "components[].properties[]"
+      - "metadata.component"
+    cardinality: one-to-many
+    transform:
+      function: enumMap
+      args:
+        field: relationshipType
+        table:
+          CONTAINS: components[].properties[]
+          CONTAINED_BY: components[].properties[]
+          ANCESTOR_OF: components[].properties[]
+          DESCENDANT_OF: components[].properties[]
+          VARIANT_OF: components[].properties[]
+          DESCRIBES: components[].properties[]
+          DESCRIBED_BY: components[].properties[]
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-REL-OTHER-001
+    description: 'Applied by the engine post-processor (SPDX source + CycloneDX target). 3.0.4 - the remaining non-dependency, non-containment SPDX relationship types (BUILD_TOOL_OF, GENERATES, TEST_OF, TEST_CASE_OF, AMENDS, COPY_OF, PATCH_FOR, ...) are no longer lost; like the structural rule, each is recorded flat as a spdx:relationship:<TYPE> property on the spdxElementId component, valued with the relatedSpdxElement bom-ref (endpoint ids rewritten SPDXRef- -> bom-ref). Dependency-like types (DEPENDS_ON/DYNAMIC_LINK/STATIC_LINK and the *_OF-dependency forms) instead feed dependencies[]; CONTAINS/CONTAINED_BY/ANCESTOR_OF/DESCENDANT_OF/VARIANT_OF/DESCRIBES/DESCRIBED_BY are handled by OPT-SPDX-REL-STRUCTURAL-001. Relationship comments remain lost (OPT-SPDX-REL-COMMENT-LOST-001).'
+    sourcePath: "relationships[?relationshipType not in ['DEPENDS_ON','DYNAMIC_LINK','STATIC_LINK','DEPENDENCY_OF','TEST_DEPENDENCY_OF','BUILD_DEPENDENCY_OF','DEV_DEPENDENCY_OF','OPTIONAL_DEPENDENCY_OF','PROVIDED_DEPENDENCY_OF','RUNTIME_DEPENDENCY_OF','CONTAINS','CONTAINED_BY','ANCESTOR_OF','DESCENDANT_OF','VARIANT_OF','DESCRIBES','DESCRIBED_BY']]"
+    targetPath:
+      - "components[].properties[]"
+      - "metadata.component"
+    cardinality: one-to-many
+    transform:
+      function: enumMap
+      args:
+        field: relationshipType
+        table:
+          COPY_OF: components[].properties[]
+          PATCH_FOR: components[].properties[]
+          DATA_FILE_OF: components[].properties[]
+          OPTIONAL_COMPONENT_OF: components[].properties[]
+          GENERATES: components[].properties[]
+          FILE_ADDED: components[].properties[]
+          REQUIREMENT_DESCRIPTION_FOR: components[].properties[]
+          PREREQUISITE_FOR: components[].properties[]
+          HAS_PREREQUISITE: components[].properties[]
+          METAFILE_OF: components[].properties[]
+          DEPENDENCY_MANIFEST_OF: components[].properties[]
+          PATCH_APPLIED: components[].properties[]
+          TEST_OF: components[].properties[]
+          TEST_TOOL_OF: components[].properties[]
+          SPECIFICATION_FOR: components[].properties[]
+          FILE_MODIFIED: components[].properties[]
+          DISTRIBUTION_ARTIFACT: components[].properties[]
+          AMENDS: components[].properties[]
+          DOCUMENTATION_OF: components[].properties[]
+          GENERATED_FROM: components[].properties[]
+          OTHER: components[].properties[]
+          BUILD_TOOL_OF: components[].properties[]
+          TEST_CASE_OF: components[].properties[]
+          PACKAGE_OF: components[].properties[]
+          FILE_DELETED: components[].properties[]
+          EXPANDED_FROM_ARCHIVE: components[].properties[]
+          DEV_TOOL_OF: components[].properties[]
+          EXAMPLE_OF: components[].properties[]
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xbucket: native
+    xfieldsCovered: 1
+
+
+  - ruleId: OPT-SPDX-REL-COMMENT-LOST-001
+    description: '3.0.0 fix - the informal filter "not mapped above" replaced with an explicit not-in list. 3.0.2 - the dependency-like link/*_OF types were added to the not-in list now that they feed dependencies[].'
+    sourcePath:
+      - "relationships[].comment"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    lossReason: The SPDX relationship comments have no CycloneDX 1.6 model.
+    xbucket: lost
+    xfieldsCovered: 1    
+
+  # ------------------------------------------------------------------
+  # Extracted licensing info -> named licenses
+  # (Option A split of OPT-SPDX-EXTRACTEDLIC-001)
+  # ------------------------------------------------------------------
+  - ruleId: OPT-SPDX-EXTRACTEDLIC-CORE-001
+    description: Option A split. LicenseRef-* definitions become named CycloneDX licenses - licenseId -> bom-ref, name -> name, extractedText -> text.content.
+    sourcePath:
+      - "hasExtractedLicensingInfos[].name"
+    targetPath: properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:hasExtractedLicensingInfos:name", value: "{name}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: extractedlic
+    xbucket: native
+    xfieldsCovered: 3
+
+  - ruleId: OPT-SPDX-EXTRACTEDLIC-CORE-002
+    description: Option A split. LicenseRef-* definitions become named CycloneDX licenses - licenseId -> bom-ref, name -> name, extractedText -> text.content.
+    sourcePath:
+      - "hasExtractedLicensingInfos[].extractedText"
+    targetPath: properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:hasExtractedLicensingInfos:extractedText",value: "{extractedText}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MAJOR
+    authority: spec
+    xsplitGroup: extractedlic
+    xbucket: native
+    xfieldsCovered: 3
+
+  - ruleId: OPT-SPDX-EXTRACTEDLIC-URL-001
+    description: 'Option A split - replaces the pseudo call "firstOnly({seeAlsos}, {crossRefs[].url})". First seeAlso wins, else first crossRef url; extras TRUNCATED (CycloneDX license.url is single-valued).'
+    sourcePath:
+      - "hasExtractedLicensingInfos[].seeAlsos[]"
+      - "hasExtractedLicensingInfos[].crossRefs[].url"
+    targetPath: components[].licenses[].license.url
+    cardinality: many-to-one
+    transform: {function: firstOnly}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: spec
+    xsplitGroup: extractedlic
+    xbucket: native
+    xfieldsCovered: 2
+
+  - ruleId: OPT-SPDX-EXTRACTEDLIC-COMMENT-DEGRADED-001
+    description: 3.0.0 fix - licenseId added to sourcePath (the template referenced it undeclared; sibling-field defect).
+    sourcePath:
+      - "hasExtractedLicensingInfos[].licenseId"
+      - "hasExtractedLicensingInfos[].comment"
+    targetPath: properties[]
+    cardinality: one-to-many
+    transform:
+      function: template
+      args: {name: "spdx:license:{licenseId}:comment", value: "{comment}"}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: MINOR
+    authority: house-policy
+    xbucket: degraded
+    xfieldsCovered: 1
+
+  - ruleId: OPT-SPDX-CROSSREF-META-LOST-001
+    sourcePath:
+      - "hasExtractedLicensingInfos[].crossRefs[].isLive"
+      - "hasExtractedLicensingInfos[].crossRefs[].isValid"
+      - "hasExtractedLicensingInfos[].crossRefs[].isWayBackLink"
+      - "hasExtractedLicensingInfos[].crossRefs[].match"
+      - "hasExtractedLicensingInfos[].crossRefs[].order"
+      - "hasExtractedLicensingInfos[].crossRefs[].timestamp"
+    targetPath: null
+    cardinality: none
+    transform: {function: identity}
+    onAbsent: drop
+    onUnmappable: annotate
+    severityIfLost: INFORMATIONAL
+    authority: spec
+    lossReason: Cross-reference liveness metadata has no CycloneDX model.
+    xbucket: lost
+    xfieldsCovered: 6
+conformance:
+  failOnSeverity: [BLOCKER]
+  warnOnSeverity: [MAJOR]
+  reportOnSeverity: [MINOR, INFORMATIONAL]
+lossReporting:
+  enabled: true
+  recordSourceValue: true
+  recordTargetValue: true
+  includeRuleId: true
+  includeReason: true
+  includeToolName: true
+  includeToolVersion: true
+  eventKinds: [DROPPED, TRUNCATED, MODIFIED, FABRICATED, REPARENTED, RENAMED]

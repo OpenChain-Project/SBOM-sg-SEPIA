@@ -9,7 +9,7 @@ export class UploadModel {
     schemaFile!: File;
     index!: number;
     schema!: boolean;
-    timestamp!: any;
+    sessionId!: any;
     hidden!: boolean;
     sbomFileName!: string;
     schemaFileName!: string;
@@ -30,6 +30,8 @@ export class UploadModel {
     ntid!:String;
     message!:string;
     status!: number;
+    lossEvent:LossEvent[] = [];
+    conversionDeltas: ConversionDelta[] = [];
 }
 
 export class ErrorModel {
@@ -46,6 +48,37 @@ export class ChangeLog {
 	path!: string;
 	value!: string;
   oldvalue!: string;
+}
+
+export class LossEvent {
+    eventId!:string;
+    severity!: string;
+    kind!: string;
+    sourceFormat!: string;
+    targetFormat!: string;
+    entityKey!: string;
+    sourcePath!: string;
+    targetPath!: string;
+    ruleId!: string;
+    reason!: string;
+    toolName!: string;
+    toolVersion!: string;
+    sourceValue!: string;
+    targetValue!: string;
+}
+
+export class ConversionDelta {
+  deltaId!:string;
+  category!: string;
+  missingId!:string;
+  fieldName!: string;
+  value!: string;
+  sourcePath!: string;
+  targetPath!: string;
+  reason!: string;
+  ruleId!: string;
+  sourceFormat!: string;
+  targetFormat!: string
 }
 
 export class AuditLog {

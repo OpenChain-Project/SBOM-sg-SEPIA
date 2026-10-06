@@ -71,5 +71,8 @@ export class HeaderComponent implements OnInit {
     this.alertModal = null;
   }
 
+  sbomConvertVisualizer() {
+    this.router.navigate(['/sbom-visualization']);
+  }
 
 }

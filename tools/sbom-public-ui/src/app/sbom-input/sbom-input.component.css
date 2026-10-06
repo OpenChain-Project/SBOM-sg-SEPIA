@@ -255,6 +255,74 @@ SPDX-License-Identifier: MIT */
   border-bottom: 1px solid #ddd; /* Add a border below each row */
 }
 
+.severity-summary {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid #d7dce1;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+.severity-summary h5 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.severity-summary-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+}
+
+.severity-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 100px;
+  font-size: 14px;
+}
+
+.severity-summary-item strong {
+  margin-left: auto;
+}
+
+.severity-total {
+  min-width: 155px;
+}
+
+.severity-indicator {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 50%;
+}
+
+.severity-blocker {
+  background-color: #d32f2f;
+}
+
+.severity-major {
+  background-color: #ef6c00;
+}
+
+.severity-minor {
+  background-color: #f9a825;
+}
+
+.severity-informational {
+  background-color: #1976d2;
+}
+
+.severity-unknown {
+  background-color: #6c757d;
+}
+
+.loss-event-severity {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
 .card-body {
   overflow-y: auto; /* Enable vertical scrolling if content overflows */
   max-height: 600px; /* Optional: Limit the height of the card body */
@@ -334,4 +402,29 @@ SPDX-License-Identifier: MIT */
   background-color: #e0e0e0; /* Light gray */
   color: #a0a0a0; /* Gray text */
   cursor: not-allowed;
+}
+
+/* Validation styles for form fields */
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #dc3545; /* Red border for invalid fields */
+  border-width: 2px;
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+/* Validation message styling */
+.validation-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
 }

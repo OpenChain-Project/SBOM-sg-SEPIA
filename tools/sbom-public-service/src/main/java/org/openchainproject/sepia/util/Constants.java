@@ -28,8 +28,17 @@ public class Constants {
 	public static final String SPDX_LC = "spdx";
 	public static final String SPDX2_2_LC = "spdx2.2";
 	
+	public static final String AUTOMOTIVE_SPDX2_3_LC = "automotivespdx2.3";
+	public static final String AUTOMOTIVE_CYDX1_6_LC = "automotivecydx1.6";
+	
+	public static final String CDQ_SPDX2_3_LC = "cdqspdx2.3";
+	public static final String CDQ_CYDX1_6_LC = "cdqcydx";
+	
 	public static final String CDX_14 = "cdx14";
 	public static final String SPDX_23 = "spdx23";
+	
+	public static final String VER2_3 = "2.3";
+	public static final String VER1_6 = "1.6";
 	
 	public static final String UTF_8 = "UTF-8";
 	public static final String UNDERSCORE = "_";
@@ -47,6 +56,8 @@ public class Constants {
 	
 	public static final String JSON_EXT = ".json";
 	
+	public static final String CREATED = "created";
+	public static final String COMMENT = "comment";
 	public static final String PACKAGES = "packages";
 	public static final String ANNOTATIONS = "annotations";
 	public static final String EXTERNALDOCUMENTREFS = "externalDocumentRefs";
@@ -77,4 +88,6 @@ public class Constants {
 	public static final String UNKNOWN = "[UNKNOWN]";
 	public static final String RDFXML = "rdf.xml";
 	public static final String SYMBOLS = "^\"|\"$";
+	
+	public static final String EXTERNAL_SCHEMA_DEFINITIONS = "externalSchemaDefinitions/";
 }

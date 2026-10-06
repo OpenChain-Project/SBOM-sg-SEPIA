@@ -1,0 +1,641 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid",
+  "version": 1,
+  "metadata": {
+    "timestamp": {},
+    "lifecycles": [
+      {
+        "phase": "",
+        "name": "",
+        "description": ""
+      }
+    ],
+    "tools": {
+      "components": [
+        {
+          "type": "",
+          "bom-ref": "",
+          "supplier": {
+            "name": "",
+            "url": [],
+            "contact": [
+              {
+                "name": "",
+                "email": "",
+                "phone": ""
+              }
+            ]
+          },
+          "author": "",
+          "publisher": "",
+          "group": "",
+          "name": "",
+          "version": "",
+          "description": ""
+        }
+      ],
+      "services": [
+        {
+          "bom-ref": "",
+          "provider": {
+            "name": "",
+            "url": []
+          },
+          "group": "",
+          "name": "",
+          "version": ""
+        }
+      ]
+    },
+    "authors": [
+      {
+        "name": "",
+        "email": "",
+        "phone": ""
+      }
+    ],
+    "component": {
+      "type": "",
+      "bom-ref": "",
+      "name": "",
+      "version": "",
+      "purl": "",
+      "supplier": {
+        "name": "",
+        "url": [],
+        "contact": []
+      },
+      "authors": [
+        {
+          "name": "",
+          "email": "",
+          "phone": ""
+        }
+      ],
+      "description": "",
+      "copyright": "",
+      "hashes": [
+        {
+          "alg": "",
+          "content": ""
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "",
+            "name": ""
+          }
+        }
+      ]
+    },
+    "manufacturer": {
+      "name": "",
+      "url": [],
+      "contact": []
+    },
+    "supplier": {
+      "name": "",
+      "url": [],
+      "contact": []
+    },
+    "licenses": [
+      {
+        "license": {
+          "id": "",
+          "name": "",
+          "url": ""
+        }
+      }
+    ],
+    "properties": [
+      {
+        "name": "spdx:spdxid",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:spdx-version",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:spdx:comment",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:name",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:document-namespace",
+        "value": ""
+      },
+      {
+        "name": "spdx:creation-info:comment",
+        "value": ""
+      },
+      {
+        "name": "spdx:creation-info:license-list-version",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:external-document-ref",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:external-document-ref",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:external-document-ref",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:external-document-ref",
+        "value": ""
+      },
+      {
+        "name": "spdx:document:describes",
+        "value": ""
+      },
+      {
+        "name": "annotations.comment",
+        "value": ""
+      },
+      {
+        "name": "annotations.annotator",
+        "value": ""
+      },
+      {
+        "name": "annotations.annotationType",
+        "value": ""
+      },
+      {
+        "name": "annotations.annotationDate",
+        "value": ""
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "",
+      "mime-type": "",
+      "bom-ref": "",
+      "supplier": {
+        "name": "",
+        "url": [],
+        "contact": []
+      },
+      "authors": "",
+      "publisher": "",
+      "group": "",
+      "name": "",
+      "version": "",
+      "description": "",
+      "scope": "",
+      "hashes": [
+        {
+          "alg": "",
+          "content": ""
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "",
+            "name": "",
+            "url": ""
+          },
+          "expression": ""
+        }
+      ],
+      "copyright": "",
+      "cpe": "",
+      "purl": "",
+      "swid": {
+        "tagId": "",
+        "name": "",
+        "version": "",
+        "tagVersion": 0,
+        "patch": false,
+        "text": {
+          "contentType": "",
+          "encoding": "",
+          "content": ""
+        },
+        "url": ""
+      },
+      "modified": false,
+      "pedigree": {
+        "ancestors": [],
+        "descendants": [],
+        "variants": [],
+        "commits": [
+          {
+            "uid": "",
+            "url": "",
+            "author": {},
+            "committer": {},
+            "message": ""
+          }
+        ],
+        "patches": [],
+        "notes": ""
+      },
+      "externalReferences": [
+        {
+          "url": "",
+          "type": "",
+          "comment": "",
+          "hashes": []
+        }
+      ],
+      "properties": [
+        {
+          "name": "packages:spdxid",
+          "value": ""
+        },
+        {
+          "name": "spdx:files-analyzed",
+          "value": ""
+        },
+        {
+          "name": "spdx:license-comments",
+          "value": ""
+        },
+        {
+          "name": "spdx:license-concluded",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:file-name",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:verification-code:value",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:verification-code:excluded-file",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:source-info",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:summary",
+          "value": ""
+        },
+        {
+          "name": "spdx:comment",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:built-date",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:release-date",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:valid-until-date",
+          "value": ""
+        },
+        {
+          "name": "spdx:license-declared",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:originator",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:supplier",
+          "value": ""
+        },
+        {
+          "name": "spdx:download-location",
+          "value": ""
+        },
+        {
+          "name": "spdx:homepage",
+          "value": ""
+        },
+        {
+          "name": "spdx:annotation.comment",
+          "value": ""
+        },
+        {
+          "name": "spdx:external-reference",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:supplier",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:primary-package-purpose",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:summary",
+          "value": ""
+        },
+        {
+          "name": "spdx:package:source-info",
+          "value": ""
+        },
+        {
+          "name": "spdx:relationship:relationshipType",
+          "value": ""
+        },
+        {
+          "name": "spdx:licenseInfoFromFiles",
+          "value": ""
+        }
+      ],
+      "components": [],
+      "evidence": {
+        "licenses": [
+          {
+            "license": {
+              "id": ""
+            }
+          }
+        ],
+        "copyright": [
+          {
+            "text": ""
+          }
+        ],
+        "occurrences": [],
+        "callstack": {}
+      },
+      "releaseNotes": {
+        "type": "",
+        "title": "",
+        "description": "",
+        "socialImage": "",
+        "timestamp": "",
+        "aliases": [],
+        "tags": [],
+        "resolves": [],
+        "notes": [],
+        "properties": []
+      },
+      "modelCard": {},
+      "data": {}
+    },
+    {
+      "type": "file",
+      "bom-ref": "",
+      "properties": [
+        {
+          "name": "spdx:spdxid",
+          "value": ""
+        },
+        {
+          "name": "spdx:comment",
+          "value": ""
+        },
+        {
+          "name": "spdx:filetype",
+          "value": ""
+        },
+        {
+          "name": "spdx:license-comments",
+          "value": ""
+        },
+        {
+          "name": "spdx:license-concluded",
+          "value": ""
+        },
+        {
+          "name": "spdx:file:contributor",
+          "value": ""
+        },
+        {
+          "name": "spdx:file:notice-text",
+          "value": ""
+        },
+        {
+          "name": "spdx:file:annotation.comment",
+          "value": ""
+        }
+      ],
+      "name": "",
+      "copyright": "",
+      "evidence": {
+        "copyright": [
+          {
+            "text": ""
+          }
+        ]
+      },
+      "hashes": [
+        {
+          "alg": "",
+          "content": ""
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "",
+            "name": "",
+            "url": ""
+          },
+          "expression": ""
+        }
+      ],
+      "authors": [
+        {
+          "name": "",
+          "email": "",
+          "organization": ""
+        }
+      ]
+    }
+  ],
+  "services": [
+    {
+      "bom-ref": "",
+      "provider": {},
+      "group": "",
+      "name": "",
+      "version": "",
+      "description": "",
+      "endpoints": [],
+      "authenticated": false,
+      "x-trust-boundary": false,
+      "trustZone": "",
+      "data": [
+        {
+          "flow": "",
+          "classification": "",
+          "name": "",
+          "description": ""
+        }
+      ],
+      "licenses": [],
+      "externalReferences": [],
+      "properties": [],
+      "services": []
+    }
+  ],
+  "externalReferences": [
+    {
+      "url": "",
+      "type": "",
+      "comment": "",
+      "hashes": [
+        {
+          "alg": "",
+          "content": ""
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "",
+      "dependsOn": [""]
+    }
+  ],
+  "compositions": [
+    {
+      "bom-ref": "",
+      "aggregate": "",
+      "assemblies": [],
+      "dependencies": [],
+      "vulnerabilities": []
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "bom-ref": "",
+      "id": "",
+      "source": {
+        "name": "",
+        "url": ""
+      },
+      "ratings": [
+        {
+          "source": {},
+          "score": 0,
+          "severity": "",
+          "method": "",
+          "vector": "",
+          "justification": ""
+        }
+      ],
+      "cwes": [],
+      "description": "",
+      "detail": "",
+      "recommendation": "",
+      "workaround": "",
+      "proofOfConcept": {
+        "title": "",
+        "markdown": "",
+        "reproductionSteps": "",
+        "environment": "",
+        "supportingMaterial": []
+      },
+      "advisories": [],
+      "created": "",
+      "published": "",
+      "updated": "",
+      "rejected": "",
+      "credits": {},
+      "tools": {},
+      "analysis": {
+        "state": "",
+        "justification": "",
+        "responses": [],
+        "detail": ""
+      },
+      "affects": [
+        {
+          "ref": "",
+          "versions": []
+        }
+      ],
+      "properties": []
+    }
+  ],
+  "annotations": [
+    {
+      "bom-ref": "",
+      "subjects": [],
+      "annotator": {
+        "organization": {"name": ""},
+        "individual": {"name": ""},
+        "component": {"name": ""},
+        "service": {"name": ""}
+      },
+      "timestamp": "",
+      "text": ""
+    }
+  ],
+  "formulation": [
+    {
+      "bom-ref": "",
+      "component": {},
+      "formula": [],
+      "workflows": []
+    }
+  ],
+  "declarations": {
+    "assessors": [
+      {
+        "bom-ref": "",
+        "thirdParty": false,
+        "organization": {},
+        "individual": {}
+      }
+    ],
+    "attestations": [
+      {
+        "bom-ref": "",
+        "assessor": "",
+        "map": []
+      }
+    ],
+    "claims": [
+      {
+        "bom-ref": "",
+        "target": "",
+        "scenarios": []
+      }
+    ],
+    "evidence": [
+      {
+        "bom-ref": "",
+        "propertyName": "",
+        "document": {}
+      }
+    ],
+    "targets": [
+      {
+        "bom-ref": "",
+        "type": ""
+      }
+    ]
+  },
+  "definitions": {
+    "standards": [
+      {
+        "bom-ref": "",
+        "name": "",
+        "version": "",
+        "description": "",
+        "requirements": []
+      }
+    ]
+  },
+  "properties": [],
+  "signature": {}
+}

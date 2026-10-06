@@ -4,9 +4,11 @@ SPDX-License-Identifier: MIT */
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SbomInputComponent } from './sbom-input/sbom-input.component';
+import { SbomVisualizationComponent } from './sbom-visualization/sbom-visualization.component';
 
 const routes: Routes = [
-  { path: '', component: SbomInputComponent }
+  { path: '', component: SbomInputComponent },
+  { path: 'sbom-visualization', component: SbomVisualizationComponent }
 ];
 
 @NgModule({

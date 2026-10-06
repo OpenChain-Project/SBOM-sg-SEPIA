@@ -1,0 +1,263 @@
+{
+  "SPDXID": "",
+  "annotations": [
+    {
+      "annotationDate": "",
+      "annotationType": "OTHER",
+      "annotator": "",
+      "comment": ""
+    }
+  ],
+  "comment": "",
+  "creationInfo": {
+    "comment": "",
+    "created": "",
+    "creators": [
+      "Organization:",
+      "Person:",
+      "Tool:"
+    ],
+    "licenseListVersion": ""
+  },
+  "dataLicense": "",
+  "externalDocumentRefs": [
+    {
+      "checksum": {
+        "algorithm": "SHA1",
+        "checksumValue": ""
+      },
+      "externalDocumentId": "",
+      "spdxDocument": ""
+    }
+  ],
+  "hasExtractedLicensingInfos": [
+    {
+      "hasExtractedLicensingInfosComment": "",
+      "crossRefs": [
+        {
+          "isLive": false,
+          "isValid": false,
+          "isWayBackLink": false,
+          "match": "",
+          "order": 0,
+          "timestamp": "",
+          "url": ""
+        }
+      ],
+      "extractedText": "",
+      "licenseId": "",
+      "hasExtractedLicensingInfosName": "",
+      "seeAlsos": [
+        ""
+      ]
+    }
+  ],
+  "name": "",
+  "revieweds": [
+    {
+      "comment": "",
+      "reviewDate": "",
+      "reviewer": ""
+    }
+  ],
+  "spdxVersion": "",
+  "documentNamespace": "",
+  "documentDescribes": [
+    ""
+  ],
+  "packages": [
+    {
+      "sourceInfo": "",
+      "externalRefs": [
+        {
+          "referenceLocator": "",
+          "referenceType": ""
+        }
+      ],
+      "downloadLocation": "",
+      "homepage": "",
+      "name": "",
+      "versionInfo": "",
+      "description": "",
+      "copyrightText": "",
+      "SPDXID": "",
+      "annotations": [
+        {
+          "comment": "",
+          "annotationDate": "",
+          "annotationType": "",
+          "annotator": ""
+        }
+      ],
+      "filesAnalyzed": false,
+      "licenseComments": "",
+      "packageFileName": "",
+      "licenseConcluded": "",
+      "builtDate": "",
+      "releaseDate": "",
+      "validUntilDate": "",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "",
+        "packageVerificationCodeExcludedFiles": []
+      },
+      "summary": "",
+      "comment": "",
+      "licenseInfoFromFiles": [
+        ""
+      ],
+      "licenseDeclared": "",
+      "primaryPackagePurpose": "",
+      "originator": "",
+      "supplier": "",
+      "attributionTexts": [
+        ""
+      ],
+      "checksums": [
+        {
+          "algorithm": "",
+          "checksumValue": ""
+        }
+      ]
+    },
+    {
+      "sourceInfo": "",
+      "externalRefs": [
+        {
+          "referenceLocator": "",
+          "referenceType": ""
+        }
+      ],
+      "downloadLocation": "",
+      "homepage": "",
+      "name": "",
+      "versionInfo": "",
+      "description": "",
+      "copyrightText": "",
+      "SPDXID": "",
+      "annotations": [
+        {
+          "comment": ""
+        }
+      ],
+      "filesAnalyzed": false,
+      "licenseComments": "",
+      "packageFileName": "",
+      "licenseConcluded": "",
+      "builtDate": "",
+      "releaseDate": "",
+      "validUntilDate": "",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "",
+        "packageVerificationCodeExcludedFiles": []
+      },
+      "summary": "",
+      "comment": "",
+      "licenseInfoFromFiles": [
+        ""
+      ],
+      "licenseDeclared": "",
+      "primaryPackagePurpose": "",
+      "originator": "",
+      "supplier": "",
+      "attributionTexts": [
+        ""
+      ],
+      "checksums": [
+        {
+          "algorithm": "",
+          "checksumValue": ""
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "SPDXID": "",
+      "annotations": [
+        {
+          "annotationDate": "",
+          "annotationType": "OTHER",
+          "annotator": "",
+          "comment": ""
+        }
+      ],
+      "artifactOfs": [
+        {}
+      ],
+      "attributionTexts": [
+        ""
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": ""
+        }
+      ],
+      "comment": "",
+      "copyrightText": "",
+      "fileContributors": [
+        ""
+      ],
+      "fileDependencies": [
+        ""
+      ],
+      "fileName": "",
+      "fileTypes": [
+        ""
+      ],
+      "licenseComments": "",
+      "licenseConcluded": "",
+      "licenseInfoInFiles": [
+        ""
+      ],
+      "noticeText": ""
+    }
+  ],
+  "snippets": [
+    {
+      "SPDXID": "",
+      "annotations": [
+        {
+          "annotationDate": "",
+          "annotationType": "OTHER",
+          "annotator": "",
+          "comment": ""
+        }
+      ],
+      "attributionTexts": [
+        ""
+      ],
+      "comment": "",
+      "copyrightText": "",
+      "licenseComments": "",
+      "licenseConcluded": "",
+      "licenseInfoInSnippets": [
+        ""
+      ],
+      "name": "",
+      "ranges": [
+        {
+          "endPointer": {
+            "reference": "",
+            "offset": 0,
+            "lineNumber": 0
+          },
+          "startPointer": {
+            "reference": "",
+            "offset": 0,
+            "lineNumber": 0
+          }
+        }
+      ],
+      "snippetFromFile": ""
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "",
+      "comment": "",
+      "relatedSpdxElement": "",
+      "relationshipType": "VARIANT_OF"
+    }
+  ]
+}

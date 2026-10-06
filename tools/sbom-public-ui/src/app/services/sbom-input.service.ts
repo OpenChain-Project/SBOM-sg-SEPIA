@@ -19,6 +19,7 @@ import {
   AttachmentText
 } from '../models/cyclonedx.model';
 import { CreationInfo, externalRefs, Packages, SpdxModel } from '../models/spdx.model';
+import { CDQBOMMetadata, CDQCycloneDXSBOMStandard, CDQLicense, CDQMetadataComponent, CDQLicenses, CDQExternalReference, CDQOrganizationalEntityObject, CDQToolsChoice, CDQComponentObject, CDQOrganizationalContactObject } from '../models/cdqcyclonedx.model';
 
 
 @Injectable({
@@ -42,6 +43,9 @@ export class SbomInputService {
 
   public spdxModelToEdit: SpdxModel = new SpdxModel();
   public cycloneDxModelToEdit: CycloneDXSBOMStandard = new CycloneDXSBOMStandard();
+  public cdqCycloneDxModelToEdit: CDQCycloneDXSBOMStandard = new CDQCycloneDXSBOMStandard();
+
+  public cdqSpdxModelToEdit: SpdxModel = new SpdxModel();
 
   deleteSbomEntry(item: UploadModel) {
     const data: FormData = new FormData();
@@ -55,7 +59,7 @@ export class SbomInputService {
     const data: FormData = new FormData();
     let item: UploadModel = new UploadModel();
     if (sessionStorage.getItem('token') !== null) {
-      item.timestamp = sessionStorage.getItem('token');
+      item.sessionId = sessionStorage.getItem('token');
       data.append('postData', JSON.stringify(item));
       return this.httpClient.post(this.restEndPointService.clearSession, data)
         .pipe(catchError(this.handleError<any>('null'))
@@ -85,7 +89,7 @@ export class SbomInputService {
     if (sessionStorage.getItem('token') === null) {
       sessionStorage.setItem('token', new Date().getTime().toString());
     }
-    item.timestamp = sessionStorage.getItem('token');
+    item.sessionId = sessionStorage.getItem('token');
 
     data.append('postData', JSON.stringify(item));
     data.append('isFromApp', JSON.stringify(true));
@@ -124,7 +128,7 @@ export class SbomInputService {
 
 
 
-  mergeSboms(uploadModels: UploadModel[], cdxMerged: CycloneDXSBOMStandard, spdxMerged: SpdxModel, mergeType: any): Observable<any> {
+  mergeSboms(uploadModels: UploadModel[], cdxMerged: CycloneDXSBOMStandard, spdxMerged: SpdxModel,cdqSpdxMerged: SpdxModel,cdqCydxMerged: CDQCycloneDXSBOMStandard, mergeType: any): Observable<any> {
 
     const data: FormData = new FormData();
     let url: string = this.restEndPointService.mergeSpdx;
@@ -132,6 +136,12 @@ export class SbomInputService {
     if(mergeType === 'cyclonedx') {
       url = this.restEndPointService.mergeCyclonedx;
       data.append('bomMetadata', JSON.stringify(cdxMerged));
+    }
+    else if (mergeType === 'cdqcydx') {
+      url = this.restEndPointService.mergeCyclonedx;
+      data.append('bomMetadata', JSON.stringify(cdqCydxMerged));
+    } else if (mergeType === 'cdqspdx2.3') {
+      data.append('bomMetadata', JSON.stringify(cdqSpdxMerged));
     } else {
       data.append('bomMetadata', JSON.stringify(spdxMerged));
     }
@@ -166,7 +176,7 @@ export class SbomInputService {
     if (sessionStorage.getItem('token') === null) {
       sessionStorage.setItem('token', new Date().getTime().toString());
     }
-    uploadData.timestamp = sessionStorage.getItem('token');
+    uploadData.sessionId = sessionStorage.getItem('token');
 
     data.append('postData', JSON.stringify(uploadData));
 
@@ -331,6 +341,370 @@ export class SbomInputService {
     }
 
     return this.cycloneDxModelToEdit;
+  }
+
+  initializeCDQCycloneDXUndefinedObjects(inputJson: CDQCycloneDXSBOMStandard) {
+     this.cdqCycloneDxModelToEdit = inputJson;
+    if (!this.cdqCycloneDxModelToEdit.bomFormat) {
+      this.cdqCycloneDxModelToEdit.bomFormat = "";
+    }
+    if (this.cdqCycloneDxModelToEdit?.specVersion !== "1.6") {
+      this.cdqCycloneDxModelToEdit.specVersion = "1.6";
+    }
+
+    if (!this.cdqCycloneDxModelToEdit.serialNumber) {
+      this.cdqCycloneDxModelToEdit.serialNumber = "";
+    }
+    if (!this.cdqCycloneDxModelToEdit.version) {
+      this.cdqCycloneDxModelToEdit.version = 1;
+    }
+
+    if (!this.cdqCycloneDxModelToEdit.metadata) {
+        let cdqmetadata: CDQBOMMetadata = new CDQBOMMetadata();
+        cdqmetadata.timestamp = "";
+
+        let cdqmetadataComponent = new CDQMetadataComponent();
+        cdqmetadataComponent.name = "";
+        cdqmetadataComponent.group = "";
+        cdqmetadataComponent.type = null;
+        cdqmetadataComponent.version = "";
+        cdqmetadataComponent.purl = "";
+
+        let cdqMetaComponentLicense = new CDQLicenses();
+        let cdqLicense = new CDQLicense();
+        cdqLicense.name = "";
+        cdqMetaComponentLicense.license = cdqLicense;
+        cdqmetadataComponent.licenses = [];
+        cdqmetadataComponent.licenses.push(cdqMetaComponentLicense);
+
+        let cdqMetaComponentExternalReference = new CDQExternalReference();
+        cdqMetaComponentExternalReference.url = "";
+        cdqmetadataComponent.externalReferences = []
+        cdqmetadataComponent.externalReferences.push(cdqMetaComponentExternalReference);
+        cdqmetadata.component = cdqmetadataComponent;
+
+        let cdqmetadataSupplier = new CDQOrganizationalEntityObject();
+        cdqmetadataSupplier.name = "";
+
+        let contact = new OrganizationalContactObject();
+        contact.email = "";
+        cdqmetadataSupplier.contact = [];
+        cdqmetadataSupplier.contact.push(contact);
+        cdqmetadata.supplier = cdqmetadataSupplier;
+
+        let cdqMetaLicenses = new CDQLicenses();
+        let cdqMetaLicense = new CDQLicense();
+        cdqMetaLicense.name = "";
+        cdqMetaLicenses.license = cdqMetaLicense;
+        cdqmetadata.licenses.push(cdqMetaLicenses);
+
+        let cdqmetadataTool = new CDQToolsChoice();
+        let cdqmetadataToolComponent = new CDQComponentObject();
+        cdqmetadataToolComponent.name = "";
+        cdqmetadataTool.components = [];
+        cdqmetadataTool.components.push(cdqmetadataToolComponent);
+        cdqmetadata.tools = cdqmetadataTool;
+
+        let cdqMetadataAuthors = new CDQOrganizationalContactObject();
+        cdqMetadataAuthors.name = "";
+        cdqmetadata.authors = [];
+        cdqmetadata.authors.push(cdqMetadataAuthors);
+
+        // let cdqMetadataManufacturer = new CDQOrganizationalEntityObject();
+        // cdqMetadataManufacturer.name = "";
+
+        // cdqmetadata.manufacturer = cdqMetadataManufacturer;
+        this.cdqCycloneDxModelToEdit.metadata = cdqmetadata;
+    }else {
+      let cdqmetadataVar: CDQBOMMetadata = new CDQBOMMetadata();
+      cdqmetadataVar = this.cdqCycloneDxModelToEdit.metadata;
+      if (!this.cdqCycloneDxModelToEdit.metadata.timestamp) {
+        cdqmetadataVar.timestamp = "";
+      }else{
+        cdqmetadataVar.timestamp = this.cdqCycloneDxModelToEdit.metadata.timestamp;
+      }
+      cdqmetadataVar.component = this.initializeCDQCydxMetaDataComponents();
+      if (!this.cdqCycloneDxModelToEdit.metadata.licenses) {
+        cdqmetadataVar.licenses = [];
+        cdqmetadataVar.licenses.push(this.initializeCDQCydxMetaDataLicense());
+      } else {
+        if (this.cdqCycloneDxModelToEdit.metadata.licenses.length > 0) {
+          for (var i = 0; i < this.cdqCycloneDxModelToEdit.metadata.licenses.length; i++) {
+            cdqmetadataVar.licenses[i] = this.initCDQMetadataLicenseUndefinedObj(this.cdqCycloneDxModelToEdit.metadata.licenses[i]);
+            //cdqmetadataVar.licenses.push((this.cdqCycloneDxModelToEdit.metadata.licenses[i]))
+          }
+        }else {
+          cdqmetadataVar.licenses.push(this.initializeCDQCydxMetaDataLicense());
+        }
+      }
+       cdqmetadataVar.supplier = this.initializeCDQCydxMetaDataSupplier();
+      if (!this.cdqCycloneDxModelToEdit.metadata.tools) {
+        cdqmetadataVar.tools = this.initializeCDQCydxMetaDataTools();
+      }else {
+        if (!this.cdqCycloneDxModelToEdit.metadata.tools.components) {
+          cdqmetadataVar.tools = this.initCDQCydxMetaDataToolsUndefinedObj(this.cdqCycloneDxModelToEdit.metadata.tools);
+        } else {
+          cdqmetadataVar.tools = this.initCDQCydxMetaDataToolsUndefinedObj(this.cdqCycloneDxModelToEdit.metadata.tools);
+        }
+      }
+      if (!this.cdqCycloneDxModelToEdit.metadata.manufacturer) {
+        if (!this.cdqCycloneDxModelToEdit.metadata.authors) {
+            let cdqMetadataManufacturer = new CDQOrganizationalEntityObject();
+            cdqMetadataManufacturer.name = "";
+            cdqmetadataVar.manufacturer = cdqMetadataManufacturer;
+        }
+      }else {
+        cdqmetadataVar.manufacturer = this.cdqCycloneDxModelToEdit.metadata.manufacturer;
+        if (!this.cdqCycloneDxModelToEdit.metadata.manufacturer.name) {
+          cdqmetadataVar.manufacturer.name = "";
+        }
+      }
+      if (!this.cdqCycloneDxModelToEdit.metadata.authors) {
+        if (!this.cdqCycloneDxModelToEdit.metadata.manufacturer) {
+           let cdqMetadataAuthors = new CDQOrganizationalContactObject();
+            cdqMetadataAuthors.name = "";
+            cdqmetadataVar.authors = [];
+            cdqmetadataVar.authors.push(cdqMetadataAuthors);
+        }
+      }else {
+        cdqmetadataVar.authors = this.initCDQMetadataAuthorsUndefinedObj(this.cdqCycloneDxModelToEdit.metadata.authors);
+      }
+        this.cdqCycloneDxModelToEdit.metadata = cdqmetadataVar;
+    }
+    if (!this.cdqCycloneDxModelToEdit.components) {
+      this.cdqCycloneDxModelToEdit.components = [];
+      this.cdqCycloneDxModelToEdit.components.push(this.initializeCDQCydxComponents());
+    }else {
+      this.cdqCycloneDxModelToEdit.components = this.initializeCDQCydxComponentsUndefinedObj(this.cdqCycloneDxModelToEdit.components);
+    }
+    return this.cdqCycloneDxModelToEdit;
+  }
+
+  initializeCDQCydxComponentsUndefinedObj(components: any) {
+    let componentsData: CDQComponentObject = new CDQComponentObject();
+    if (components.length > 0) {
+      for (var i = 0; i < components.length; i++) {
+        componentsData = components[i];
+          if (!componentsData.name) {
+            componentsData.name = "";
+          }
+          if (!componentsData.version) {
+            componentsData.version = "";
+          }
+          if (!componentsData.purl) {
+            componentsData.purl = "";
+          }
+        components[i] = componentsData;
+     }
+    }else {
+      let componentData: CDQComponentObject = new CDQComponentObject();
+      componentData.name = "";
+      componentData.version = "";
+      componentData.purl = "";
+      componentData.cpe = "";
+      components.push(componentData);
+    }
+
+    return components;
+  }
+
+  initializeCDQCydxComponents() {
+    let components: CDQComponentObject = new CDQComponentObject();
+    components.name = "";
+    components.version = "";
+    components.purl = "";
+    return components;
+  }
+
+  initCDQMetadataAuthorsUndefinedObj(authors: CDQOrganizationalContactObject[]) {
+   if(authors.length > 0) {
+    for (var i = 0; i < authors.length; i++) {
+      if (!authors[i].name) {
+        authors[i].name = "";
+      }
+    }
+   }else{
+    let cdqMetadataAuthors = new CDQOrganizationalContactObject();
+    cdqMetadataAuthors.name = "";
+    authors.push(cdqMetadataAuthors);
+   }
+    return authors;
+  }
+
+  initCDQCydxMetaDataToolsUndefinedObj(metaTools: CDQToolsChoice) {
+    let metadataTool = new CDQToolsChoice();
+    metadataTool = metaTools;
+      if (!metaTools.components) {
+      let metadataToolComponent = new CDQComponentObject();
+      metadataToolComponent.name = "";
+      metadataTool.components = [];
+      metadataTool.components.push(metadataToolComponent);
+      } else {
+        if(metaTools.components.length > 0) {
+          for (var i = 0; i < metaTools.components.length; i++) {
+            if (!metaTools.components[i].name) {
+              metaTools.components[i].name = "";
+            }
+          }
+        metadataTool.components = metaTools.components;
+        }else{
+          let metadataToolComponent = new CDQComponentObject();
+          metadataToolComponent.name = "";
+          metadataTool.components = [];
+          metadataTool.components.push(metadataToolComponent);
+        }
+      }
+    return metadataTool;
+  }
+
+  initializeCDQCydxMetaDataTools() {
+    let metadataTool = new CDQToolsChoice();
+    let metadataToolComponent = new CDQComponentObject();
+    metadataToolComponent.name = "";
+    metadataTool.components = [];
+    metadataTool.components.push(metadataToolComponent);
+    return metadataTool;
+  }
+
+  initializeCDQCydxMetaDataSupplier() {
+    let metadataSupplier = new CDQOrganizationalEntityObject();
+    if (!this.cdqCycloneDxModelToEdit.metadata.supplier) {
+      metadataSupplier.name = "";
+      let organizationalContactObject = new CDQOrganizationalContactObject();
+      organizationalContactObject.email = ""
+      metadataSupplier.contact = [];
+      metadataSupplier.contact.push(organizationalContactObject);
+    }else {
+      metadataSupplier = this.cdqCycloneDxModelToEdit.metadata.supplier;
+      if (!this.cdqCycloneDxModelToEdit.metadata.supplier.name) {
+        metadataSupplier.name = "";
+      } else {
+        metadataSupplier.name = this.cdqCycloneDxModelToEdit.metadata.supplier.name;
+      }
+
+      if (!this.cdqCycloneDxModelToEdit.metadata.supplier.contact) {
+        let organizationalContactObject = new CDQOrganizationalContactObject();
+        organizationalContactObject.email = "";
+        metadataSupplier.contact = [];
+        metadataSupplier.contact.push(organizationalContactObject);
+      }else {
+        var noOfcontact = this.cdqCycloneDxModelToEdit.metadata.supplier.contact.length;
+        for (var i = 0; i < noOfcontact; i++) {
+          metadataSupplier.contact[i] = this.initCDQCydxMetedataSupplierUndefinedObj(this.cdqCycloneDxModelToEdit.metadata.supplier.contact[i]);
+        }
+      }
+    }
+    return metadataSupplier;
+  }
+
+  initializeCDQCydxMetaDataComponents() {
+    let metadataComponent = new CDQMetadataComponent();
+    if(!this.cdqCycloneDxModelToEdit.metadata.component) {
+      metadataComponent.name = "";
+      metadataComponent.group = "";
+      metadataComponent.type = null;
+      metadataComponent.version = "";
+      metadataComponent.purl = "";
+
+      let cdqMetaComponentLicense = new CDQLicenses();
+      let cdqLicense = new CDQLicense();
+      cdqLicense.name = "";
+      cdqMetaComponentLicense.license = cdqLicense;
+
+      metadataComponent.licenses = [];
+      metadataComponent.licenses.push(cdqMetaComponentLicense);
+
+      let cdqMetaComponentExternalReference = new CDQExternalReference();
+      cdqMetaComponentExternalReference.url = "";
+      metadataComponent.externalReferences = []
+      metadataComponent.externalReferences.push(cdqMetaComponentExternalReference);
+    } else {
+      metadataComponent = this.cdqCycloneDxModelToEdit.metadata.component;
+        if (!metadataComponent.name) {
+          metadataComponent.name = "";
+        }
+        if (!metadataComponent.version) {
+          metadataComponent.version = "";
+        }
+        if (!metadataComponent.purl) {
+          metadataComponent.purl = "";
+        }
+        if (!metadataComponent.group) {
+          metadataComponent.group = "";
+        }
+        if (!metadataComponent.type) {
+           metadataComponent.type = null;
+        }
+        if (!metadataComponent.licenses) {
+          let cdqMetaComponentLicense = new CDQLicenses();
+          let cdqLicense = new CDQLicense();
+          cdqLicense.name = "";
+          cdqMetaComponentLicense.license = cdqLicense;
+          metadataComponent.licenses = [];
+          metadataComponent.licenses.push(cdqMetaComponentLicense);
+        }else {
+          if (metadataComponent.licenses.length > 0) {
+            for (var j = 0; j < metadataComponent.licenses.length; j++) {
+              if(!metadataComponent.licenses[j].expression) {
+                metadataComponent.licenses[j] = this.initCDQMetadataLicenseUndefinedObj(metadataComponent.licenses[j]);
+              }
+            }
+          }else {
+            let cdqMetaComponentLicense = new CDQLicenses();
+            let cdqLicense = new CDQLicense();
+            cdqLicense.name = "";
+            cdqMetaComponentLicense.license = cdqLicense;
+            metadataComponent.licenses = [];
+            metadataComponent.licenses.push(cdqMetaComponentLicense);
+          }
+        }
+        if (!metadataComponent.externalReferences) {
+          let cdqMetaComponentExternalReference = new CDQExternalReference();
+          cdqMetaComponentExternalReference.url = "";
+          metadataComponent.externalReferences = []
+          metadataComponent.externalReferences.push(cdqMetaComponentExternalReference);
+        } else {
+          if (metadataComponent.externalReferences.length > 0) {
+            for (var j = 0; j < metadataComponent.externalReferences.length; j++) {
+              if (!metadataComponent.externalReferences[j].url) {
+                metadataComponent.externalReferences[j].url = "";
+              }
+            }
+          }else {
+            let cdqMetaComponentExternalReference = new CDQExternalReference();
+            cdqMetaComponentExternalReference.url = "";
+            metadataComponent.externalReferences = []
+            metadataComponent.externalReferences.push(cdqMetaComponentExternalReference);
+          }
+        }
+    }
+    return metadataComponent;
+  }
+
+  initializeCDQCydxMetaDataLicense() {
+    let cdqmetadataLicense = new CDQLicenses();
+    let cdqLicense = new CDQLicense();
+    cdqLicense.name = "";
+    cdqmetadataLicense.license = cdqLicense;
+    return cdqmetadataLicense;
+
+  }
+
+  initCDQMetadataLicenseUndefinedObj(metaLicense: any) {
+    let metadataLicense = new CDQLicenses();
+    let licenseData = new CDQLicense();
+    metadataLicense = metaLicense;
+    if (metadataLicense.license) {
+        if(!metadataLicense.license.id) {
+          if (!metadataLicense.license.name) {
+            metadataLicense.license.name = "";
+          }
+        }
+    } else {
+      licenseData.name = "";
+      metadataLicense.license = licenseData;
+    }
+    return metadataLicense;
   }
 
   initMetadataLicenseUndefinedObj(metaLicense: any) {
@@ -547,6 +921,15 @@ export class SbomInputService {
     return contactObj;
   }
 
+    initCDQCydxMetedataSupplierUndefinedObj(contact: OrganizationalContactObject) {
+    let contactObj = new OrganizationalContactObject();
+    contactObj = contact;
+    if (!contactObj.email) {
+      contactObj.email = "";
+    }
+    return contactObj;
+  }
+
   initializeCydxMetaDataSupplier() {
     let metadataSupplier = new Supplier();
     if (!this.cycloneDxModelToEdit.metadata.supplier) {
@@ -610,6 +993,71 @@ export class SbomInputService {
       }
     }
     return metadataComponent;
+  }
+
+  initializeCDQSpdxUndefinedObjects(inputJson: SpdxModel) {
+    this.cdqSpdxModelToEdit = inputJson;
+    if (!this.cdqSpdxModelToEdit.spdxVersion) {
+      this.cdqSpdxModelToEdit.spdxVersion = "";
+    }
+    if (!this.cdqSpdxModelToEdit.documentNamespace) {
+      this.cdqSpdxModelToEdit.documentNamespace = "";
+    }
+    if (!this.cdqSpdxModelToEdit.dataLicense) {
+      this.cdqSpdxModelToEdit.dataLicense = "";
+    }
+    if (!this.cdqSpdxModelToEdit.creationInfo) {
+        let creatInfo = new CreationInfo();
+        creatInfo.created = "";
+        creatInfo.creators = [""]
+        this.cdqSpdxModelToEdit.creationInfo = creatInfo;
+    } else {
+        if (!this.cdqSpdxModelToEdit.creationInfo.created) {
+          this.cdqSpdxModelToEdit.creationInfo.created = "";
+        } if (!this.cdqSpdxModelToEdit.creationInfo.creators) {
+          this.cdqSpdxModelToEdit.creationInfo.creators = [""];
+        }
+    }
+
+    if(this.cdqSpdxModelToEdit.packages) {
+      if(this.cdqSpdxModelToEdit.packages.length > 0) {
+        for(var i=0; i<this.cdqSpdxModelToEdit.packages.length; i++) {
+          if(!this.cdqSpdxModelToEdit.packages[i].name) {
+            this.cdqSpdxModelToEdit.packages[i].name = "";
+          }
+          if (!this.cdqSpdxModelToEdit.packages[i].versionInfo) {
+            this.cdqSpdxModelToEdit.packages[i].versionInfo = "";
+          }
+          if (!this.cdqSpdxModelToEdit.packages[i].primaryPackagePurpose) {
+            this.cdqSpdxModelToEdit.packages[i].primaryPackagePurpose = null;
+          }
+          if (!this.cdqSpdxModelToEdit.packages[i].licenseConcluded) {
+            this.cdqSpdxModelToEdit.packages[i].licenseConcluded = "";
+          }
+          if (!this.cdqSpdxModelToEdit.packages[i].externalRefs) {
+            this.cdqSpdxModelToEdit.packages[i].externalRefs = this.initializeCDQSpdxPackageExternalRef();
+          } else {
+            if (this.cdqSpdxModelToEdit.packages[i].externalRefs.length === 0) {
+              this.cdqSpdxModelToEdit.packages[i].externalRefs = this.initializeCDQSpdxPackageExternalRef();
+            } else {
+              for (var j = 0; j < this.cdqSpdxModelToEdit.packages[i].externalRefs.length; j++) {
+                if (!this.cdqSpdxModelToEdit.packages[i].externalRefs[j].referenceCategory) {
+                  this.cdqSpdxModelToEdit.packages[i].externalRefs[j].referenceCategory = null;
+                }
+              }
+            }
+          }
+
+        }
+      } else {
+        this.cdqSpdxModelToEdit.packages = [];
+        this.cdqSpdxModelToEdit.packages.push(this.initializeCDQSpdxPackage());
+      }
+    } else {
+      this.cdqSpdxModelToEdit.packages = [];
+      this.cdqSpdxModelToEdit.packages.push(this.initializeCDQSpdxPackage());
+    }
+    return this.cdqSpdxModelToEdit;
   }
 
   initializeSpdxUndefinedObjects(inputJson: SpdxModel) {
@@ -711,6 +1159,21 @@ export class SbomInputService {
     return packages;
   }
 
+    initializeCDQSpdxPackage() {
+    let packages: Packages = new Packages();
+    packages.name = "";
+    packages.versionInfo = "";
+    packages.primaryPackagePurpose = null;
+    packages.licenseConcluded = "";
+
+    let externalRef: externalRefs[] = [];
+    let extern = new externalRefs();
+    extern.referenceCategory = null;
+    externalRef.push(extern);
+    packages.externalRefs = externalRef;
+    return packages;
+  }
+
   initializeSpdxPackageExternalRef() {
     let externalRef: externalRefs[] = [];
     let extern = new externalRefs();
@@ -718,6 +1181,14 @@ export class SbomInputService {
     extern.referenceCategory = null;
     extern.referenceLocator = "";
     extern.referenceType = "";
+    externalRef.push(extern);
+    return externalRef;
+  }
+
+    initializeCDQSpdxPackageExternalRef() {
+    let externalRef: externalRefs[] = [];
+    let extern = new externalRefs();
+    extern.referenceCategory = null;
     externalRef.push(extern);
     return externalRef;
   }
@@ -758,12 +1229,31 @@ export class SbomInputService {
       "label": "Custom Schema",
       "version": "1.0"
     },
-    ,
     {
       "value": "spdx2.2",
       "label": "SPDX V2.2",
       "version": "2.2"
-    }
+    },
+    {
+      "value": "cdqspdx2.3",
+      "label": "SEPIA - SPDX V2.3",
+      "version": "2.3"
+    },
+    {
+      "value": "cdqcydx",
+      "label": "SEPIA - CycloneDX V1.6",
+      "version": "1.6"
+    },
+    {
+      "value": "automotivecydx1.6",
+      "label": "Automotive - CycloneDX V1.6",
+      "version": "1.6"
+    },
+    {
+      "value": "automotivespdx2.3",
+      "label": "Automotive - SPDX V2.3",
+      "version": "2.3"
+    },
   ]
 
   licenseInfoTypes: any = [
@@ -778,6 +1268,21 @@ export class SbomInputService {
     {
       "value": "licText",
       "label": "License Text"
+    }
+  ]
+
+    cdqLicenseInfoTypes: any = [
+    {
+      "value": "licId",
+      "label": "License ID"
+    },
+    {
+      "value": "licName",
+      "label": "License Name"
+    },
+    {
+      "value": "licText",
+      "label": "License Expression"
     }
   ]
 
@@ -801,8 +1306,28 @@ export class SbomInputService {
     { title: "Error Message", dataKey: "message" }
   ];
 
+  lossEventListHeaders = [
+    { title: "Rule Id", dataKey: "ruleId" },
+    { title: "Severity", dataKey: "severity" },
+    { title: "Kind", dataKey: "kind" },
+    { title: "Source Path", dataKey: "sourcePath" },
+    { title: "Source Value", dataKey: "sourceValue" },
+    { title: "Target Path", dataKey: "targetPath" },
+    { title: "Target Value", dataKey: "targetValue" },
+    { title: "Reason", dataKey: "reason" }
+  ];
+
+  logDetails = [
+    { title: "Source Path", dataKey: "sourcePath" },
+    { title: "Target Path", dataKey: "targetPath" },
+    { title: "Value", dataKey: "value" },
+    { title: "Category", dataKey: "category" },
+    { title: "Reason", dataKey: "reason" },
+    { title: "Rule ID", dataKey: "ruleId" }
+  ];
+
   downloadParams = {
-    header: [this.errorListHeaders, this.changeLogHeaders, this.auditLogHeaders, undefined],
-    fileName: ['errorsList.pdf', 'changeLog.pdf', 'auditLog.pdf', 'mergedSbomContent.json']
+    header: [this.errorListHeaders, this.changeLogHeaders, this.auditLogHeaders,this.lossEventListHeaders,this.logDetails, undefined],
+    fileName: ['errorsList.pdf', 'changeLog.pdf', 'auditLog.pdf', 'lossEventList.pdf', 'conversionLogDetails.pdf', 'SbomContent.json']
   }
 }

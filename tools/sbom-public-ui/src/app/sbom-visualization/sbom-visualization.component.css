@@ -54,7 +54,7 @@ app-sbom-visualization {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px);
-  min-height: 560px;
+  min-height: 0;
   overflow: hidden;
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--text);
@@ -74,8 +74,8 @@ app-sbom-visualization {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  padding: 0 1.25rem;
-  height: var(--header-h);
+  padding: .5rem 1.25rem;
+  min-height: var(--header-h);
   background: linear-gradient(120deg, #12192b 0%, #1e2d45 100%);
   border-bottom: 2px solid var(--brand);
   flex-shrink: 0;
@@ -196,8 +196,9 @@ app-sbom-visualization {
   display: flex;
   align-items: center;
   gap: .6rem;
-  padding: 0 1.25rem;
-  height: var(--stats-h);
+  padding: .25rem 1.25rem;
+  min-height: var(--stats-h);
+  flex-wrap: wrap;
   background: var(--surface3);
   border-bottom: 1px solid var(--border);
   font-size: .78rem;
@@ -222,8 +223,8 @@ app-sbom-visualization {
 .trees-area {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 420px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 0;
   position: relative;
   overflow: hidden;
 }
@@ -415,7 +416,8 @@ ribbon-layer {
   background: var(--surface);
   display: flex;
   flex-direction: column;
-  max-height: 270px;
+  max-height: min(270px, 45%);
+  min-height: 0;
 }
 
 .drawer-toggle {
@@ -424,6 +426,7 @@ ribbon-layer {
   gap: .55rem;
   padding: 0 1.25rem;
   height: var(--drawer-h);
+  flex-shrink: 0;
   background: var(--surface3);
   border: none;
   border-bottom: 1px solid var(--border);
@@ -454,7 +457,7 @@ ribbon-layer {
 
 .mg-header {
   display: grid;
-  grid-template-columns: 36px 1fr 130px 1fr;
+  grid-template-columns: 36px minmax(0, 1fr) 130px minmax(0, 1fr);
   gap: .5rem;
   padding: .3rem 1rem;
   background: var(--surface2);
@@ -467,11 +470,11 @@ ribbon-layer {
   flex-shrink: 0;
 }
 
-.mg-scroll { flex: 1; overflow-y: auto; }
+.mg-scroll { flex: 1; min-height: 0; overflow-y: auto; }
 
 .mg-row {
   display: grid;
-  grid-template-columns: 36px 1fr 130px 1fr;
+  grid-template-columns: 36px minmax(0, 1fr) 130px minmax(0, 1fr);
   gap: .5rem;
   padding: .32rem 1rem;
   border: none;
@@ -521,8 +524,7 @@ ribbon-layer {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 860px) {
-  .trees-area { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .trees-area { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
   .tree-pane:first-child { border-right: none; border-bottom: 1px solid var(--border); }
   body { overflow: auto; height: auto; }
-  .mm-wrap { min-height: 340px; }
 }

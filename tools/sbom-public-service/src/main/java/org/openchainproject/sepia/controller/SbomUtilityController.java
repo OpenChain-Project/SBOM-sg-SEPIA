@@ -49,6 +49,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
 import org.openchainproject.sepia.util.Constants;
@@ -212,7 +215,7 @@ public class SbomUtilityController {
 		return sbomInputModel;
 	}
 
-	@ApiOperation(value = "Merge 2 or more valid CycloneDx V1.4 SBOMs with this API")
+	@ApiOperation(value = "Merge 2 or more valid CycloneDx V1.4 SBOMs with this API",hidden = true)
 	@PostMapping("/mergeCyclonedx")
 	public BomFilesInputModel mergeCyclonedxSboms(@RequestParam("postData") String postData,
 			@RequestParam("bomMetadata") String bomMetadata, @RequestParam(value = "isFromApp", required = false) boolean isFromApp) {
@@ -239,7 +242,7 @@ public class SbomUtilityController {
 		return mergedBomInput;
 	}
 
-	@ApiOperation(value = "Merge 2 or more valid SPDX V2.3 SBOMs with this API")
+	@ApiOperation(value = "Merge 2 or more valid SPDX V2.3 SBOMs with this API",hidden = true)
 	@PostMapping("/mergeSpdx")
 	public BomFilesInputModel mergeSpdxSboms(@RequestParam("postData") String postData,
 			@RequestParam("bomMetadata") String bomMetadata, @RequestParam(value = "isFromApp", required = false) boolean isFromApp) {
@@ -262,7 +265,7 @@ public class SbomUtilityController {
 		return mergedBomInput;
 	}
 	
-	@ApiOperation(value = "covert SBOMs")
+	@ApiOperation(value = "covert SBOMs",hidden = true)
 	@PostMapping("/convertSbom")
 	public BomFilesInputModel convertSbom(@RequestParam("postData") String postData,@RequestParam(value = "isFromApp", required = false) boolean isFromApp) {
 		BomFilesInputModel sbomInputModel = new BomFilesInputModel();
@@ -347,8 +350,17 @@ public class SbomUtilityController {
 		return bomFilesInputModel;
 	}
 	
-	@ApiOperation(value = "Upload an input SBOM of type CycloneDx V1.4 or SPDX V2.3 and get it validated")
+	@ApiOperation(value = "Upload an input SBOM of type CycloneDx V1.4, CycloneDx V1.6 or SPDX V2.3 and get it validated")
 	@PostMapping(path = "/uploadAndValidate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ApiImplicitParams({
+        @ApiImplicitParam(
+            name = "file", 
+            value = "Select SBOM Json file to upload", 
+            required = true, 
+            dataType = "file", 
+            paramType = "form"
+        )
+    })
 	public ObjectNode uploadAndValidate(@RequestParam("file") Optional<MultipartFile[]> inputFile,
 			@RequestParam("postData") String postData) {
 		BomFilesInputModel sbomInputModel = null;
@@ -521,6 +533,22 @@ public class SbomUtilityController {
 	}
 		@ApiOperation(value = "Upload a BOM file and Schema file and and get it validated")
 		@PostMapping(path = "/customValidate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+		@ApiImplicitParams({
+        @ApiImplicitParam(
+            name = "file", 
+            value = "Select file to upload", 
+            required = true, 
+            dataType = "file", 
+            paramType = "form"
+        ),
+        @ApiImplicitParam(
+			name = "schemaFile", 
+			value = "Select schema file to upload", 
+			required = true, 
+			dataType = "file", 
+			paramType = "form"
+		)
+        })
 		public ObjectNode customValidate(
 				@RequestParam("file") Optional<MultipartFile[]> inputFile,
 				@RequestParam("schemaFile") Optional<MultipartFile[]> schemaFile,
@@ -581,8 +609,17 @@ public class SbomUtilityController {
 			return responseNode;
 		}
 	
-	@ApiOperation(value = "Upload BOM files for Convert operation through API")
+	@ApiOperation(value = "Upload SEPIA SPDX V2.3,SEPIA CycloneDX V1.6 BOM files for Convert operation through API")
 	@PostMapping(path = "/validateAndConvert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ApiImplicitParams({
+        @ApiImplicitParam(
+            name = "file", 
+            value = "Select file to upload", 
+            required = true, 
+            dataType = "file", 
+            paramType = "form"
+        )
+    })
 	public ObjectNode validateAndConvert(
 			   @RequestParam("file") Optional<MultipartFile> inputFile,
 			   @RequestParam("postData") String postData) {
@@ -665,7 +702,7 @@ public class SbomUtilityController {
 		
 	}
 		
-		   @ApiOperation(value = "Upload multiple BOM files for merge operation")
+		   @ApiOperation(value = "Upload multiple BOM files for merge operation", hidden = true)
 		   @PostMapping(path = "/validateAndMerge", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 		   public ObjectNode validateAndMerge(
 				   @RequestParam("file") Optional<MultipartFile[]> inputFile,

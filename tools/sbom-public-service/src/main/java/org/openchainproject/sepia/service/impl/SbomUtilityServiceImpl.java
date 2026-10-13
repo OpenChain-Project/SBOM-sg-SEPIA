@@ -680,7 +680,7 @@ public class SbomUtilityServiceImpl implements SbomUtilityService {
 				}else {
 					sbomConvertedModel = service.convert(source,Constants.SPDX_LC,Constants.VER2_3,Constants.CYCLONEDX_LC,Constants.VER1_6);
 					sbomConvertedModel.setSchemaType(Constants.CDQ_CYDX1_6_LC);
-					sbomConvertedModel.setSchemaVersion("2.3");
+					sbomConvertedModel.setSchemaVersion("1.6");
 					sbomConvertedModel = validateSboms(sbomConvertedModel, true, false);
 				}
 				

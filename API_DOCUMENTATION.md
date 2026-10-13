@@ -2,7 +2,7 @@
 
 This document describes the `/health`, `/uploadAndValidate`, `/customValidate`, and `/validateAndConvert` endpoints implemented by `SbomUtilityController`.
 
-Set `BASE_URL` to the service origin, including any configured context path. The examples use `http://localhost:8080`; the deployed host and port depend on the environment.
+Set `BASE_URL` to the service origin, including any configured context path. The examples use `http://localhost:9051`; the deployed host and port depend on the environment. The swagger UI can be accessed using 'http://localhost:9051/swagger-ui.html#/'
 
 ## General Request Conventions
 
@@ -13,10 +13,7 @@ The model accepts unknown JSON properties, but the following fields are relevant
 | `postData` property | Purpose |
 | --- | --- |
 | `schemaType` | Required format/type selector. Exact accepted values depend on the endpoint. Case-insensitive. |
-| `schemaVersion` | Optional metadata. Upload processing derives a version for recognized aliases when it is absent. |
-| `sbomFileName` | Optional filename fallback if the uploaded file does not provide an original filename. |
 | `sessionId` | Optional caller session identifier. The upload service creates one when absent. |
-| `index` | Optional entry index; upload processing may assign it based on the session's existing entries. |
 | `schema` | Boolean model flag used by custom-schema upload processing. Defaults to `false` when omitted. |
 
 The configured Spring multipart maximum file size and request size are both 100 MB. A reverse proxy or deployment may impose a lower limit.
@@ -193,7 +190,6 @@ Example success response (illustrative):
 
 The `sbomJson` body above is abbreviated. If input validation or conversion fails, the response message indicates failure; validation errors from the source document are not consistently propagated into the returned converted model by the current service implementation.
 
-Implementation note: the conversion service currently assigns `schemaVersion: "2.3"` in both conversion directions. For a CycloneDX 1.6 output, use the converted `sbomJson` document and `schemaType` to determine the actual format/version rather than relying on the response's `schemaVersion` property.
 
 ## Error and Status Behavior
 

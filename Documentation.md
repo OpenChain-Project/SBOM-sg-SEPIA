@@ -157,7 +157,7 @@ The user provides input component data. The user-input package SPDX ID establish
 
 ![alt text](images/spdx_merge.png)
 
-The user-input package SPDX ID establishes the `contains` relationship between each package in the input files.
+The merged result BOM documents SPDX ID establishes the `describes` relationship with the user-input package SPDX ID. The user-input package SPDX ID establishes the `contains` relationship between each package in the input files.
 
 ![alt text](images/spdx_realtionship.png)
 ---
